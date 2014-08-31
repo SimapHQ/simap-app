@@ -1,15 +1,9 @@
 'use strict';
 
 /**
- * @ngdoc overview
- * @name foodStorageTrackerApp
- * @description
- * # foodStorageTrackerApp
- *
  * Main module of the application.
  */
-angular
-  .module('foodStorageTrackerApp', [
+angular.module('foodStorageTrackerApp', [
     'ngAnimate',
     'ngCookies',
     'ngResource',
