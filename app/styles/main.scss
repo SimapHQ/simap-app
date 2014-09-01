@@ -1,4 +1,11 @@
 $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
+
+$background-color: #1d1d1d;
+$header-color: #303030;
+$footer-text-color: #777;
+$neon-green: #80bd01;
+$menu-text-color: white;
+
 // bower:scss
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 // endbower
@@ -12,56 +19,62 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 
 /* Space out content a bit */
 body {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  background-color: $background-color;
 }
 
-/* Everything but the jumbotron gets side spacing for mobile first views */
-.header,
-.footer {
-  padding-left: 15px;
-  padding-right: 15px;
+.container {
+  width: 100%;
+  padding: 0;
 }
 
 /* Custom page header */
-.header {
-  border-bottom: 1px solid #e5e5e5;
+.header-background {
+  background-color: $header-color;
 
-  /* Make the masthead heading the same height as the navigation */
-  h3 {
-    margin-top: 0;
-    margin-bottom: 0;
-    line-height: 40px;
-    padding-bottom: 19px;
+  .header {
+    .navbar-collapse,
+    .navbar-default,
+    .navbar-toggle {
+      background-color: inherit;
+      border-color: $header-color;
+    }
+
+    .navbar-nav > li > a,
+    .navbar-brand {
+      color: $menu-text-color;
+    }
+
+    .navbar-nav > li > a:hover,
+    .navbar-brand:hover {
+      color: $neon-green;
+    }
   }
 }
 
 /* Custom page footer */
 .footer {
-  padding-top: 19px;
-  color: #777;
-  border-top: 1px solid #e5e5e5;
-}
-
-.container-narrow > hr {
-  margin: 30px 0;
+  border-top: 1px solid $header-color;
+  color: $footer-text-color;
+  padding: 10px 20px;
+  text-align: center;
 }
 
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
-  .container {
+  .header,
+  .content {
+    margin: 0 auto;
     max-width: 730px;
   }
 
   /* Remove the padding we set earlier */
-  .header,
-  .marketing,
+  .header-background,
   .footer {
     padding-left: 0;
     padding-right: 0;
   }
   /* Space out the masthead */
-  .header {
+  .header-background {
     margin-bottom: 30px;
   }
 }
