@@ -1,19 +1,21 @@
 'use strict';
 
-angular.module('foodStorageTrackerApp').controller('CategoriesCtrl', function ($scope) {
+var app = angular.module('foodStorageTrackerApp');
 
-  $scope.categories = ["Vegetables", "Meats and Proteins", "Household Supplies"];
-  $scope.newCategory = "";
+app.controller('CategoriesCtrl', function ($scope) {
+
+  $scope.categories = ['Vegetables', 'Meats and Proteins', 'Household Supplies'];
+  $scope.newCategory = '';
 
   /**
    * This shouldn't allow you to add a category that already exists.
    */
   $scope.addCategory = function() {
-    if ($scope.newCategory == "") {
+    if ($scope.newCategory === '') {
       return;
     }
     $scope.categories.push($scope.newCategory);
-    $scope.newCategory = "";
+    $scope.newCategory = '';
   };
 
   /**

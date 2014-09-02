@@ -65,17 +65,16 @@ input {
   background-color: $second-color;
   border: none;
   color: $default-text-color;
-  width: 80%;
-  padding: 0 3px;
+  width: 95%;
 }
 
 .table > tbody > tr > th {
   color: $default-hover-color;
 }
 
-.table > tbody > tr > td:nth-child(2),
-.table > tbody > tr > th:nth-child(2) {
-  width: 18%;
+.table > tbody > tr > td:last-child,
+.table > tbody > tr > th:last-child {
+  width: 22%;
 }
 
 .table-striped > tbody > tr > td,
@@ -95,19 +94,21 @@ input {
   // background-color: $background-color;
 }
 
-.glyphicon-trash {
+.glyphicon-trash,
+.glyphicon-share-alt {
   color: firebrick;
 }
 
-.glyphicon-trash:hover {
+.glyphicon-trash:hover,
+.glyphicon-share-alt:hover {
   color: darkred;
 }
 
-.glyphicon-plus-sign {
+.glyphicon-plus {
   color: forestgreen;
 }
 
-.glyphicon-plus-sign:hover {
+.glyphicon-plus:hover {
   color: darkgreen;
 }
 

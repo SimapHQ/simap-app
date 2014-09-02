@@ -11,14 +11,23 @@
         <input type="text" ng-model="newCategory"/>
       </td>
       <td>
-        <a ng-click="addCategory()"><span class="glyphicon glyphicon-plus-sign"></span></a>
+        <a ng-click="addCategory()"><span class="glyphicon glyphicon-plus"></span></a>
       </td>
     </tr>
     <tr ng-repeat="category in categories">
-      <td>{{ category }}</td>
       <td>
-        <a ng-click="editCategory()"><span class="glyphicon glyphicon-pencil"></span></a>
-        <a ng-click="removeCategory('{{ category }}')"><span class="glyphicon glyphicon-trash"></span></a>
+        <input ng-show="edit" type="text" value="{{category}}" ng-model="category"/>
+        <span ng-show="!edit">{{category}}</span>
+      </td>
+      <td>
+        <div ng-show="!edit">
+          <a ng-click="edit = !edit"><span class="glyphicon glyphicon-pencil"></span></a>
+          <a ng-click="removeCategory('{{category}}')"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+        <div ng-show="edit">
+          <a ng-click="edit = !edit"><span class="glyphicon glyphicon-ok"></span></a>
+          <a ng-click="edit = !edit"><span class="glyphicon glyphicon-share-alt"></span></a>
+        </div>
       </td>
     </tr>
   </table>
