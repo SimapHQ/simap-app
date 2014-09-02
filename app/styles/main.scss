@@ -1,10 +1,11 @@
 $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
 
 $background-color: #1d1d1d;
-$header-color: #303030;
+$second-color: #303030;
+$alt-second-color: #252525;
 $footer-text-color: #777;
-$neon-green: #80bd01;
-$menu-text-color: white;
+$default-hover-color: #80bd01;
+$default-text-color: white;
 
 // bower:scss
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
@@ -29,31 +30,94 @@ body {
 
 /* Custom page header */
 .header-background {
-  background-color: $header-color;
+  background-color: $second-color;
 
   .header {
     .navbar-collapse,
     .navbar-default,
     .navbar-toggle {
       background-color: inherit;
-      border-color: $header-color;
+      border-color: $second-color;
     }
 
     .navbar-nav > li > a,
     .navbar-brand {
-      color: $menu-text-color;
+      color: $default-text-color;
     }
 
     .navbar-nav > li > a:hover,
     .navbar-brand:hover {
-      color: $neon-green;
+      color: $default-hover-color;
     }
   }
 }
 
+.content {
+  color: $default-text-color;
+  padding: 0px 15px 10px;
+
+  hr {
+    border-color: $footer-text-color;
+  }
+}
+
+input {
+  background-color: $second-color;
+  border: none;
+  color: $default-text-color;
+  width: 80%;
+  padding: 0 3px;
+}
+
+.table > tbody > tr > th {
+  color: $default-hover-color;
+}
+
+.table > tbody > tr > td:nth-child(2),
+.table > tbody > tr > th:nth-child(2) {
+  width: 18%;
+}
+
+.table-striped > tbody > tr > td,
+.table-striped > tbody > tr > th {
+  border: none;
+}
+
+.table-striped > tbody > tr:nth-child(odd) > td, 
+.table-striped > tbody > tr:nth-child(odd) > th {
+  // background-color: $second-color;
+  background-color: $background-color;
+}
+
+.table-striped > tbody > tr:nth-child(even) > td, 
+.table-striped > tbody > tr:nth-child(even) > th {
+  // background-color: $alt-second-color;
+  // background-color: $background-color;
+}
+
+.glyphicon-trash {
+  color: firebrick;
+}
+
+.glyphicon-trash:hover {
+  color: darkred;
+}
+
+.glyphicon-plus-sign {
+  color: forestgreen;
+}
+
+.glyphicon-plus-sign:hover {
+  color: darkgreen;
+}
+
+span {
+  padding: 0 3px;
+}
+
 /* Custom page footer */
 .footer {
-  border-top: 1px solid $header-color;
+  border-top: 1px solid $second-color;
   color: $footer-text-color;
   padding: 10px 20px;
   text-align: center;

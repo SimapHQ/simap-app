@@ -1,0 +1,25 @@
+<div>
+  <h3>Categories</h3>
+  <hr/>
+  <table class="table table-striped">
+    <tr>
+      <th>Category Name</th>
+      <th></th>
+    </tr>
+    <tr>
+      <td>
+        <input type="text" ng-model="newCategory"/>
+      </td>
+      <td>
+        <a ng-click="addCategory()"><span class="glyphicon glyphicon-plus-sign"></span></a>
+      </td>
+    </tr>
+    <tr ng-repeat="category in categories">
+      <td>{{ category }}</td>
+      <td>
+        <a ng-click="editCategory()"><span class="glyphicon glyphicon-pencil"></span></a>
+        <a ng-click="removeCategory('{{ category }}')"><span class="glyphicon glyphicon-trash"></span></a>
+      </td>
+    </tr>
+  </table>
+</div>

@@ -11,11 +11,15 @@ angular.module('foodStorageTrackerApp', [
     'ngSanitize',
     'ngTouch'
   ])
-  .config(function ($routeProvider) {
+  .config(function ($routeProvider, $locationProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
+      })
+      .when('/categories', {
+        templateUrl: 'views/categories.html',
+        controller: 'CategoriesCtrl'
       })
       .otherwise({
         redirectTo: '/'
