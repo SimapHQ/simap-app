@@ -35,6 +35,11 @@ a > *:hover {
   color: $default-hover-color;
 }
 
+label {
+  color: $default-hover-color;
+  font-weight: inherit;
+}
+
 .container {
   width: 100%;
   padding: 0;
@@ -85,11 +90,16 @@ a > *:hover {
   }
 }
 
+.form-control {
+  background-color: $second-color;
+  border: none;
+  color: #ccc;
+}
+
 input {
   background-color: $second-color;
   border: none;
   color: $default-text-color;
-  width: 95%;
 }
 
 .table > tbody > tr > th {

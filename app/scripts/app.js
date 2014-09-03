@@ -25,6 +25,14 @@ angular.module('foodStorageTrackerApp', [
         templateUrl: 'views/login.html',
         controller: 'LoginCtrl'
       })
+      .when('/item', {
+        templateUrl: 'views/item.html',
+        controller: 'ItemCtrl'
+      })
+      .when('/planning', {
+        templateUrl: 'views/planning.html',
+        controller: 'PlanningCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
