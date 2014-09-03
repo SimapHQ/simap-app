@@ -21,6 +21,10 @@ angular.module('foodStorageTrackerApp', [
         templateUrl: 'views/categories.html',
         controller: 'CategoriesCtrl'
       })
+      .when('/login', {
+        templateUrl: 'views/login.html',
+        controller: 'LoginCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
