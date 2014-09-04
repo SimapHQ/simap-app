@@ -1,5 +1,12 @@
 <div>
-  <h3>Categories</h3>
+  <h3>
+    Categories
+    <span class="glyphicon glyphicon-info-sign" ng-click="showCategoriesHelp = !showCategoriesHelp"></span>
+  </h3>
+  <p class="help-block" ng-show="showCategoriesHelp">
+    Categories allow you to group your items. 
+    You can use categories to help you meet your storage goals using a variety of items.
+  </p>
   <hr/>
   <h4>New Category</h4>
   <form role="form" ng-submit="addCategory()">
@@ -9,8 +16,14 @@
     </div>
     <input type="submit" ng-show="false"/>
   </form>
-  <h4 ng-show="categories.length != 0">Category List</h4>
-  <p class="help-block">Click a category name to edit it.</p>
+  <h4 ng-show="categories.length != 0">
+    Category List
+    <span class="glyphicon glyphicon-info-sign" ng-click="showCategoryHelp = !showCategoryHelp"></span>
+  </h4>
+  <p class="help-block" ng-show="showCategoryHelp">
+    Click on a category's name to rename it, or click the garbage can to delete it. 
+    You can't delete a category if items still belong to it.
+  </p>
   <table class="table">
     <tr ng-repeat="category in categories">
       <td>
@@ -18,10 +31,10 @@
           <input class="form-control" type="text" value="{{category}}" ng-model="category"/>
           <input type="submit" ng-show="false"/>
         </form>
-        <span ng-show="!edit" ng-click="edit=!edit">{{category}}</span>
+        <span ng-hide="edit" ng-click="edit=!edit">{{category}}</span>
       </td>
       <td>
-        <div ng-show="!edit">
+        <div ng-hide="edit">
           <a ng-click="removeCategory('{{category}}')"><span class="glyphicon glyphicon-trash"></span></a>
         </div>
         <div ng-show="edit">
