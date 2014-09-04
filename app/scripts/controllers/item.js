@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('foodStorageTrackerApp').controller('ItemCtrl', function ($scope) {
+angular.module('simapApp').controller('ItemCtrl', function ($scope) {
   $scope.item = {
     units: [
       { name: "cup", masterUnits: 1 },

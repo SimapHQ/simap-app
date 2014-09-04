@@ -1,5 +1,5 @@
 'use strict';
 
-angular.module('foodStorageTrackerApp').controller('LoginCtrl', function ($scope) {
+angular.module('simapApp').controller('LoginCtrl', function ($scope) {
   $scope.blah = 'blah';
 });

@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('foodStorageTrackerApp');
+var app = angular.module('simapApp');
 
 app.controller('CategoriesCtrl', function ($scope) {
 

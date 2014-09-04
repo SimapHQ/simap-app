@@ -3,7 +3,7 @@
 /**
  * Main module of the application.
  */
-angular.module('foodStorageTrackerApp', [
+angular.module('simapApp', [
     'ngAnimate',
     'ngCookies',
     'ngResource',

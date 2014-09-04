@@ -2,7 +2,7 @@
 set -eux
 
 PAGES_BRANCH="gh-pages"
-COMMIT_MESSAGE="Food Storage Tracker v$1"
+COMMIT_MESSAGE="Simap v$1"
 
 echo "Building production files"
 grunt build
