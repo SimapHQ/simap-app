@@ -1,31 +1,26 @@
 <div>
   <h3>Categories</h3>
   <hr/>
+  <h4>New Category</h4>
+  <form role="form" ng-submit="addCategory()">
+    <div class="form-group">
+      <label for="new-category-name">Name</label>
+      <input type="text" class="form-control" id="new-category-name" ng-model="newCategory" autocomplete="false"/>
+    </div>
+    <input type="submit" ng-show="false"/>
+  </form>
+  <h4 ng-show="categories.length != 0">Category List</h4>
   <table class="table">
-    <tr>
-      <th>Category Name</th>
-      <th></th>
-    </tr>
-    <tr>
-      <td>
-        <input type="text" ng-model="newCategory"/>
-      </td>
-      <td>
-        <a ng-click="addCategory()"><span class="glyphicon glyphicon-plus"></span></a>
-      </td>
-    </tr>
     <tr ng-repeat="category in categories">
       <td>
-        <input ng-show="edit" type="text" value="{{category}}" ng-model="category"/>
-        <span ng-show="!edit">{{category}}</span>
+        <input ng-show="edit" class="form-control" type="text" value="{{category}}" ng-model="category"/>
+        <span ng-show="!edit" ng-click="edit=!edit">{{category}}</span>
       </td>
       <td>
         <div ng-show="!edit">
-          <a ng-click="edit = !edit"><span class="glyphicon glyphicon-pencil"></span></a>
           <a ng-click="removeCategory('{{category}}')"><span class="glyphicon glyphicon-trash"></span></a>
         </div>
         <div ng-show="edit">
-          <a ng-click="edit = !edit"><span class="glyphicon glyphicon-ok"></span></a>
           <a ng-click="edit = !edit"><span class="glyphicon glyphicon-share-alt"></span></a>
         </div>
       </td>
