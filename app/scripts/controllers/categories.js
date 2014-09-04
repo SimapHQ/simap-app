@@ -11,7 +11,7 @@ app.controller('CategoriesCtrl', function ($scope) {
    * This shouldn't allow you to add a category that already exists.
    */
   $scope.addCategory = function() {
-    if ($scope.newCategory === '') {
+    if ($scope.newCategory === '' || $scope.categories.indexOf($scope.newCategory) !== -1) {
       return;
     }
     $scope.categories.push($scope.newCategory);

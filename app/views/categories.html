@@ -10,10 +10,14 @@
     <input type="submit" ng-show="false"/>
   </form>
   <h4 ng-show="categories.length != 0">Category List</h4>
+  <p class="help-block">Click a category name to edit it.</p>
   <table class="table">
     <tr ng-repeat="category in categories">
       <td>
-        <input ng-show="edit" class="form-control" type="text" value="{{category}}" ng-model="category"/>
+        <form role="form" ng-show="edit" ng-submit="edit=!edit">
+          <input class="form-control" type="text" value="{{category}}" ng-model="category"/>
+          <input type="submit" ng-show="false"/>
+        </form>
         <span ng-show="!edit" ng-click="edit=!edit">{{category}}</span>
       </td>
       <td>
@@ -21,7 +25,7 @@
           <a ng-click="removeCategory('{{category}}')"><span class="glyphicon glyphicon-trash"></span></a>
         </div>
         <div ng-show="edit">
-          <a ng-click="edit = !edit"><span class="glyphicon glyphicon-share-alt"></span></a>
+          <a ng-click="edit = !edit"><span class="cancel-edit glyphicon glyphicon-remove"></span></a>
         </div>
       </td>
     </tr>
