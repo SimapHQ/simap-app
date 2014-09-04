@@ -12,7 +12,9 @@ rm -rf /tmp/dist
 mv dist /tmp
 
 echo "Switching to ${PAGES_BRANCH} branch"
-git checkout --orphan gh-pages
+if ! git checkout --orphan gh-pages ; then
+  git checkout gh-pages
+fi
 
 echo "Removing all files from working tree"
 rm -rf /tmp/node_modules /tmp/bower_components
