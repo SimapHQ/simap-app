@@ -1,0 +1,18 @@
+@import "color-definitions.scss";
+
+.colorpicker {
+
+  .dropdown-menu {
+    background-color: $second-color;
+  }
+
+  .dropdown-menu::before,
+  .dropdown-menu::after {
+    content: none;
+  }
+
+  colorpicker-preview,
+  .close-colorpicker {
+    display: none;
+  }
+}

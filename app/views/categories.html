@@ -1,7 +1,9 @@
 <div>
   <h3>
     Categories
-    <span class="glyphicon glyphicon-info-sign" ng-click="showCategoriesHelp = !showCategoriesHelp"></span>
+    <a ng-click="showCategoriesHelp = !showCategoriesHelp">
+      <span class="glyphicon glyphicon-info-sign"></span>
+    </a>
   </h3>
   <p class="help-block" ng-show="showCategoriesHelp">
     Categories allow you to group your items. 
@@ -18,7 +20,9 @@
   </form>
   <h4 ng-show="categories.length != 0">
     Category List
-    <span class="glyphicon glyphicon-info-sign" ng-click="showCategoryHelp = !showCategoryHelp"></span>
+    <a ng-click="showCategoryHelp = !showCategoryHelp">
+      <span class="glyphicon glyphicon-info-sign"></span>
+    </a>
   </h4>
   <p class="help-block" ng-show="showCategoryHelp">
     Click on a category's name to rename it, or click the garbage can to delete it. 

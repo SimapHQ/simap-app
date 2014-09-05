@@ -1,18 +1,13 @@
 $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
 $fa-font-path: "../bower_components/font-awesome/fonts";
 
-$background-color: #1d1d1d;
-$second-color: #303030;
-$alt-second-color: #252525;
-$footer-text-color: #777;
-$default-hover-color: #80bd01;
-$default-text-color: white;
-
 // bower:scss
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 // endbower
 
 @import "glyphicons.scss";
+@import "colorpicker.scss";
+@import "color-definitions.scss";
 
 .browsehappy {
   margin: 0.2em 0;
@@ -27,10 +22,11 @@ body {
   font-weight: lighter;
 }
 
-h3, h4 {
+h3, h4, h5 {
   font-weight: inherit;
 }
 
+h5,
 a > *:hover {
   color: $default-hover-color;
 }
@@ -97,10 +93,18 @@ label {
   color: #ccc;
 }
 
+.square {
+  width: 34px;
+}
+
 input {
   background-color: $second-color;
   border: none;
   color: $default-text-color;
+}
+
+span.spacer {
+  padding: 1px;
 }
 
 .table > tbody > tr > th {

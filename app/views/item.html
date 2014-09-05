@@ -1,7 +1,10 @@
 <div>
+  
   <h3>
     New Item
-    <span class="glyphicon glyphicon-info-sign" ng-click="showItemHelp = !showItemHelp"></span>
+    <a ng-click="showItemHelp = !showItemHelp">
+      <span class="glyphicon glyphicon-info-sign"></span>
+    </a>
   </h3>
   <p class="help-block" ng-show="showItemHelp">
     Every piece of food or household item that you store is represented as an item.
@@ -9,7 +12,16 @@
     each item, and specify volume requirements for adults and children.
   </p>
   <hr/>
-  <h4>Item Information</h4>
+  
+  <h4>
+    Item Information
+    <a ng-click="showItemInformationHelp = !showItemInformationHelp">
+      <span class="glyphicon glyphicon-info-sign"></span>
+    </a>
+  </h4>
+  <p ng-show="showItemInformationHelp" class="help-block">
+    Here you can name your item, choose a category to group it under, and choose a color to represent it in your progress bars.
+  </p>
   <div class="form-group">
     <label for="new-item-name">Name</label>
     <input type="text" id="new-item-name" class="form-control">
@@ -22,9 +34,17 @@
       <option>Household Items</option>
     </select>
   </div>
+  <div class="form-group">
+    <label for="new-item-color">Color</label>
+    <div colorpicker colorpicker-position="bottom" class="form-control square" ng-model="itemColor" ng-style="{ 'background-color': itemColor }">
+    </div>
+  </div>
+ 
   <h4>
     Item Units
-    <span class="glyphicon glyphicon-info-sign" ng-click="showUnitHelp = !showUnitHelp"></span>
+    <a ng-click="showUnitHelp = !showUnitHelp">
+      <span class="glyphicon glyphicon-info-sign"></span>
+    </a>
   </h4>
   <p class="help-block" ng-show="showUnitHelp">
     Define the different units you'll use so that the tracker can do all your math for you.
@@ -32,7 +52,7 @@
     but for canned vegetables you might use oz and '16oz cans'.
   </p>
   <form role="form form-horizontal" ng-submit="addUnit()">
-    <div class="control-group">
+    <div class="form-group">
       <label>Add New Unit</label>
       <div class="controls form-inline">
         <span>1</span>
@@ -44,11 +64,84 @@
     </div>
     <input type="submit" ng-hide="true"/>
   </form>
-    <ul>
-      <li ng-repeat="unit in item.units"> 
-        1 <label>{{unit.name}}</label> 
-        is equivalent to <label>{{unit.masterUnits}}</label> 
-        master unit<span ng-show="unit.masterUnits !== 1">s</span>.
-      </li>
-    </ul>
+
+  <h5>Unit List</h5>
+  <ul>
+    <li ng-repeat="unit in item.units">
+      1 <label>{{unit.name}}</label> 
+      is equivalent to <label>{{unit.masterUnits}}</label> 
+      master unit<span ng-show="unit.masterUnits !== 1">s</span>.
+    </li>
+  </ul>
+
+  <h4>
+    Rations
+    <a ng-click="showRationsHelp = !showRationsHelp">
+      <span class="glyphicon glyphicon-info-sign"></span>
+    </a>
+  </h4>
+  <p class="help-block" ng-show="showRationsHelp">
+    Rations tell Simap how much of this item adults and children in your family need on a regular basis.
+    Simap uses this information to calculate your progress towards your planning goals.
+  </p>
+  <div class="form-group">
+    <label>Adults</label>
+    <div class="controls form-inline">
+      <input type="number" class="form-control" ng-model="adultRationNumber"/>
+      <span class="spacer"></span>
+      <select class="form-control">
+        <option ng-repeat="unit in item.units">
+          {{unit.name}}s
+        </option>
+      </select>
+      <span class="spacer"></span>
+      <select class="form-control">
+        <option>per Day</option>
+        <option>per Month</option>
+        <option>per Year</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Children</label>
+    <div class="controls form-inline">
+      <input type="number" class="form-control" ng-model="childRationNumber"/>
+      <span class="spacer"></span>
+      <select class="form-control">
+        <option ng-repeat="unit in item.units">
+          {{unit.name}}s
+        </option>
+      </select>
+      <span class="spacer"></span>
+      <select class="form-control">
+        <option>per Day</option>
+        <option>per Month</option>
+        <option>per Year</option>
+      </select>
+    </div>
+  </div>
+
+  <h4>
+    Baseline
+    <a ng-click="showBaselineHelp = !showBaselineHelp">
+      <span class="glyphicon glyphicon-info-sign"></span>
+    </a>
+  </h4>
+  <p ng-show="showBaselineHelp" class="help-block">
+    If your inventory goes below this amount, Simap will automatically remind you to pickup some more.
+    This is optional.
+  </p>
+  <div class="form-group">
+    <label>Minimum Threshold</label>
+    <div class="controls form-inline">
+      <input type="number" class="form-control" ng-model="baselineNumber"/>
+      <span class="spacer"></span>
+      <select class="form-control">
+        <option ng-repeat="unit in item.units">
+          {{unit.name}}s
+        </option>
+      </select>
+    </div>
+  </div>
+
 </div>
