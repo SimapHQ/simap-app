@@ -1,0 +1,7 @@
+<h5>
+  <span>{{label}}</span>
+  <a ng-click="showHelpBlock = !showHelpBlock" ng-show="helpBlock.length > 0">
+    <span class="glyphicon glyphicon-info-sign"></span>
+  </a>
+</h5>
+<p class="help-block" ng-show="showHelpBlock">{{helpBlock}}</p>

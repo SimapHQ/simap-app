@@ -14,21 +14,21 @@ angular.module('simapApp', [
   ])
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
-      })
-      .when('/categories', {
-        templateUrl: 'views/categories.html',
-        controller: 'CategoriesCtrl'
-      })
       .when('/login', {
         templateUrl: 'views/login.html',
         controller: 'LoginCtrl'
       })
-      .when('/item', {
-        templateUrl: 'views/item.html',
-        controller: 'ItemCtrl'
+      .when('/', {
+        templateUrl: 'views/main.html',
+        controller: 'MainCtrl'
+      })
+      .when('/items', {
+        templateUrl: 'views/items.html',
+        controller: 'ItemsCtrl'
+      })
+      .when('/categories', {
+        templateUrl: 'views/categories.html',
+        controller: 'CategoriesCtrl'
       })
       .when('/planning', {
         templateUrl: 'views/planning.html',
