@@ -1,50 +1,9 @@
-<div>
-  <h3>
-    Categories
-    <a ng-click="showCategoriesHelp = !showCategoriesHelp">
-      <span class="glyphicon glyphicon-info-sign"></span>
-    </a>
-  </h3>
-  <p class="help-block" ng-show="showCategoriesHelp">
-    Categories allow you to group your items. 
-    You can use categories to help you meet your storage goals using a variety of items.
-  </p>
-  <hr/>
-  <h4>New Category</h4>
-  <form role="form" ng-submit="addCategory()">
-    <div class="form-group">
-      <label for="new-category-name">Name</label>
-      <input type="text" class="form-control" id="new-category-name" ng-model="newCategory" autocomplete="false"/>
-    </div>
-    <input type="submit" ng-show="false"/>
-  </form>
-  <h4 ng-show="categories.length != 0">
-    Category List
-    <a ng-click="showCategoryHelp = !showCategoryHelp">
-      <span class="glyphicon glyphicon-info-sign"></span>
-    </a>
-  </h4>
-  <p class="help-block" ng-show="showCategoryHelp">
-    Click on a category's name to rename it, or click the garbage can to delete it. 
-    You can't delete a category if items still belong to it.
-  </p>
-  <table class="table">
-    <tr ng-repeat="category in categories">
-      <td>
-        <form role="form" ng-show="edit" ng-submit="edit=!edit">
-          <input class="form-control" type="text" value="{{category}}" ng-model="category"/>
-          <input type="submit" ng-show="false"/>
-        </form>
-        <span ng-hide="edit" ng-click="edit=!edit">{{category}}</span>
-      </td>
-      <td>
-        <div ng-hide="edit">
-          <a ng-click="removeCategory('{{category}}')"><span class="glyphicon glyphicon-trash"></span></a>
-        </div>
-        <div ng-show="edit">
-          <a ng-click="edit = !edit"><span class="cancel-edit glyphicon glyphicon-remove"></span></a>
-        </div>
-      </td>
-    </tr>
-  </table>
-</div>
+<simap-help-header data-size="h3" 
+                   data-label="'Categories'" 
+                   data-help-block="helpBlock">
+</simap-help-header>
+<simap-list data-data="categories" 
+            on-add="addNewCategory()"
+            on-edit="editCategory()"
+            on-remove="removeCategory()">
+</simap-list>
