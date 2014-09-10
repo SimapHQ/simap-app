@@ -11,6 +11,6 @@ app.directive('simapList', function() {
         edit: '&onEdit',
         remove: '&onRemove'
     },
-    templateUrl: 'views/templates/list.html'
+    templateUrl: '/views/templates/list.html'
   };
 });

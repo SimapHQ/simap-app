@@ -16,10 +16,6 @@ $fa-font-path: "../bower_components/font-awesome/fonts";
   padding: 0.2em 0;
 }
 
-a {
-  color: white;
-}
-
 /* Space out content a bit */
 body {
   background-color: $background-color;
@@ -28,6 +24,10 @@ body {
 
 h3, h4, h5 {
   font-weight: inherit;
+}
+
+a {
+  cursor: pointer;
 }
 
 h5,
@@ -104,6 +104,13 @@ label {
   width: 34px;
 }
 
+.square-sm {
+  border-radius: 3px;
+  float: right;
+  height: 16px;
+  width: 16px;
+}
+
 input {
   background-color: $second-color;
   border: none;
@@ -118,8 +125,10 @@ span.spacer {
   color: $default-hover-color;
 }
 
-.table > tbody > tr > td:last-child,
-.table > tbody > tr > th:last-child {
+.table > tbody > tr > td.first,
+.table > tbody > tr > td.third,
+.table > tbody > tr > th.first,
+.table > tbody > tr > th.third {
   width: 8%;
 }
 
@@ -130,6 +139,10 @@ span.spacer {
 
 .cancel-edit {
   margin: 10px 0;
+}
+
+.save-button {
+  padding: 8px;
 }
 
 /* Custom page footer */
@@ -148,13 +161,12 @@ span.spacer {
     max-width: 730px;
   }
 
-  /* Remove the padding we set earlier */
   .header-background,
   .footer {
     padding-left: 0;
     padding-right: 0;
   }
-  /* Space out the masthead */
+
   .header-background {
     margin-bottom: 30px;
   }

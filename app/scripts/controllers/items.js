@@ -1,12 +1,15 @@
 'use strict';
 
-angular.module('simapApp').controller('ItemsCtrl', function ($scope, $location) {
-  $scope.helpBlock = '';
+angular.module('simapApp').controller('ItemsCtrl', function ($scope, $location, randomColor) {
+  $scope.helpBlock = 'Here\'s your list of items.';
   
   $scope.items = {
-    'laskdjf': 'Beans',
-    'lsak3ff': 'Corn',
-    'slfdk2e': 'Flour'
+    'i1': { name: 'Beans', color: randomColor() },
+    'i2': { name: 'Corn', color: randomColor() },
+    'i3': { name: 'Flour', color: randomColor() },
+    'i4': { name: 'Sugar', color: randomColor() },
+    'i5': { name: 'Toilet Paper', color: randomColor() },
+    'i6': { name: 'Pork and Beans', color: randomColor() }
   };
 
   $scope.addNewItem = function() {
@@ -17,7 +20,7 @@ angular.module('simapApp').controller('ItemsCtrl', function ($scope, $location) 
     $location.path('/item/edit/itemid');
   };
 
-  $scope.removeItem = function() {
-    
+  $scope.removeItem = function(key) {
+    delete $scope.items[key];
   };
 });

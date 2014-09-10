@@ -1,19 +1,23 @@
 <table class="table">
-  <tr ng-repeat="datum in data">
-    <td>
-      <a ng-click="edit()">
-        <span>{{datum}}</span>
-      </a>
+  <tr ng-repeat="(key, value) in data">
+    <td class="first">
+      <div class="square-sm" ng-style="{ 'background-color': value.color }"></div>
     </td>
     <td>
+      <a ng-click="edit()">
+        <span>{{value.name}}</span>
+      </a>
+    </td>
+    <td class="third">
       <a>
-        <span class="glyphicon glyphicon-trash" ng-click="remove()"></span>
+        <span class="glyphicon glyphicon-trash" ng-click="remove({key: '{{key}}'})"></span>
       </a>
     </td>
   </tr>
   <tr>
+    <td class="first"></td>
     <td></td>
-    <td>
+    <td class="third">
       <a>
         <span class="glyphicon glyphicon-plus" ng-click="add()"></span>
       </a>

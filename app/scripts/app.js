@@ -30,6 +30,10 @@ angular.module('simapApp', [
         templateUrl: 'views/categories.html',
         controller: 'CategoriesCtrl'
       })
+      .when('/category/edit/:categoryId', {
+        templateUrl: 'views/category.html',
+        controller: 'CategoryCtrl'
+      })
       .when('/planning', {
         templateUrl: 'views/planning.html',
         controller: 'PlanningCtrl'

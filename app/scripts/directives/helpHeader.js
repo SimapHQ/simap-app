@@ -5,7 +5,7 @@ var app = angular.module('simapApp');
 app.directive('simapHelpHeader', function() {
   var getTemplateUrl = function($templateElement, $templateAttributes) {
     var size = $templateAttributes.size;
-    return 'views/templates/' + size + '-help-header.html';
+    return '/views/templates/' + size + '-help-header.html';
   };
 
   return {
