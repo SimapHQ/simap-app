@@ -4,5 +4,3 @@ dist
 .sass-cache
 bower_components
 tasks.todo
-rules.json
-data-model.json
