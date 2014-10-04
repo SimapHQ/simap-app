@@ -1,0 +1,192 @@
+$icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
+$fa-font-path: "../bower_components/font-awesome/fonts";
+
+// bower:scss
+@import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
+// endbower
+
+@import "font-awesome/scss/font-awesome";
+@import "glyphicons.scss";
+@import "colorpicker.scss";
+@import "color-definitions.scss";
+@import "progress-bar.scss";
+
+.browsehappy {
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.2em 0;
+}
+
+/* Space out content a bit */
+body {
+  background-color: $background-color;
+  font-weight: lighter;
+}
+
+h3, h4, h5 {
+  font-weight: inherit;
+}
+
+a {
+  cursor: pointer;
+}
+
+h5,
+a:hover,
+a > *:hover {
+  color: $default-hover-color;
+  text-decoration: none;
+}
+
+label {
+  color: $default-hover-color;
+  font-weight: inherit;
+}
+
+.container {
+  width: 100%;
+  padding: 0;
+}
+
+/* Custom page header */
+.header-background {
+  background-color: $second-color;
+
+  .header {
+    .navbar-collapse,
+    .navbar-default,
+    .navbar-toggle {
+      background-color: inherit;
+      border-color: $second-color;
+    }
+
+    .navbar-nav > li > a,
+    .navbar-brand {
+      color: $default-text-color;
+    }
+
+    .navbar-nav > li > a:hover,
+    .navbar-brand:hover {
+      color: $default-hover-color;
+    }
+  }
+}
+
+.content {
+  color: $default-text-color;
+  padding: 0px 15px 10px;
+
+  hr {
+    border-color: $footer-text-color;
+    margin-top: 10px;
+  }
+
+  .login {
+    text-align: center;
+
+    .login-icons {
+      padding: 15px 5px;
+
+      span {
+        font-size: 28px;
+        padding: 0 5px;
+      }
+    }
+  }
+}
+
+.divider {
+  border-top: 1px solid $footer-text-color;
+}
+
+.update-inventory {
+  margin-top: 5px;
+  padding: 3px 15px;
+}
+
+.form-control {
+  background-color: $second-color;
+  border: none;
+  color: #ccc;
+}
+
+.square {
+  width: 34px;
+}
+
+.square-sm {
+  border-radius: 3px;
+  float: right;
+  height: 16px;
+  width: 16px;
+}
+
+input {
+  background-color: $second-color;
+  border: none;
+  color: $default-text-color;
+}
+
+span.spacer {
+  padding: 1px;
+}
+
+.hpad-10 {
+  padding-left: 10px;
+}
+
+.vpad-2 {
+  padding-top: 2px;
+}
+
+.vpad-6 {
+  padding-top: 6px;
+}
+
+.vpad-8 {
+  padding-top: 8px;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.table > tbody > tr > th {
+  color: $default-hover-color;
+}
+
+.cancel-edit {
+  margin: 10px 0;
+}
+
+.save-button {
+  padding: 8px;
+}
+
+/* Custom page footer */
+.footer {
+  border-top: 1px solid $second-color;
+  color: $footer-text-color;
+  padding: 10px 20px;
+  text-align: center;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+  .header,
+  .content {
+    margin: 0 auto;
+    max-width: 730px;
+  }
+
+  .header-background,
+  .footer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .header-background {
+    margin-bottom: 30px;
+  }
+}

@@ -1,0 +1,24 @@
+<div ng-repeat="(key, value) in data" class="clearfix form-group">
+  <div class="col-xs-2">
+    <div class="square-sm" ng-style="{ 'background-color': value.color }"></div>
+  </div>
+  <div class="col-xs-8">
+    <a ng-click="edit()">
+      <span>{{value.name}}</span>
+    </a>
+  </div>
+  <div class="col-xs-2">
+    <a>
+      <span class="glyphicon glyphicon-trash" ng-click="remove({key: '{{key}}'})"></span>
+    </a>
+  </div>
+</div>
+<div>
+  <div class="col-xs-2"></div>
+  <div class="col-xs-8"></div>
+  <div class="col-xs-2">
+    <a>
+      <span class="glyphicon glyphicon-plus-sign" ng-click="add()"></span>
+    </a>
+  </div>
+</div>

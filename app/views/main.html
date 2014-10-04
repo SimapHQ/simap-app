@@ -1,0 +1,61 @@
+<simap-help-header size="h3" label="'Home'"></simap-help-header>
+
+<simap-help-header size="h4" label="'Overall Progress'" help-block="progressHelp"></simap-help-header>
+<div class="form-group col-xs-12">
+  <div style="float:left">
+    <label>Rations:</label>
+    <span>54%</span>
+  </div>
+  <div style="float:right;">
+    <label>Baselines:</label>
+    <span>5/13</span>
+  </div>
+  <simap-progress-bar items="progressItems"></simap-progress-bar>
+</div>
+
+<simap-help-header size="h4" label="'Category Breakdown'" help-block="categoryHelp"></simap-help-header>
+<div class="col-xs-12 clearfix" ng-repeat="(key, value) in categories">
+  <h4>{{value.name}}</h4>
+  <div class="form-group col-xs-12">
+    <div style="float:left">
+      <label>Rations:</label>
+      <span>54%</span>
+    </div>
+    <div style="float:right;">
+      <label>Baselines:</label>
+      <span>5/13</span>
+    </div>
+    <simap-progress-bar items="progressItems"></simap-progress-bar>
+  </div>
+  <div class="clearfix form-group" ng-repeat="(key, value) in value.items">
+    <div class="clearfix">
+      <div class="col-xs-12">
+        <div class="pull-left">
+          <span>{{value.name}}</span>
+        </div>  
+        <div class="pull-right">
+          <span>
+            {{value.amount}} {{value.units}}
+          </span>
+          <a ng-click="updateInventory = !updateInventory" class="hpad-10">
+            <span class="glyphicon glyphicon-plus-sign"></span>
+          </a>
+          <a ng-click="updateInventory = !updateInventory" class="hpad-10"> 
+            <span class="glyphicon glyphicon-minus-sign"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div ng-show="updateInventory" class="update-inventory">
+      <div class="clearfix col-md-5 form-group">
+        <input type="number" class="form-control" ng-model="updateAmount"/>
+      </div>
+      <div class="clearfix col-md-5 form-group">
+        <select class="form-control" ng-model="updateUnits" ng-options="unit.name for (id, unit) in itemUnits"></select>
+      </div>
+      <div class="clearfix col-md-2 form-group text-right">
+        <simap-save-button on-save="updateInventory = !updateInventory"></simap-save-button>
+      </div>
+    </div>
+  </div>
+</div>
