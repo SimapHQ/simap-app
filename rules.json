@@ -1,0 +1,51 @@
+/**
+ * Firebase Security Rules
+ *
+ * This file becomes the security rule settings for the 
+ * Simap firebase when it is deployed. It should ensure:
+ *
+ *  * Users cannot read or write anyone's data but their own.
+ *  * Users may not write improperly formed data.
+ *
+ * The structure of rules follows closely the structure of
+ * the actual data. Rules defined at different levels affect
+ * how data at that level is secured and validated.
+ */
+{
+  "rules": {
+
+    /**
+     * USER 
+     */
+    "user": {
+      "$uid": {
+        // A user may read and write only their own user data.
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+
+        // A user may change their own displayName
+        "displayName": {
+          ".write": "$uid === auth.uid"
+        },
+
+        // A user may not modify or delete their provider, provider_uid, or uid.
+        "provider": {
+          ".validate": "!data.exists() && auth.uid.contains(newData.val())"
+        },
+        "provider_uid": {
+          ".validate": "!data.exists() && auth.uid.contains(newData.val())"
+        },
+        "uid": {
+          ".validate": "!data.exists() && newData.val() === auth.uid"
+        }
+
+        // A user may only write their own displayName, family, categories, and items.
+        
+
+        // A user's family, categories, and items must be owned by them.
+
+      }
+    }
+
+  }
+}
