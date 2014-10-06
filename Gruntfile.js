@@ -391,7 +391,11 @@ module.exports = function (grunt) {
     // Test settings
     karma: {
       unit: {
-        configFile: 'test/karma.conf.js',
+        configFile: 'test/unit/karma.conf.js',
+        singleRun: true
+      },
+      acceptance: {
+        configFile: 'test/acceptance/karma.conf.js',
         singleRun: true
       }
     }
@@ -418,12 +422,21 @@ module.exports = function (grunt) {
     grunt.task.run(['serve:' + target]);
   });
 
-  grunt.registerTask('test', [
+  grunt.registerTask('unit', [
     'clean:server',
     'concurrent:test',
     'autoprefixer',
     'connect:test',
-    'karma'
+    'karma:unit'
+  ]);
+
+  grunt.registerTask('acceptance', [
+    'karma:acceptance'
+  ]);
+
+  grunt.registerTask('test', [
+    'unit',
+    'acceptance'
   ]);
 
   grunt.registerTask('build', [
