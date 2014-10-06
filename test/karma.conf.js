@@ -64,6 +64,8 @@ module.exports = function(config) {
 
     reporters: ['dots', 'story'],
     
+    // These options won't work until the next release of the storyReporter.
+    // https://github.com/sublimino/karma-story-reporter/issues/4
     storyReporter: {
       showSkipped: true,
       showSkippedSummary: true
