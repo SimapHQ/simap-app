@@ -7,9 +7,6 @@
  *  * Users cannot read or write anyone's data but their own.
  *  * Users may not write improperly formed data.
  *
- * The structure of rules follows closely the structure of
- * the actual data. Rules defined at different levels affect
- * how data at that level is secured and validated.
  */
 {
   "rules": {
@@ -23,11 +20,6 @@
         ".read": "$uid === auth.uid",
         ".write": "$uid === auth.uid",
 
-        // A user may change their own displayName
-        "displayName": {
-          ".write": "$uid === auth.uid"
-        },
-
         // A user may not modify or delete their provider, provider_uid, or uid.
         "provider": {
           ".validate": "!data.exists() && auth.uid.contains(newData.val())"
@@ -37,15 +29,328 @@
         },
         "uid": {
           ".validate": "!data.exists() && newData.val() === auth.uid"
+        },
+
+        // A user's display_name must be a string.
+        "display_name": {
+          ".validate": "newData.isString()"
+        },
+
+        // A user's family and goal must be owned by them.
+        "family": {
+          ".validate": "root.child('family/' + newData.val()).exists() &&
+                        root.child('family/' + newData.val() + '/owner').val() === auth.uid"
+        },
+        "goal": {
+          ".validate": "root.child('goal/' + newData.val()).exists() &&
+                        root.child('goal/' + newData.val() + '/owner').val() === auth.uid"
+        },
+
+        // A user's categories and items must be owned by them.
+        "categories": {
+          "$category_id": {
+            ".validate": "root.child('category/' + $category_id).exists() &&
+                          root.child('category/' + $category_id + '/owner').val() === auth.uid"
+          }
+        },
+        "items": {
+          "$item_id": {
+            ".validate": "root.child('item/' + $item_id).exists() &&
+                          root.child('item/' + $item_id + '/owner').val() === auth.uid"
+          }
         }
+      }
+    },
 
-        // A user may only write their own displayName, family, categories, and items.
-        
+    /**
+     * CATEGORIES
+     */
+    "category": {
+      "$category_id": {
 
-        // A user's family, categories, and items must be owned by them.
+        // A category may be read only by the owner.
+        ".read": "root.child('category/' + $category_id + '/owner').val() === auth.uid",
 
+        // A category may be created by any user, but only modified by the owner.
+        ".write": "!data.exists() || root.child('category/' + $category_id + '/owner').val() === auth.uid",
+
+        // But a new category must be owned by the current user.
+        "owner": {
+          ".validate": "newData.val() === auth.uid"
+        },
+
+        // A category name must be a string from 1 to 48 characters long.
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 48"
+        },
+
+        // A category color must be a string exactly 6 characters long and only containing hexadecimal digits.
+        "color": {
+          ".validate": "newData.isString() && newData.val().matches(/^[0-9A-Fa-f]{6}$/)"
+        }
+      }
+    },
+
+    /**
+     * FAMILY SIZES
+     */
+    "family": {
+      "$family_id": {
+
+        // A family may be read by only the owner.
+        ".read": "root.child('family/' + $family_id + '/owner').val() === auth.uid",
+
+        // A family may be created by any user, but only modified by the owner.
+        ".write": "!data.exists() || root.child('family/' + $family_id + '/owner').val() === auth.uid",
+
+        // But it must be owned by the creator.
+        "owner": {
+          ".validate": "newData.val() === auth.uid"
+        },
+
+        // A family must have a number of adults >= 0.
+        "adults": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+
+        // A family must have a number of children >= 0.
+        "children": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        }
+      }
+    },
+
+    /**
+     * STORAGE GOALS
+     */
+    "goal": {
+      "$goal_id": {
+
+        // A goal may be read by only the owner.
+        ".read": "root.child('goal/' + $goal_id + '/owner').val() === auth.uid",
+
+        // A goal may be created by any user, but only modified by the owner.
+        ".write": "!data.exists() || root.child('goal/' + $goal_id + '/owner').val() === auth.uid",
+
+        // A goal must be owned by the creator.
+        "owner": {
+          ".validate": "newData.val() === auth.uid"
+        },
+
+        // The number of days the goal is for must be a number >= 1
+        "days": {
+          ".validate": "newData.isNumber() && newData.val() >= 1"
+        }
+      }
+    },
+
+    /**
+     * ITEMS
+     */
+    "item": {
+      "$item_id": {
+
+        // An item may only be read by the owner.
+        ".read": "root.child('item/' + $item_id + '/owner').val() === auth.uid",
+
+        // An item may be created by any user, but only modified by the owner.
+        ".write": "!data.exists() || root.child('item/' + $item_id + '/owner').val() === auth.uid",
+
+        // An item must be owned by the creator.
+        "owner": {
+          ".validate": "newData.val() === auth.uid"
+        },
+
+        // An item must have a name that is a string from 1 to 48 characters.
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 48"
+        },
+
+        // An item must have a color that is a 6 digit hexadecimal string.
+        "color": {
+          ".validate": "newData.isString() && newData.val().matches(/^[0-9A-Fa-f]{6}$/)"
+        },
+
+        // An item must have a category assigned to it that exists, and is owned by the current user.
+        "category_id": {
+          ".validate": "root.child('category/' + newData.val()).exists() &&
+                        root.child('category/' + newData.val() + '/owner').val() === auth.uid"
+        },
+
+        // An item must have an amount that is a number >= 0.
+        "amount": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+
+        // An item must have a storage plan that exists and is owned by the current user.
+        "plan": {
+          ".validate": "root.child('plan/' + newData.val()).exists() &&
+                        root.child('plan/' + newData.val() + '/owner').val() === auth.uid"
+        },
+
+        "units": {
+          // There must be at least one unit specified.
+          ".validate": "newData.hasChildren()",
+
+          "$unit_id": {
+            // Each unit must exist, and be owned by the current user.
+            ".validate": "root.child('unit/' + $unit_id).exists() &&
+                          root.child('unit/' + $unit_id + '/owner').val() === auth.uid"
+          }
+        },
+
+        // An item must have a primary unit that exists and is owned by the current user.
+        "primary_unit": {
+          ".validate": "root.child('unit/' + newData.val()).exists() &&
+                        root.child('unit/' + newData.val() + '/owner').val() === auth.uid"
+        }
+      }
+    },
+
+    /**
+     * UNITS
+     */
+    "unit": {
+      "$unit_id": {
+
+        // A unit may be read only by its owner.
+        ".read": "root.child('unit/' + $unit_id + '/owner').val() === auth.uid",
+
+        // A unit may be created by an user, but only modified by the creator.
+        ".write": "!data.exists() || root.child('unit/' + $unit_id + '/owner').val() === auth.uid",
+
+        // A unit must be owned by the creator.
+        "owner": {
+          ".validate": "newData.val() === auth.uid"
+        },
+
+        // A unit must have a name that is a string from 1 to 16 characters.
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 16"
+        }
+      }
+    },
+
+    /**
+     * UNIT CONVERSIONS
+     */
+    "conversion": {
+      "$unit_id": {
+
+        // A conversion object may be read only by its owner.
+        ".read": "root.child('unit/' + $unit_id + '/owner').val() === auth.uid",
+
+        // A conversion may be created by any user, but only modified by the creator.
+        ".write": "!data.exists() || root.child('unit/' + $unit_id + '/owner').val() === auth.uid",
+
+        // A conversion must be for an existing unit.
+        ".validate": "root.child('unit/' + $unit_id).exists()",
+
+        // A conversion must be owned by the creator.
+        "owner": {
+          ".validate": "newData.val() === auth.uid"
+        },
+
+        // other_unit_id represents the unit being converted TO, FROM unit_id.
+        "$other_unit_id": {
+
+          // The unit being converted to must exist, be owned by the current user,
+          // and the conversion factor must be a number > 0.
+          ".validate": "root.child('unit/' + $other_unit_id).exists() &&
+                        root.child('unit/' + $other_unit_id + '/owner').val() === auth.uid &&
+                        newData.isNumber() && newData.val() > 0"
+
+        }
+      }
+    },
+
+    /**
+     * STORAGE PLAN
+     */
+    "plan": {
+      "$plan_id": {
+
+        // A plan may be read only by its owner
+        ".read": "root.child('plan/' + $plan_id + '/owner').val() === auth.uid",
+
+        // A plan may be create by any user, but only modfied by the creator.
+        ".write": "!data.exists() || root.child('plan/' + $plan_id + '/owner').val() === auth.uid",
+
+        // A plan must be owned by the creator.
+        "owner": {
+          ".validate": "newData.val() === auth.uid"
+        },
+
+        // A plan must have a type that is either 'ration' or 'baseline'
+        "type": {
+          ".validate": "newData.val() === 'ration' || newData.val() === 'baseline'"
+        },
+
+        // BASELINE
+        "amount": {
+          // The amount must be a number greater than 0.
+          ".validate": "root.child('plan/' + $plan_id + '/type').val() === 'baseline' &&
+                        newData.isNumber() && newData.val() > 0"
+        },
+
+        "unit": {
+          // The unit must be owned by the current user.
+          ".validate": "root.child('plan/' + $plan_id + '/type').val() === 'baseline' &&
+                        root.child('unit/' + newData.val()).exists() &&
+                        root.child('unit/' + newData.val() + '/owner').val() === auth.uid"
+        },
+
+        // RATION
+        "adult": {
+
+          // Adult must have an amount, unit, and time.
+          ".validate": "root.child('plan/' + $plan_id + '/type').val() === 'ration' &&
+                        newData.hasChildren(['amount', 'unit', 'time'])",
+
+          // The amount must be a number > 0.
+          "amount": {
+            ".validate": "newData.isNumber() && newData.val() > 0"
+          },
+
+          // The unit must be a valid unit, and must be owned by the current user.
+          "unit": {
+            ".validate": "root.child('unit/' + newData.val()).exists() &&
+                          root.child('unit/' + newData.val() + '/owner').val() === auth.uid"
+          },
+
+          // The time must be one of 'day', 'week', 'month', 'year'
+          "time": {
+            ".validate": "newData.isString() && 
+                          (newData.val() === 'day' || newData.val() === 'week' || 
+                           newData.val() === 'month' || newData.val() === 'year')"
+          }
+        },
+
+        "child": {
+
+          // Child must have an amount, unit and time.
+          ".validate": "root.child('plan/' + $plan_id + '/type').val() === 'ration' &&
+                        newData.hasChildren(['amount', 'unit', 'time'])",
+
+          // The amount must be a number > 0.
+          "amount": {
+            ".validate": "newData.isNumber() && newData.val() > 0"
+          },
+
+          // The unit must be a valid unit, and must be owned by the current user.
+          "unit": {
+            ".validate": "root.child('unit/' + newData.val()).exists() &&
+                          root.child('unit/' + newData.val() + '/owner').val() === auth.uid"
+          },
+
+          // The time must be one of 'day', 'week', 'month', 'year'
+          "time": {
+            ".validate": "newData.isString() && 
+                          (newData.val() === 'day' || newData.val() === 'week' || 
+                           newData.val() === 'month' || newData.val() === 'year')"
+          }
+        }
       }
     }
-
   }
 }
