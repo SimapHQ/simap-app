@@ -393,14 +393,23 @@ module.exports = function (grunt) {
       unit: {
         configFile: 'test/unit/karma.conf.js',
         singleRun: true
-      },
-      acceptance: {
-        configFile: 'test/acceptance/karma.conf.js',
-        singleRun: true
       }
+    },
+
+    jasmine_node: {
+      options: {
+        forceExit: true,
+        match: '.',
+        matchall: false,
+        extensions: 'js',
+        specNameMatcher: 'test',
+        jUnit: {
+          report: false
+        }
+      },
+      all: ['test/acceptance']
     }
   });
-
 
   grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
     if (target === 'dist') {
@@ -430,8 +439,9 @@ module.exports = function (grunt) {
     'karma:unit'
   ]);
 
+  grunt.loadNpmTasks('grunt-jasmine-node');
   grunt.registerTask('acceptance', [
-    'karma:acceptance'
+    'jasmine_node'
   ]);
 
   grunt.registerTask('test', [

@@ -20,6 +20,9 @@
         ".read": "$uid === auth.uid",
         ".write": "$uid === auth.uid",
 
+        // A user must have a uid, provider, provider_uid, and display_name
+        ".validate": "newData.hasChildren(['uid', 'provider', 'provider_uid', 'display_name'])",
+
         // A user may not modify or delete their provider, provider_uid, or uid.
         "provider": {
           ".validate": "!data.exists() && auth.uid.contains(newData.val())"
@@ -33,7 +36,7 @@
 
         // A user's display_name must be a string.
         "display_name": {
-          ".validate": "newData.isString()"
+          ".validate": "newData.isString() && newData.val().length > 0"
         },
 
         // A user's family and goal must be owned by them.
