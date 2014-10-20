@@ -408,6 +408,12 @@ module.exports = function (grunt) {
         }
       },
       all: ['test/acceptance']
+    },
+
+    execute: {
+      update_security_rules: {
+        src: ['test/acceptance/firebase/updateSecurityRules.js']
+      }
     }
   });
 
@@ -439,8 +445,10 @@ module.exports = function (grunt) {
     'karma:unit'
   ]);
 
+  grunt.loadNpmTasks('grunt-execute');
   grunt.loadNpmTasks('grunt-jasmine-node');
   grunt.registerTask('acceptance', [
+    'execute:update_security_rules',
     'jasmine_node'
   ]);
 
