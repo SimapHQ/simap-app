@@ -9,6 +9,8 @@
 
 module.exports = function (grunt) {
 
+  grunt.option('stack', true);
+
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
 
