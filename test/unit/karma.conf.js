@@ -62,7 +62,8 @@ module.exports = function(config) {
       'karma-story-reporter'
     ],
 
-    reporters: ['dots', 'story'],
+    reporters: ['dots'],
+    // reporters: ['story'],
     
     // These options won't work until the next release of the storyReporter.
     // https://github.com/sublimino/karma-story-reporter/issues/4

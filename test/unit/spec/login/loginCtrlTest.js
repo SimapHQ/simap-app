@@ -6,7 +6,8 @@ describe('Controller: LoginCtrl', function() {
       $scope,
       $location,
       $log,
-      AuthService;
+      LoginService,
+      SessionService;
 
   beforeEach(function() {
     module('mock.firebase');
@@ -16,20 +17,22 @@ describe('Controller: LoginCtrl', function() {
   beforeEach(inject(function ($controller, $rootScope) {
     $scope = $rootScope.$new();
     $location = jasmine.createSpyObj('$location', ['path']);
-    AuthService = jasmine.createSpyObj('AuthService', ['login', 'logout', 'isLoggedIn']);
+    LoginService = jasmine.createSpyObj('LoginService', ['login', 'logout']);
+    SessionService = jasmine.createSpyObj('SessionService', ['currentSession']);
 
     LoginCtrl = $controller('LoginCtrl', {
       $scope: $scope,
       $location: $location,
       $log: $log,
-      AuthService: AuthService
+      LoginService: LoginService,
+      SessionService: SessionService
     });
   }));
 
-  it('should call AuthService.logout when logout is called', function () {
+  it('should call LoginService.logout when logout is called', function () {
     $scope.logout();
 
-    expect(AuthService.logout).toHaveBeenCalled();
+    expect(LoginService.logout).toHaveBeenCalled();
   });
 
   it('should redirect to / when logout is called', function() {
@@ -41,13 +44,13 @@ describe('Controller: LoginCtrl', function() {
   it('should use the right provider when logging in', function() {
     $scope.loginGoogle();
     
-    expect(AuthService.login).toHaveBeenCalledWith('google');
+    expect(LoginService.login).toHaveBeenCalledWith('google');
   });
 
-  it('should use the AuthService to know if a user is logged in', function() {
+  it('should use the SessionService to know if a user is logged in', function() {
     $scope.isLoggedIn();
 
-    expect(AuthService.isLoggedIn).toHaveBeenCalled();
+    expect(SessionService.currentSession).toHaveBeenCalled();
   });
   
 });

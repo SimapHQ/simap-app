@@ -12,8 +12,6 @@ var app = angular.module('simapApp', ['ngAnimate',
                                       'colorpicker.module',
                                       'firebase']);
 
-var bouncer = app.controller('BouncerCtrl');
-
 app.config(['$routeProvider', '$logProvider', function ($routeProvider, $logProvider) {
   $routeProvider
     .when('/login', {
@@ -23,44 +21,32 @@ app.config(['$routeProvider', '$logProvider', function ($routeProvider, $logProv
     .when('/home', {
       templateUrl: 'views/main.html',
       controller: 'MainCtrl',
-      resolve: {
-        user: bouncer.checkGuest
-      }
+      authRequired: true
     })
     .when('/items', {
       templateUrl: 'views/items.html',
       controller: 'ItemsCtrl',
-      resolve: {
-        user: bouncer.checkGuest
-      }
+      authRequired: true
     })
     .when('/item/edit/:itemId', {
       templateUrl: 'views/item.html',
       controller: 'ItemCtrl',
-      resolve: {
-        user: bouncer.checkGuest
-      }
+      authRequired: true
     })
     .when('/categories', {
       templateUrl: 'views/categories.html',
       controller: 'CategoriesCtrl',
-      resolve: {
-        user: bouncer.checkGuest
-      }
+      authRequired: true
     })
     .when('/category/edit/:categoryId', {
       templateUrl: 'views/category.html',
       controller: 'CategoryCtrl',
-      resolve: {
-        user: bouncer.checkGuest
-      }
+      authRequired: true
     })
     .when('/planning', {
-      templateUrl: 'views/planning.html',
+      templateUrl: 'scripts/planning/planning.html',
       controller: 'PlanningCtrl',
-      resolve: {
-        user: bouncer.checkGuest
-      }
+      authRequired: true
     })
     .otherwise({
       redirectTo: '/login'
@@ -69,18 +55,12 @@ app.config(['$routeProvider', '$logProvider', function ($routeProvider, $logProv
   $logProvider.debugEnabled(true);
 }]);
 
-bouncer.checkGuest = ['$q', '$log', 'AuthService', function($q, $log, AuthService) {
-  return AuthService.getCurrentUser().then(function(user) {
-    return user;
-  }, function(error) {
-    return $q.reject(error);
-  });
-}];
+app.run(['$rootScope', '$location', '$log', 'SessionService', function($rootScope, $location, $log, SessionService) {
 
-app.run(['$rootScope', '$location', '$log', 'AuthService', function($rootScope, $location, $log, AuthService) {
-
-  $rootScope.$on('$routeChangeStart', function() {
-    if ($location.path() === '/login' && AuthService.isLoggedIn()) {
+  $rootScope.$on('$routeChangeStart', function(event, next) {
+    if (next.authRequired && SessionService.currentSession() === null) {
+      $location.path('/login');
+    } else if ($location.path() === '/login' && SessionService.currentSession() !== null) {
       $log.debug('attempted /login, but already logged in. going /home.');
       $location.path('/home');
     }
@@ -92,6 +72,15 @@ app.run(['$rootScope', '$location', '$log', 'AuthService', function($rootScope, 
 
   $rootScope.$on('$routeChangeError', function(routeChangeEvent, current, previous, eventObj) {
     $log.error('route change error, sending back to /.', routeChangeEvent, current, previous, eventObj);
+    $location.path('/login');
+  });
+
+  $rootScope.$on('$firebaseSimpleLogin:login', function(event, user) {
+    SessionService.startSession(user);
+  });
+
+  $rootScope.$on('$firebaseSimpleLogin:logout', function() {
+    SessionService.closeSession();
     $location.path('/login');
   });
 
