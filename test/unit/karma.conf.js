@@ -59,10 +59,20 @@ module.exports = function(config) {
       'karma-phantomjs-launcher',
       'karma-chrome-launcher',
       'karma-jasmine',
-      'karma-story-reporter'
+      'karma-story-reporter',
+      'karma-coverage'
     ],
 
-    reporters: ['dots'],
+    preprocessors: {
+      '**/app/scripts/**/*.js': 'coverage'
+    },
+
+    coverageReporter: {
+      type : 'html',
+      dir : 'test/reports/coverage/'
+    },
+
+    reporters: ['dots', 'coverage'],
     // reporters: ['story'],
     
     // These options won't work until the next release of the storyReporter.
