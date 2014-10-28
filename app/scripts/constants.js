@@ -12,3 +12,5 @@ app.constant('GOAL_NODE', 'goal/');
 
 app.constant('DEFAULT_FAMILY_SIZE_ADULTS', 1);
 app.constant('DEFAULT_FAMILY_SIZE_CHILDREN', 0);
+
+app.constant('DEFAULT_GOAL_DAYS', 90);

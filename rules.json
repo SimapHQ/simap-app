@@ -1,7 +1,7 @@
 /**
  * Firebase Security Rules
  *
- * This file becomes the security rule settings for the 
+ * This file becomes the security rule settings for the
  * Simap firebase when it is deployed. It should ensure:
  *
  *  * Users cannot read or write anyone's data but their own.
@@ -12,7 +12,7 @@
   "rules": {
 
     /**
-     * USER 
+     * USER
      */
     "user": {
       "$uid": {
@@ -104,7 +104,7 @@
       "$family_id": {
 
         // A family may be read by only the owner.
-        ".read": "root.child('family/' + $family_id + '/owner').val() === auth.uid",
+        ".read": "!data.exists() || root.child('family/' + $family_id + '/owner').val() === auth.uid",
 
         // A family may be created by any user, but only modified by the owner. A family may not be deleted.
         ".write": "(!data.exists() || root.child('family/' + $family_id + '/owner').val() === auth.uid) &&
@@ -137,10 +137,10 @@
       "$goal_id": {
 
         // A goal may be read by only the owner.
-        ".read": "root.child('goal/' + $goal_id + '/owner').val() === auth.uid",
+        ".read": "!data.exists() || root.child('goal/' + $goal_id + '/owner').val() === auth.uid",
 
         // A goal may be created by any user, but only modified by the owner.
-        ".write": "(!data.exists() || root.child('goal/' + $goal_id + '/owner').val() === auth.uid) && 
+        ".write": "(!data.exists() || root.child('goal/' + $goal_id + '/owner').val() === auth.uid) &&
                    newData.exists()",
 
         // A goal must have an owner and days.
@@ -346,8 +346,8 @@
 
           // The time must be one of 'day', 'week', 'month', 'year'
           "time": {
-            ".validate": "newData.isString() && 
-                          (newData.val() === 'day' || newData.val() === 'week' || 
+            ".validate": "newData.isString() &&
+                          (newData.val() === 'day' || newData.val() === 'week' ||
                            newData.val() === 'month' || newData.val() === 'year')"
           }
         },
@@ -371,8 +371,8 @@
 
           // The time must be one of 'day', 'week', 'month', 'year'
           "time": {
-            ".validate": "newData.isString() && 
-                          (newData.val() === 'day' || newData.val() === 'week' || 
+            ".validate": "newData.isString() &&
+                          (newData.val() === 'day' || newData.val() === 'week' ||
                            newData.val() === 'month' || newData.val() === 'year')"
           }
         }

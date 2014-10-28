@@ -13,6 +13,7 @@ app.service('SessionService', ['$log',
   var syncedUser = null;
 
   var _closeSession = function() {
+    $log.debug('closing session');
     if (syncedUser !== null) {
       syncedUser.$destroy();
       syncedUser = null;

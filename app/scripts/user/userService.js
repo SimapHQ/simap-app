@@ -9,13 +9,13 @@ app.service('UserService', [
   'FamilyService',
   'FirebaseService',
   'GoalService',
-  'USER_NODE', 
+  'USER_NODE',
   function(
-    $firebase, 
-    $log, 
-    $q, 
+    $firebase,
+    $log,
+    $q,
     FamilyService,
-    FirebaseService, 
+    FirebaseService,
     GoalService,
     USER_NODE
   ) {
@@ -31,6 +31,8 @@ app.service('UserService', [
       }
     }, function(error) {
       $log.error('error getting syncedUser', error);
+    }).finally(function() {
+      syncedUser.$destroy();
     });
   };
 
@@ -41,7 +43,7 @@ app.service('UserService', [
     syncedUser.display_name = user.displayName;
 
     syncedUser.$save().then(function() {
-      return _postUpdate(syncedUser);
+      return _postUpdate(user);
     }, function(error) {
       $log.error('error in _createNewUser', error);
     });
@@ -50,25 +52,25 @@ app.service('UserService', [
   var _updateExistingUser = function(user, syncedUser) {
     syncedUser.display_name = user.displayName;
     syncedUser.$save().then(function() {
-      return _postUpdate(syncedUser);
+      return _postUpdate(user);
     }, function(error) {
       $log.error('error in _updateExistingUser', error);
     });
   };
 
-  var _postUpdate = function(syncedUser) {
+  var _postUpdate = function(user) {
     return $q.all([
-      FamilyService.updateUser(syncedUser).then(function() {
+      FamilyService.updateUser(user.uid).then(function() {
 
       }, function(error) {
         $log.error(error);
       }),
-      GoalService.updateUser(syncedUser).then(function() {
+      GoalService.updateUser(user.uid).then(function() {
 
       }, function(error) {
         $log.error(error);
       })
     ]);
   };
-  
+
 }]);
