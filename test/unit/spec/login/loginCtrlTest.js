@@ -41,10 +41,28 @@ describe('Controller: LoginCtrl', function() {
     expect($location.path).toHaveBeenCalledWith('/');
   });
 
-  it('should use the right provider when logging in', function() {
+  it('should use the right provider when logging in with google', function() {
     $scope.loginGoogle();
-    
+
     expect(LoginService.login).toHaveBeenCalledWith('google');
+  });
+
+  it('should use the right provider when logging in with facebook', function() {
+    $scope.loginFacebook();
+
+    expect(LoginService.login).toHaveBeenCalledWith('facebook');
+  });
+
+  it('should use the right provider when logging in with twitter', function() {
+    $scope.loginTwitter();
+
+    expect(LoginService.login).toHaveBeenCalledWith('twitter');
+  });
+
+  it('should use the right provider when logging in with github', function() {
+    $scope.loginGitHub();
+
+    expect(LoginService.login).toHaveBeenCalledWith('github');
   });
 
   it('should use the SessionService to know if a user is logged in', function() {
@@ -52,5 +70,5 @@ describe('Controller: LoginCtrl', function() {
 
     expect(SessionService.currentSession).toHaveBeenCalled();
   });
-  
+
 });

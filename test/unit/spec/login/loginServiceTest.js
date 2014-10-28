@@ -27,7 +27,7 @@ describe('Service: LoginService', function() {
     mockProvider = 'some-auth-provider';
 
     mockAuthClient = jasmine.createSpyObj('mockAuthClient', ['$login', '$logout']);
-    $firebaseSimpleLogin = jasmine.createSpy('$firebaseSimpleLogin').and.returnValue(mockAuthClient);    
+    $firebaseSimpleLogin = jasmine.createSpy('$firebaseSimpleLogin').and.returnValue(mockAuthClient);
 
     mockFirebaseRef = jasmine.createSpy('mockFirebaseRef');
     FirebaseService = jasmine.createSpyObj('FirebaseService', ['getRef']);
@@ -36,7 +36,7 @@ describe('Service: LoginService', function() {
     UserService = jasmine.createSpyObj('UserService', ['updateUser']);
 
     $log = jasmine.createSpyObj('$log', ['debug', 'error']);
-    $location = jasmine.createSpyObj('$location', ['path']);   
+    $location = jasmine.createSpyObj('$location', ['path']);
 
     $provide.value('$log', $log);
     $provide.value('$location', $location);
@@ -61,6 +61,15 @@ describe('Service: LoginService', function() {
       LoginService.login(mockProvider);
 
       expect(mockAuthClient.$login).toHaveBeenCalledWith(mockProvider);
+    });
+
+    it('should log the error if $login failed', function() {
+      deferredLogin.reject('error-msg');
+      LoginService.login(mockProvider);
+
+      $rootScope.$digest();
+
+      expect($log.error).toHaveBeenCalledWith('error-msg');
     });
 
     it('should log an error if the user logged in, but we didn\'t get their data', function() {

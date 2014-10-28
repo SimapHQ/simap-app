@@ -2,19 +2,21 @@
 
 var app = angular.module('simapApp');
 
-app.service('LoginService', ['$location', 
-                             '$log', 
-                             '$firebaseSimpleLogin', 
-                             'FirebaseService', 
-                             'UserService', 
+app.service('LoginService', ['$location',
+                             '$log',
+                             '$firebaseSimpleLogin',
+                             'FirebaseService',
+                             'UserService',
                              'USER_NODE',
                              'HOME',
   function($location, $log, $firebaseSimpleLogin, FirebaseService, UserService, USER_NODE, HOME) {
-  
+
   var authClient = $firebaseSimpleLogin(FirebaseService.getRef());
 
   this.login = function(provider) {
-    authClient.$login(provider).then(finishLogin, handleError);
+    authClient.$login(provider).then(finishLogin, function(error) {
+      $log.error(error);
+    });
   };
 
   this.logout = function() {
@@ -30,19 +32,11 @@ app.service('LoginService', ['$location',
         $location.path(HOME);
       }, function(error) {
         $log.error('error updating user', user, error);
-        authClient.$logout(); 
+        authClient.$logout();
       });
     } else {
       $log.error('finishLogin called with bad user', user);
     }
   };
 
-  var handleError = function(error) {
-    if (error) {
-      $log.error('login error.', error);
-    } else {
-      $log.error('handleError called with bad error', error);
-    }
-  };
-  
 }]);
