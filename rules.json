@@ -23,15 +23,15 @@
         // A user must have a uid, provider, provider_uid, and display_name
         ".validate": "newData.hasChildren(['uid', 'provider', 'provider_uid', 'display_name'])",
 
-        // A user may not modify or delete their provider, provider_uid, or uid.
+        // A user's provider, provider_uid, and uid must be properly formed.
         "provider": {
-          ".validate": "!data.exists() && auth.uid.contains(newData.val())"
+          ".validate": "auth.uid.contains(newData.val())"
         },
         "provider_uid": {
-          ".validate": "!data.exists() && auth.uid.contains(newData.val())"
+          ".validate": "auth.uid.contains(newData.val())"
         },
         "uid": {
-          ".validate": "!data.exists() && newData.val() === auth.uid"
+          ".validate": "newData.val() === auth.uid"
         },
 
         // A user's display_name must be a string.
@@ -40,7 +40,7 @@
         },
 
         // A user's family and goal must be owned by them.
-        "family": {
+        "family_id": {
           ".validate": "root.child('family/' + newData.val()).exists() &&
                         root.child('family/' + newData.val() + '/owner').val() === auth.uid"
         },

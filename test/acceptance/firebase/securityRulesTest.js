@@ -254,14 +254,14 @@ describe('Firebase Security Rules', function() {
 
     describe('family', function() {
       it('should allow the user to index their family', function(done) {
-        testRef.child('/user/' + testUserA.uid + '/family').set('fid1', function(error) {
+        testRef.child('/user/' + testUserA.uid + '/family_id').set('fid1', function(error) {
           expect(error).toBe(null);
           done();
         });
       });
 
       it('should not allow the user to index another user\'s family', function(done) {
-        testRef.child('/user/' + testUserA.uid + '/family').set('fid2', function(error) {
+        testRef.child('/user/' + testUserA.uid + '/family_id').set('fid2', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
