@@ -20,10 +20,10 @@
     <!--[if lt IE 7]>
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
-    
+
     <!-- Add your site or application content here -->
     <div class="container">
-      
+
       <div class="header-background">
         <div class="header">
           <div class="navbar navbar-default" role="navigation">
@@ -38,7 +38,7 @@
                 </button>
                 <a class="navbar-brand" href="#/">Simap</a>
               </div>
-              
+
               <!-- Collect the nav links, forms, and other content for toggling -->
               <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav" ng-show="isLoggedIn()">
@@ -56,22 +56,22 @@
           </div>
         </div>
       </div>
-      
+
       <div ng-view="" class="content clearfix"></div>
-      
+
       <div class="footer">
         <p>Made with <span class="glyphicon glyphicon-heart"></span></p>
       </div>
 
     </div>
-    
+
     <!-- build:js(.) scripts/oldieshim.js -->
     <!--[if lt IE 9]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>
     <script src="bower_components/json3/lib/json3.min.js"></script>
     <![endif]-->
     <!-- endbuild -->
-    
+
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
@@ -104,7 +104,7 @@
     <script src="bower_components/angularfire/dist/angularfire.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
-    
+
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
     <script src="scripts/constants.js"></script>
@@ -126,7 +126,7 @@
     <script src="scripts/login/loginCtrl.js"></script>
     <script src="scripts/login/loginService.js"></script>
     <script src="scripts/planning/planningCtrl.js"></script>
-    <script src="scripts/services/randomColor.js"></script>
+    <script src="scripts/shared/randomColor.js"></script>
     <script src="scripts/shared/firebaseService.js"></script>
     <script src="scripts/shared/guidService.js"></script>
     <script src="scripts/shared/sessionService.js"></script>
