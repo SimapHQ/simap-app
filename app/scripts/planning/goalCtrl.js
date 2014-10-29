@@ -6,7 +6,6 @@ angular.module('simapApp').controller('GoalCtrl', [
   'DAYS_IN_MONTH',
   'FirebaseService',
   'GOAL_NODE',
-  'GoalService',
   'SessionService',
   function (
     $firebase,
@@ -14,7 +13,6 @@ angular.module('simapApp').controller('GoalCtrl', [
     DAYS_IN_MONTH,
     FirebaseService,
     GOAL_NODE,
-    GoalService,
     SessionService
     ) {
 

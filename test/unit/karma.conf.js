@@ -30,6 +30,7 @@ module.exports = function(config) {
       'bower_components/mockfirebase/dist/mockfirebase.js',
       'bower_components/angularfire/dist/angularfire.js',
       'bower_components/randomcolor/randomColor.js',
+      'bower_components/datejs/build/production/date.min.js',
       'app/scripts/**/*.js',
       'test/unit/mock/**/*.js',
       'test/unit/spec/**/*.js'
