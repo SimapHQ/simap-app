@@ -2,14 +2,14 @@
 
 describe('Controller: PlanningCtrl', function () {
 
-  var PlanningCtrl, 
+  var PlanningCtrl,
       $scope;
 
   beforeEach(module('simapApp'));
 
   beforeEach(inject(function ($controller, $rootScope) {
     $scope = $rootScope.$new();
-    
+
     PlanningCtrl = $controller('PlanningCtrl', {
       $scope: $scope
     });
@@ -30,5 +30,5 @@ describe('Controller: PlanningCtrl', function () {
   it('should calculate how long the goal will prepare them for', function() {
 
   });
-  
+
 });
