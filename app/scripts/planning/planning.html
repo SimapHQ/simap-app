@@ -16,11 +16,11 @@
     </div>
   </div>
   <div ng-controller="GoalCtrl">
-    <simap-help-header data-size="h4" data-label="'Storage Goal'" data-help-block="preparedUntil"></simap-help-header>
+    <h4>Storage Goal</h4>
     <div class="col-xs-12">
       <div class="form-group">
-        <label for="month-goal">Months</label>
-        <input type="number" ng-model="days.$value" class="form-control" id="month-goal" min="1" max="60"/>
+        <label for="month-goal">Months - ({{preparedUntilDate}})</label>
+        <input type="number" ng-model="months" ng-change="monthsChanged()" class="form-control" id="month-goal" min="1" max="60"/>
       </div>
     </div>
   </div>
