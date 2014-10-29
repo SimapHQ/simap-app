@@ -15,20 +15,8 @@ describe('Controller: PlanningCtrl', function () {
     });
   }));
 
-  it('should have a help block defined', function() {
-
-  });
-
-  it('should save changes to family size', function() {
-
-  });
-
-  it('should save changes to the storage goal length', function() {
-
-  });
-
-  it('should calculate how long the goal will prepare them for', function() {
-
+  it('should have a help block defined for family size', function() {
+    expect($scope.helpBlock).toEqual(jasmine.any(String));
   });
 
 });
