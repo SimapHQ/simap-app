@@ -6,7 +6,9 @@ describe('Service: SessionService', function() {
       $firebaseObj,
       firebaseRef,
       syncedUser,
-      mockUserNode;
+      mockUserNode,
+      $rootScope,
+      deferredLoaded;
 
   // Injected dependencies
   var SessionService,
@@ -30,7 +32,6 @@ describe('Service: SessionService', function() {
     $location = jasmine.createSpyObj('$location', ['path']);
 
     syncedUser = jasmine.createSpyObj('syncedUser', ['$loaded', '$destroy']);
-    syncedUser.$loaded.and.callFake(function(onDone, onError) { onDone(user); });
     $firebaseObj = jasmine.createSpyObj('$firebaseObj', ['$asObject'])
     $firebaseObj.$asObject.and.callFake(function() { return syncedUser; });
     $firebase = jasmine.createSpy('$firebase').and.returnValue($firebaseObj);
@@ -46,8 +47,12 @@ describe('Service: SessionService', function() {
     $provide.value('FirebaseService', FirebaseService);
   }));
 
-  beforeEach(inject(function (_SessionService_) {
+  beforeEach(inject(function (_SessionService_, _$rootScope_, $q) {
     SessionService = _SessionService_;
+    $rootScope = _$rootScope_;
+
+    deferredLoaded = $q.defer();
+    syncedUser.$loaded.and.returnValue(deferredLoaded.promise);
   }));
 
   it('should have a null session to start with', function() {
@@ -75,16 +80,16 @@ describe('Service: SessionService', function() {
 
     it('should redirect the user to /home once the user has been loaded', function() {
       SessionService.startSession(user);
+      deferredLoaded.resolve();
+      $rootScope.$digest();
 
       expect($location.path).toHaveBeenCalledWith('/home');
     });
 
     it('should close the session if an error occurred', function() {
-      syncedUser.$loaded.and.callFake(function(onDone, onError) {
-        onError();
-      });
-
       SessionService.startSession(user);
+      deferredLoaded.reject();
+      $rootScope.$digest();
 
       expect(syncedUser.$destroy).toHaveBeenCalled();
     });
@@ -97,6 +102,12 @@ describe('Service: SessionService', function() {
 
       expect(syncedUser.$destroy).toHaveBeenCalled();
     });
+
+    it('should not try to call $destroy on a null syncedUser object', function() {
+      SessionService.closeSession();
+
+      expect(syncedUser.$destroy).not.toHaveBeenCalled();
+    });
   });
-  
+
 });

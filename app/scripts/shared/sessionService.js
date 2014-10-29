@@ -2,12 +2,12 @@
 
 var app = angular.module('simapApp');
 
-app.service('SessionService', ['$log', 
-                               '$location', 
-                               '$firebase', 
-                               'FirebaseService', 
+app.service('SessionService', ['$log',
+                               '$location',
+                               '$firebase',
+                               'FirebaseService',
                                'USER_NODE',
-                               'HOME', 
+                               'HOME',
   function($log, $location, $firebase, FirebaseService, USER_NODE, HOME) {
 
   var syncedUser = null;
@@ -17,7 +17,7 @@ app.service('SessionService', ['$log',
     if (syncedUser !== null) {
       syncedUser.$destroy();
       syncedUser = null;
-    } 
+    }
   };
 
   this.currentSession = function() {
@@ -26,10 +26,10 @@ app.service('SessionService', ['$log',
 
   this.startSession = function(user) {
     $log.debug('starting session', user);
-    
+
     var userNode = FirebaseService.getRef().child(USER_NODE + user.uid);
     syncedUser = $firebase(userNode).$asObject();
-    syncedUser.$loaded(function(data) {
+    return syncedUser.$loaded().then(function(data) {
       $log.debug('started session', data);
       $location.path(HOME);
     }, function(error) {
