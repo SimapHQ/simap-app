@@ -5,7 +5,6 @@ var app = angular.module('simapApp');
 app.service('FamilyService', [
   '$firebase',
   '$log',
-  '$q',
   'DEFAULT_FAMILY_SIZE_ADULTS',
   'DEFAULT_FAMILY_SIZE_CHILDREN',
   'FAMILY_NODE',
@@ -15,7 +14,6 @@ app.service('FamilyService', [
   function(
     $firebase,
     $log,
-    $q,
     DEFAULT_FAMILY_SIZE_ADULTS,
     DEFAULT_FAMILY_SIZE_CHILDREN,
     FAMILY_NODE,
@@ -40,7 +38,6 @@ app.service('FamilyService', [
 
   var _createNewFamily = function(syncedUser) {
     var newFamilyId = GuidService.generateGuid();
-
     var syncedFamily = $firebase(firebaseRef.child(FAMILY_NODE + newFamilyId)).$asObject();
 
     return syncedFamily.$loaded().then(function() {
