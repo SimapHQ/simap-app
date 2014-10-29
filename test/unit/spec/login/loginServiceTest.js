@@ -90,15 +90,6 @@ describe('Service: LoginService', function() {
       expect(UserService.updateUser).toHaveBeenCalledWith(mockUser);
     });
 
-    it('should redirect the user to /home after logging in', function() {
-      LoginService.login(mockProvider);
-      deferredLogin.resolve(mockUser);
-      deferredUpdateUser.resolve(mockUser);
-      $rootScope.$digest();
-
-      expect($location.path).toHaveBeenCalledWith('/home');
-    });
-
     it('should logout the user if there was an error updating their information', function() {
       LoginService.login(mockProvider);
       deferredLogin.resolve(mockUser);

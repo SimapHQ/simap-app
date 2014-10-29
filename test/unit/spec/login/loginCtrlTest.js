@@ -18,7 +18,7 @@ describe('Controller: LoginCtrl', function() {
     $scope = $rootScope.$new();
     $location = jasmine.createSpyObj('$location', ['path']);
     LoginService = jasmine.createSpyObj('LoginService', ['login', 'logout']);
-    SessionService = jasmine.createSpyObj('SessionService', ['currentSession']);
+    SessionService = jasmine.createSpyObj('SessionService', ['currentSession', 'closeSession']);
 
     LoginCtrl = $controller('LoginCtrl', {
       $scope: $scope,
@@ -28,6 +28,12 @@ describe('Controller: LoginCtrl', function() {
       SessionService: SessionService
     });
   }));
+
+  it('should call SessionService.closeSession when logout is called', function () {
+    $scope.logout();
+
+    expect(SessionService.closeSession).toHaveBeenCalled();
+  });
 
   it('should call LoginService.logout when logout is called', function () {
     $scope.logout();

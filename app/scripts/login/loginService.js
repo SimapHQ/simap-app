@@ -2,14 +2,19 @@
 
 var app = angular.module('simapApp');
 
-app.service('LoginService', ['$location',
-                             '$log',
-                             '$firebaseSimpleLogin',
-                             'FirebaseService',
-                             'UserService',
-                             'USER_NODE',
-                             'HOME',
-  function($location, $log, $firebaseSimpleLogin, FirebaseService, UserService, USER_NODE, HOME) {
+app.service('LoginService', [
+  '$firebaseSimpleLogin',
+  '$location',
+  '$log',
+  'FirebaseService',
+  'UserService',
+  function(
+    $firebaseSimpleLogin,
+    $location,
+    $log,
+    FirebaseService,
+    UserService
+    ) {
 
   var authClient = $firebaseSimpleLogin(FirebaseService.getRef());
 
@@ -29,7 +34,6 @@ app.service('LoginService', ['$location',
       $log.debug('user logged in.', user);
       UserService.updateUser(user).then(function(updatedUser) {
         $log.debug('updated user', updatedUser);
-        $location.path(HOME);
       }, function(error) {
         $log.error('error updating user', user, error);
         authClient.$logout();

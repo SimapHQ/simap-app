@@ -1,11 +1,23 @@
 'use strict';
 
-angular.module('simapApp').controller('LoginCtrl', ['$scope', '$location', '$log', 'LoginService', 'SessionService', 
-  function ($scope, $location, $log, LoginService, SessionService) {
+angular.module('simapApp').controller('LoginCtrl', [
+  '$location',
+  '$log',
+  '$scope',
+  'LoginService',
+  'SessionService',
+  function (
+    $location,
+    $log,
+    $scope,
+    LoginService,
+    SessionService
+    ) {
 
   $scope.testValue = 5;
 
   $scope.logout = function() {
+    SessionService.closeSession();
     LoginService.logout();
     $location.path('/');
   };
