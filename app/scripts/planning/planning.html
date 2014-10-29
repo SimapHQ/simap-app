@@ -2,16 +2,15 @@
   <simap-help-header size="h3" label="'Planning'"></simap-help-header>
 
   <simap-help-header data-size="h4" data-label="'Family Size'" data-help-block="helpBlock"></simap-help-header>
-  <!-- <div ng-controller="FamilyCtrl"> -->
-  <div>
+  <div ng-controller="FamilyCtrl">
     <div class="col-xs-12">
       <div class="form-group">
         <label for="adult-count">Adults</label>
-        <input type="number" ng-model="adults" class="form-control" id="adult-count" min="0" max="10"/>
+        <input type="number" ng-model="adults.$value" class="form-control" id="adult-count" min="0" max="10" required/>
       </div>
       <div class="form-group">
         <label for="child-count">Children</label>
-        <input type="number" ng-model="children" class="form-control" id="child-count" min="0" max="10"/>
+        <input type="number" ng-model="children.$value" class="form-control" id="child-count" min="0" max="10" required/>
       </div>
     </div>
   </div>
