@@ -29,8 +29,6 @@ app.service('UserService', [
       } else {
         return _updateExistingUser(user, syncedUser);
       }
-    }, function(error) {
-      $log.error('error getting syncedUser', error);
     }).finally(function() {
       syncedUser.$destroy();
     });
@@ -44,8 +42,6 @@ app.service('UserService', [
 
     syncedUser.$save().then(function() {
       return _postUpdate(user);
-    }, function(error) {
-      $log.error('error in _createNewUser', error);
     });
   };
 
@@ -53,23 +49,13 @@ app.service('UserService', [
     syncedUser.display_name = user.displayName;
     syncedUser.$save().then(function() {
       return _postUpdate(user);
-    }, function(error) {
-      $log.error('error in _updateExistingUser', error);
     });
   };
 
   var _postUpdate = function(user) {
     return $q.all([
-      FamilyService.updateUser(user.uid).then(function() {
-
-      }, function(error) {
-        $log.error(error);
-      }),
-      GoalService.updateUser(user.uid).then(function() {
-
-      }, function(error) {
-        $log.error(error);
-      })
+      FamilyService.updateUser(user.uid),
+      GoalService.updateUser(user.uid)
     ]);
   };
 
