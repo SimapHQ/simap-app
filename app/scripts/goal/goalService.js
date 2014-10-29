@@ -38,7 +38,6 @@ app.service('GoalService', [
 
   var _createNewGoal = function(syncedUser) {
     var newGoalId = GuidService.generateGuid();
-
     var syncedGoal = $firebase(firebaseRef.child(GOAL_NODE + newGoalId)).$asObject();
 
     return syncedGoal.$loaded().then(function() {
