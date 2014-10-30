@@ -15,7 +15,7 @@ var app = angular.module('simapApp', ['ngAnimate',
 app.config(['$routeProvider', '$logProvider', function ($routeProvider, $logProvider) {
   $routeProvider
     .when('/login', {
-      templateUrl: 'views/login.html',
+      templateUrl: 'scripts/login/login.html',
       controller: 'LoginCtrl'
     })
     .when('/home', {
@@ -34,12 +34,12 @@ app.config(['$routeProvider', '$logProvider', function ($routeProvider, $logProv
       authRequired: true
     })
     .when('/categories', {
-      templateUrl: 'views/categories.html',
+      templateUrl: 'scripts/categories/categories.html',
       controller: 'CategoriesCtrl',
       authRequired: true
     })
     .when('/category/edit/:categoryId', {
-      templateUrl: 'views/category.html',
+      templateUrl: 'scripts/categories/category.html',
       controller: 'CategoryCtrl',
       authRequired: true
     })
