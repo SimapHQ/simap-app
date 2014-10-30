@@ -6,11 +6,11 @@
     <div class="col-xs-12">
       <div class="form-group">
         <label for="adult-count">Adults</label>
-        <input type="number" ng-model="adults.$value" class="form-control" id="adult-count" min="0" max="10" required/>
+        <input type="number" ng-model="family.adults" class="form-control" id="adult-count" min="0" max="10" required/>
       </div>
       <div class="form-group">
         <label for="child-count">Children</label>
-        <input type="number" ng-model="children.$value" class="form-control" id="child-count" min="0" max="10" required/>
+        <input type="number" ng-model="family.children" class="form-control" id="child-count" min="0" max="10" required/>
       </div>
     </div>
   </div>
@@ -19,7 +19,7 @@
     <div class="col-xs-12">
       <div class="form-group">
         <label for="month-goal">Months - ({{preparedUntilDate}})</label>
-        <input type="number" ng-model="months" ng-change="monthsChanged()" class="form-control" id="month-goal" min="1" max="60"/>
+        <input type="number" ng-model="goal.months" class="form-control" id="month-goal" min="1" max="60"/>
       </div>
     </div>
   </div>

@@ -7,6 +7,7 @@ app.service('GoalService', [
   '$log',
   '$q',
   'DEFAULT_GOAL_DAYS',
+  'DEFAULT_GOAL_MONTHS',
   'FirebaseService',
   'GOAL_NODE',
   'GuidService',
@@ -16,6 +17,7 @@ app.service('GoalService', [
     $log,
     $q,
     DEFAULT_GOAL_DAYS,
+    DEFAULT_GOAL_MONTHS,
     FirebaseService,
     GOAL_NODE,
     GuidService,
@@ -42,6 +44,7 @@ app.service('GoalService', [
 
     return syncedGoal.$loaded().then(function() {
       syncedGoal.owner = syncedUser.uid;
+      syncedGoal.months = DEFAULT_GOAL_MONTHS;
       syncedGoal.days = DEFAULT_GOAL_DAYS;
 
       return syncedGoal.$save().then(function() {

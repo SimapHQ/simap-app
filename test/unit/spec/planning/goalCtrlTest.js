@@ -22,7 +22,7 @@ describe('Controller: GoalCtrl', function() {
   beforeEach(inject(function ($controller, _$rootScope_, $q) {
     mockSession = { goal_id: 'goal-id-lskdfj' };
 
-    $firebaseGoalObj = jasmine.createSpyObj('$firebaseGoalObj', ['$bindTo']);
+    $firebaseGoalObj = jasmine.createSpyObj('$firebaseGoalObj', ['$bindTo', '$watch']);
     deferredBind = $q.defer();
     $firebaseGoalObj.$bindTo.and.returnValue(deferredBind.promise);
 
@@ -42,7 +42,7 @@ describe('Controller: GoalCtrl', function() {
 
     $rootScope = _$rootScope_;
     $scope = $rootScope.$new();
-    $scope.days = { $value: 365 };
+    $scope.goal = { months: 12, days: 365 };
 
     GoalCtrl = $controller('GoalCtrl', {
       $scope: $scope,
@@ -57,19 +57,12 @@ describe('Controller: GoalCtrl', function() {
       expect(SessionService.currentSession).toHaveBeenCalled();
     });
 
-    it('should get a reference to the goal\s days', function() {
-      expect(mockFirebaseRef.child).toHaveBeenCalledWith('goal/goal-id-lskdfj/days');
+    it('should get a reference to the goal', function() {
+      expect(mockFirebaseRef.child).toHaveBeenCalledWith('goal/goal-id-lskdfj');
     });
 
-    it('should bind the days object to $scope.days', function() {
-      expect($firebaseGoalObj.$bindTo).toHaveBeenCalledWith($scope, 'days');
-    });
-
-    it('should convert the days to months for the view', function() {
-      deferredBind.resolve();
-      $rootScope.$digest();
-
-      expect($scope.months).toBe(12);
+    it('should bind the goal object to $scope.goal', function() {
+      expect($firebaseGoalObj.$bindTo).toHaveBeenCalledWith($scope, 'goal');
     });
 
     it('should update the prepared until date', function() {
@@ -80,38 +73,45 @@ describe('Controller: GoalCtrl', function() {
     });
   });
 
-  describe('monthsChanged', function() {
-    it('should not do anything if months is undefined', function() {
-      $scope.months = undefined;
-      $scope.days.$value = 365;
-
-      $scope.monthsChanged();
-
-      expect($scope.days.$value).toBe(365);
+  describe('update', function() {
+    beforeEach(function() {
+      $scope.goal = {
+        months: 12,
+        days: 365
+      };
     });
 
-    it('should not do anything if months is null', function() {
-      $scope.months = null;
-      $scope.days.$value = 365;
+    it('should not do anything if goal is undefined', function() {
+      var oldMonths = $scope.goal.months;
+      $scope.goal = undefined;
 
-      $scope.monthsChanged();
+      $scope.update();
 
-      expect($scope.days.$value).toBe(365);
+      expect(oldMonths).toBe(12);
     });
 
-    it('should convert months to days', function() {
-      $scope.months = 2;
+    it('should not do anything if goal is null', function() {
+      var oldMonths = $scope.goal.months;
+      $scope.goal = undefined;
 
-      $scope.monthsChanged();
+      $scope.update();
 
-      expect($scope.days.$value).toBe(61);
+      expect(oldMonths).toBe(12);
+    });
+
+    it('should convert the goal\'s months to days', function() {
+      $scope.goal.months = 1;
+
+      $scope.update();
+
+      expect($scope.goal.days).toBe(30);
     });
 
     it('should update the prepared until date', function() {
       var oldDate = $scope.preparedUntilDate;
-      $scope.months = $scope.months + 1;
+      $scope.goal.months = $scope.goal.months + 1;
 
-      $scope.monthsChanged();
+      $scope.update();
 
       expect($scope.preparedUntilDate).not.toBe(oldDate);
     });

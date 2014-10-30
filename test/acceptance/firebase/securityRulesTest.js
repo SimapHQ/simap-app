@@ -30,19 +30,19 @@ var baseUserState = {};
 baseUserState[testUserA.uid] = testUserA;
 baseUserState[testUserB.uid] = testUserB;
 
-var testRef  = new firebase(FIREBASE_URL); 
+var testRef  = new firebase(FIREBASE_URL);
 
 function authUser(user, cb, authOptions) {
   if (!authOptions) {
     authOptions = {};
   }
   var token = tokenGenerator.createToken(user, authOptions);
-  testRef.authWithCustomToken(token, cb); 
+  testRef.authWithCustomToken(token, cb);
 }
 
 function authAdmin(cb) {
   var token = tokenGenerator.createToken({uid: 'admin'}, {admin: true});
-  testRef.authWithCustomToken(token, cb); 
+  testRef.authWithCustomToken(token, cb);
 }
 
 function ignored() {}
@@ -61,7 +61,7 @@ function setup(firebaseState, user, cb, authOptions) {
     function(callback) {
       authUser(user, callback, authOptions);
     }
-  ], 
+  ],
   function(error, results) {
     cb(error, results);
   });
@@ -101,7 +101,7 @@ describe('Firebase Security Rules', function() {
         done();
       });
     });
-    
+
     it('should not let the user register whose provider is absent from the uid', function(done) {
       testUser.provider = 'blah';
       testRef.child('/user/' + testUser.uid).set(testUser, function(error) {
@@ -145,10 +145,12 @@ describe('Firebase Security Rules', function() {
         goal: {
           'gid1': {
             owner: testUserA.uid,
-            days: 56
+            months: 2,
+            days: 60
           },
           'gid2': {
             owner: testUserB.uid,
+            months: 12,
             days: 365
           }
         },
@@ -236,7 +238,7 @@ describe('Firebase Security Rules', function() {
           done();
         });
       });
-      
+
       it('should not allow the user to use an empty display_name', function(done) {
         testRef.child('/user/' + testUserA.uid + '/display_name').set('', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
@@ -460,7 +462,7 @@ describe('Firebase Security Rules', function() {
           done();
         });
       });
-      
+
       it('should not allow the user to use an empty color string', function(done) {
         testRef.child('/category/cid1/color').set('', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
@@ -505,8 +507,8 @@ describe('Firebase Security Rules', function() {
           expect(error).toBe(null);
           done();
         });
-      });      
-      
+      });
+
       it('should not allow the user to delete a category that belongs to another user', function(done) {
         testRef.child('/category/cid2').remove(function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
@@ -515,7 +517,7 @@ describe('Firebase Security Rules', function() {
       });
     });
   });
-  
+
   describe('families', function() {
     var newFamily;
 
@@ -590,7 +592,7 @@ describe('Firebase Security Rules', function() {
           done();
         });
       });
-      
+
       it('should not allow the user to use a negative number', function(done) {
         testRef.child('/family/fid1/adults').set(-1, function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
@@ -620,7 +622,7 @@ describe('Firebase Security Rules', function() {
           done();
         });
       });
-      
+
       it('should not allow the user to use a negative number', function(done) {
         testRef.child('/family/fid1/children').set(-1, function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
@@ -682,6 +684,7 @@ describe('Firebase Security Rules', function() {
     beforeEach(function(done) {
       newGoal = {
         owner: testUserA.uid,
+        months: 12,
         days: 365
       };
 
@@ -690,15 +693,17 @@ describe('Firebase Security Rules', function() {
         goal: {
           'gid1': {
             owner: testUserA.uid,
+            months: 3,
             days: 90
           },
           'gid2': {
             owner: testUserB.uid,
+            months: 6,
             days: 180
           }
         }
       }, testUserA, done);
-    });    
+    });
 
     describe('creation', function() {
       it('should not allow the user to create goal that belongs to another user', function(done) {
@@ -740,6 +745,36 @@ describe('Firebase Security Rules', function() {
       });
     });
 
+    describe('months', function() {
+      it('should allow the user to their goal', function(done) {
+        testRef.child('/goal/gid1/months').set(7, function(error) {
+          expect(error).toBe(null);
+          done();
+        });
+      });
+
+      it('should not allow the user to use a number <= 0', function(done) {
+        testRef.child('/goal/gid1/months').set(0, function(error) {
+          expect(error.code).toMatch(PERMISSION_DENIED);
+          done();
+        });
+      });
+
+      it('should not allow the user to use a string', function(done) {
+        testRef.child('/goal/gid1/months').set('5', function(error) {
+          expect(error.code).toMatch(PERMISSION_DENIED);
+          done();
+        });
+      });
+
+      it('should not allow the user to delete their months', function(done) {
+        testRef.child('/goal/gid1/months').remove(function(error) {
+          expect(error.code).toMatch(PERMISSION_DENIED);
+          done();
+        });
+      });
+    });
+
     describe('days', function() {
       it('should allow the user to their goal', function(done) {
         testRef.child('/goal/gid1/days').set(7, function(error) {
@@ -747,7 +782,7 @@ describe('Firebase Security Rules', function() {
           done();
         });
       });
-      
+
       it('should not allow the user to use a number <= 0', function(done) {
         testRef.child('/goal/gid1/days').set(0, function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
@@ -937,7 +972,7 @@ describe('Firebase Security Rules', function() {
           done();
         });
       });
-      
+
       it('should not allow the user to use an empty color string', function(done) {
         testRef.child('/item/iid1/color').set('', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
@@ -1306,7 +1341,7 @@ describe('Firebase Security Rules', function() {
         });
       });
     });
-  
+
     describe('owner', function() {
       it('should not allow the user to change the owner', function(done) {
         testRef.child('/conversion/unit1/owner').set(testUserB.uid, function(error) {
@@ -1378,7 +1413,7 @@ describe('Firebase Security Rules', function() {
       });
     });
   });
-  
+
   describe('plans', function() {
     var newRationPlan, newBaselinePlan;
 
@@ -1426,7 +1461,7 @@ describe('Firebase Security Rules', function() {
             owner: testUserA.uid,
             type: 'baseline',
             amount: 20,
-            unit_id: 'unit1' 
+            unit_id: 'unit1'
           },
           'pid2': {
             owner: testUserA.uid,
@@ -1446,7 +1481,7 @@ describe('Firebase Security Rules', function() {
             owner: testUserB.uid,
             type: 'baseline',
             amount: 20,
-            unit_id: 'unit3' 
+            unit_id: 'unit3'
           },
           'pid4': {
             owner: testUserB.uid,

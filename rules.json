@@ -144,11 +144,16 @@
                    newData.exists()",
 
         // A goal must have an owner and days.
-        ".validate": "newData.hasChildren(['owner', 'days'])",
+        ".validate": "newData.hasChildren(['owner', 'months', 'days'])",
 
         // A goal must be owned by the creator.
         "owner": {
           ".validate": "newData.val() === auth.uid"
+        },
+
+        // The number of months the goal is for must be a number >= 1
+        "months": {
+          ".validate": "newData.isNumber() && newData.val() >= 1"
         },
 
         // The number of days the goal is for must be a number >= 1

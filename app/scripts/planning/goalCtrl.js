@@ -16,24 +16,19 @@ angular.module('simapApp').controller('GoalCtrl', [
     SessionService
     ) {
 
-    var ref = FirebaseService.getRef(),
-        goal_id = SessionService.currentSession().goal_id;
-
-    $firebase(ref.child(GOAL_NODE + goal_id + '/days')).$asObject().$bindTo($scope, 'days').then(function() {
-      $scope.months = Math.round($scope.days.$value / DAYS_IN_MONTH);
-      $scope.updatePreparedUntilDate();
-    });
-
-    $scope.monthsChanged = function() {
-      if ($scope.months === undefined || $scope.months === null) {
+    $scope.update = function() {
+      if ($scope.goal === undefined || $scope.goal === null) {
         return;
       }
 
-      $scope.days.$value = Math.round($scope.months * DAYS_IN_MONTH);
-      $scope.updatePreparedUntilDate();
+      $scope.preparedUntilDate = Date.today().add($scope.goal.months).months().toString('MMMM dd, yyyy');
+      $scope.goal.days = Math.round($scope.goal.months * DAYS_IN_MONTH);
     };
 
-    $scope.updatePreparedUntilDate = function() {
-      $scope.preparedUntilDate = Date.today().add($scope.months).months().toString('MMMM dd, yyyy');
-    };
+    var ref = FirebaseService.getRef(),
+        goal_id = SessionService.currentSession().goal_id;
+
+    var goalObject = $firebase(ref.child(GOAL_NODE + goal_id)).$asObject();
+    goalObject.$bindTo($scope, 'goal').then($scope.update);
+    goalObject.$watch($scope.update);
 }]);

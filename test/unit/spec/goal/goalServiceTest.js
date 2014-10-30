@@ -167,7 +167,8 @@ describe('Service: GoalService', function() {
         $rootScope.$digest();
 
         expect(mockSyncedGoal.owner).toBe(mockUid);
-        expect(mockSyncedGoal.days).toBe(90);
+        expect(mockSyncedGoal.months).toBe(3);
+        expect(mockSyncedGoal.days).toBe(91);
       });
 
       it('should save the new goal', function() {
