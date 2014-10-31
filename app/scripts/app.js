@@ -10,7 +10,8 @@ var app = angular.module('simapApp', ['ngAnimate',
                                       'ngSanitize',
                                       'ngTouch',
                                       'colorpicker.module',
-                                      'firebase']);
+                                      'firebase',
+                                      'angular-loading-bar']);
 
 app.config(['$routeProvider', '$logProvider', function ($routeProvider, $logProvider) {
   $routeProvider
@@ -83,5 +84,9 @@ app.run(['$rootScope', '$location', '$log', 'SessionService', function($rootScop
     SessionService.closeSession();
     $location.path('/login');
   });
+
+  $rootScope.empty = function(value) {
+    return $.isEmptyObject(value);
+  };
 
 }]);
