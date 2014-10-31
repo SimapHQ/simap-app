@@ -2,12 +2,22 @@
 
 var app = angular.module('simapApp');
 
-app.controller('CategoryCtrl', ['$scope', '$location', 'randomColor', function ($scope, $location, randomColor) {
-  $scope.name = '';
+app.controller('CategoryCtrl', [
+  '$firebase',
+  '$routeParams',
+  '$scope',
+  'CATEGORY_NODE',
+  'FirebaseService',
+  function (
+    $firebase,
+    $routeParams,
+    $scope,
+    CATEGORY_NODE,
+    FirebaseService
+  ) {
 
-  $scope.color = randomColor();
+  var categoryId = $routeParams.categoryId,
+      ref = FirebaseService.getRef();
 
-  $scope.save = function() {
-    $location.path('/categories');
-  };
+  $firebase(ref.child(CATEGORY_NODE + categoryId)).$asObject().$bindTo($scope, 'category');
 }]);
