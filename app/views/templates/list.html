@@ -3,7 +3,7 @@
     <div class="square-sm" ng-style="{ 'background-color': value.color }"></div>
   </div>
   <div class="col-xs-8">
-    <a ng-click="edit()">
+    <a ng-click="edit({key: '{{key}}'})">
       <span>{{value.name}}</span>
     </a>
   </div>

@@ -12,6 +12,10 @@ app.service('SessionService', ['$log',
 
   var syncedUser = null;
 
+  var isBindableType = function(type) {
+    return type === 'categories' || type === 'items';
+  };
+
   var _closeSession = function() {
     $log.debug('closing session');
     if (syncedUser !== null) {
@@ -22,6 +26,40 @@ app.service('SessionService', ['$log',
 
   this.currentSession = function() {
     return syncedUser;
+  };
+
+  this.bindToUser = function(type, id) {
+    if (!isBindableType(type)) {
+      $log.error('bindToUser cannot bind %s', type);
+      return;
+    }
+
+    if (syncedUser[type] === undefined || syncedUser[type] === null) {
+      syncedUser[type] = {};
+    }
+
+    syncedUser[type][id] = true;
+
+    return syncedUser.$save().then(function() {
+      return id;
+    });
+  };
+
+  this.unbindFromUser = function(type, id) {
+    if (!isBindableType(type)) {
+      $log.error('unbindFromUser cannot unbind %s', type);
+      return;
+    }
+
+    if (syncedUser[type] === undefined || syncedUser[type] === null) {
+      $log.error('unbindFromUser id %s was not bound to user', id);
+      return null;
+    }
+
+    // TODO: Make sure the thing that is being unbound doesn't exist?
+    syncedUser[type][id] = null;
+
+    return syncedUser.$save();
   };
 
   this.startSession = function(user) {

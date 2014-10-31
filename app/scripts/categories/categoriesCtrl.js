@@ -2,25 +2,39 @@
 
 var app = angular.module('simapApp');
 
-app.controller('CategoriesCtrl', ['$scope', '$location', 'randomColor', function ($scope, $location, randomColor) {
+app.controller('CategoriesCtrl', [
+  '$location',
+  '$scope',
+  'CategoriesService',
+  'CategoryService',
+  function (
+    $location,
+    $scope,
+    CategoriesService,
+    CategoryService
+    ) {
+
   $scope.helpBlock = 'Categories let you group your items. Here you can select a category to edit, delete a category, and add a new category.';
 
-  $scope.categories = {
-    'c1': { name: 'Vegetables', color: randomColor() },
-    'c2': { name: 'Meats and Proteins', color: randomColor() },
-    'c3': { name: 'Household Supplies', color: randomColor() }
+  var refresh = function() {
+    $scope.categories = CategoriesService.getCategories();
   };
 
   $scope.addNewCategory = function() {
-    var newCategoryId = 34;
-    $location.path('/category/edit/' + newCategoryId);
+    CategoryService.createNew().then(function(newCategoryId) {
+      $scope.editCategory(newCategoryId);
+    });
   };
 
-  $scope.editCategory = function() {
-    $location.path('/category/edit/categoryid');
+  $scope.editCategory = function(key) {
+    $location.path('/category/edit/' + key);
   };
 
   $scope.removeCategory = function(key) {
-    delete $scope.categories[key];
+    CategoryService.removeOld(key).then(function() {
+      refresh();
+    });
   };
+
+  refresh();
 }]);

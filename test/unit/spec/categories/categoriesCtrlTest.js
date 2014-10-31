@@ -27,9 +27,9 @@ describe('Controller: CategoriesCtrl', function () {
   it('should have a help block defined', function() {
     expect($scope.helpBlock).toBeDefined();
   });
-  
+
   it('should create a new category when addNewCategory is called', function() {
-    pending();
+
   });
 
   it('should redirect the user to the new category edit page when addNewCategory is called', function() {
@@ -45,15 +45,15 @@ describe('Controller: CategoriesCtrl', function () {
   });
 
   it('should delete the category when removeCategory is called', function() {
-    pending();
+
   });
 
   it('should not let the user delete a category that still contains items', function() {
-    pending();
+
   });
 
   it('should give the user a helpful message when they can\'t delete a category', function() {
-    pending();
+
   });
-  
+
 });

@@ -10,8 +10,7 @@ var app = angular.module('simapApp', ['ngAnimate',
                                       'ngSanitize',
                                       'ngTouch',
                                       'colorpicker.module',
-                                      'firebase',
-                                      'angular-loading-bar']);
+                                      'firebase']);
 
 app.config(['$routeProvider', '$logProvider', function ($routeProvider, $logProvider) {
   $routeProvider

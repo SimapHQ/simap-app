@@ -6,9 +6,11 @@ app.constant('HOME', '/home');
 app.constant('LOGIN', '/login');
 
 app.constant('FIREBASE_URL', 'https://simap-test.firebaseio.com/');
+
 app.constant('USER_NODE', 'user/');
 app.constant('FAMILY_NODE', 'family/');
 app.constant('GOAL_NODE', 'goal/');
+app.constant('CATEGORY_NODE', 'category/');
 
 app.constant('DEFAULT_FAMILY_SIZE_ADULTS', 1);
 app.constant('DEFAULT_FAMILY_SIZE_CHILDREN', 0);
