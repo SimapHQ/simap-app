@@ -2,25 +2,42 @@
 
 describe('Controller: CategoriesCtrl', function () {
 
+  var $rootScope,
+      deferredCreate,
+      deferredRemove;
+
   var CategoriesCtrl,
       $scope,
       $location,
-      randomColor;
+      CategoriesService,
+      CategoryService;
 
   beforeEach(function() {
     module('mock.firebase');
     module('simapApp');
   });
 
-  beforeEach(inject(function ($controller, $rootScope) {
+  beforeEach(inject(function ($controller, _$rootScope_, $q) {
+    $rootScope = _$rootScope_;
     $scope = $rootScope.$new();
+
     $location = jasmine.createSpyObj('$location', ['path']);
-    randomColor = jasmine.createSpy('randomColor');
+
+    CategoriesService = jasmine.createSpyObj('CategoriesService', ['getCategories']);
+
+    CategoryService = jasmine.createSpyObj('CategoryService', ['createNew', 'removeOld']);
+
+    deferredCreate = $q.defer();
+    CategoryService.createNew.and.returnValue(deferredCreate.promise);
+
+    deferredRemove = $q.defer();
+    CategoryService.removeOld.and.returnValue(deferredRemove.promise);
 
     CategoriesCtrl = $controller('CategoriesCtrl', {
       $scope: $scope,
       $location: $location,
-      randomColor: randomColor
+      CategoriesService: CategoriesService,
+      CategoryService: CategoryService
     });
   }));
 
@@ -28,32 +45,50 @@ describe('Controller: CategoriesCtrl', function () {
     expect($scope.helpBlock).toBeDefined();
   });
 
-  it('should create a new category when addNewCategory is called', function() {
+  it('should populate the category list', function() {
+    expect(CategoriesService.getCategories).toHaveBeenCalled();
+  });
 
+  it('should create a new category when addNewCategory is called', function() {
+    $scope.addNewCategory();
+
+    expect(CategoryService.createNew).toHaveBeenCalled();
   });
 
   it('should redirect the user to the new category edit page when addNewCategory is called', function() {
     $scope.addNewCategory();
+    deferredCreate.resolve('new-id');
+    $rootScope.$digest();
 
-    expect($location.path).toHaveBeenCalledWith('/category/edit/34');
+    expect($location.path).toHaveBeenCalledWith('/category/edit/new-id');
   });
 
   it('should redirect the user to the edit category page when editCategory is called', function() {
-    $scope.editCategory();
+    $scope.editCategory('category-id');
 
-    expect($location.path).toHaveBeenCalledWith('/category/edit/categoryid');
+    expect($location.path).toHaveBeenCalledWith('/category/edit/category-id');
   });
 
   it('should delete the category when removeCategory is called', function() {
+    $scope.removeCategory('id-to-delete');
 
+    expect(CategoryService.removeOld).toHaveBeenCalledWith('id-to-delete');
+  });
+
+  it('should refresh the category list after deleting the old category', function() {
+    $scope.removeCategory('id-to-delete');
+    deferredRemove.resolve();
+    $rootScope.$digest();
+
+    expect(CategoriesService.getCategories.calls.count()).toBe(2);
   });
 
   it('should not let the user delete a category that still contains items', function() {
-
+    pending();
   });
 
   it('should give the user a helpful message when they can\'t delete a category', function() {
-
+    pending();
   });
 
 });
