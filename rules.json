@@ -72,7 +72,7 @@
       "$category_id": {
 
         // A category may be read only by the owner.
-        ".read": "root.child('category/' + $category_id + '/owner').val() === auth.uid",
+        ".read": "!data.exists() || root.child('category/' + $category_id + '/owner').val() === auth.uid",
 
         // A category may be created by any user, but only modified by the owner.
         ".write": "!data.exists() || root.child('category/' + $category_id + '/owner').val() === auth.uid",
@@ -92,7 +92,7 @@
 
         // A category color must be a string exactly 6 characters long and only containing hexadecimal digits.
         "color": {
-          ".validate": "newData.isString() && newData.val().matches(/^[0-9A-Fa-f]{6}$/)"
+          ".validate": "newData.isString() && newData.val().matches(/^#[0-9A-Fa-f]{6}$/)"
         }
       }
     },
@@ -190,7 +190,7 @@
 
         // An item must have a color that is a 6 digit hexadecimal string.
         "color": {
-          ".validate": "newData.isString() && newData.val().matches(/^[0-9A-Fa-f]{6}$/)"
+          ".validate": "newData.isString() && newData.val().matches(/^#[0-9A-Fa-f]{6}$/)"
         },
 
         // An item must have a category assigned to it that exists, and is owned by the current user.

@@ -158,25 +158,25 @@ describe('Firebase Security Rules', function() {
           'cid1': {
             owner: testUserA.uid,
             name: 'My category',
-            color: '444333'
+            color: '#444333'
           },
           'cid2': {
             owner: testUserB.uid,
             name: 'Vegetables',
-            color: 'ffffff'
+            color: '#ffffff'
           }
         },
         item: {
           'iid1': {
             owner: testUserA.uid,
             name: 'my-item',
-            color: 'ffffff',
+            color: '#ffffff',
             amount: 0
           },
           'iid2': {
             owner: testUserB.uid,
             name: 'Potato chips',
-            color: 'ffff00',
+            color: '#ffff00',
             amount: 35
           }
         }
@@ -372,7 +372,7 @@ describe('Firebase Security Rules', function() {
       newCategory = {
         owner: testUserA.uid,
         name: 'new category name',
-        color: 'afafaf'
+        color: '#afafaf'
       };
 
       setup({
@@ -381,12 +381,12 @@ describe('Firebase Security Rules', function() {
           'cid1': {
             owner: testUserA.uid,
             name: 'Meats',
-            color: 'ff0000'
+            color: '#ff0000'
           },
           'cid2': {
             owner: testUserB.uid,
             name: 'Jellos',
-            color: '0000ff'
+            color: '#0000ff'
           }
         }
       }, testUserA, done);
@@ -457,7 +457,7 @@ describe('Firebase Security Rules', function() {
 
     describe('color', function() {
       it('should allow the user to change a category\'s color', function(done) {
-        testRef.child('/category/cid1/color').set('ffaaff', function(error) {
+        testRef.child('/category/cid1/color').set('#ffaaff', function(error) {
           expect(error).toBe(null);
           done();
         });
@@ -470,15 +470,15 @@ describe('Firebase Security Rules', function() {
         });
       });
 
-      it('should not allow the user to use a color longer than 6 chars', function(done) {
-        testRef.child('/category/cid1/color').set('ffffffa', function(error) {
+      it('should not allow the user to use a color longer than 6 letters', function(done) {
+        testRef.child('/category/cid1/color').set('#ffffffa', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
       });
 
       it('should not allow the user to use a color that contains non-hex chars', function(done) {
-        testRef.child('/category/cid1/color').set('ffffgg', function(error) {
+        testRef.child('/category/cid1/color').set('#ffffgg', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
@@ -845,7 +845,7 @@ describe('Firebase Security Rules', function() {
       newItem = {
         owner: testUserA.uid,
         name: 'My new item',
-        color: 'ffffff',
+        color: '#ffffff',
         category_id: 'cid1',
         amount: 0,
         plan_id: 'pid1',
@@ -876,7 +876,7 @@ describe('Firebase Security Rules', function() {
           'iid1': {
             owner: testUserA.uid,
             name: 'My new item',
-            color: 'ffffff',
+            color: '#ffffff',
             category_id: 'cid1',
             amount: 0,
             plan_id: 'pid1',
@@ -889,7 +889,7 @@ describe('Firebase Security Rules', function() {
           'iid2': {
             owner: testUserB.uid,
             name: 'My new item',
-            color: 'ffffff',
+            color: '#ffffff',
             category_id: 'cid3',
             amount: 0,
             plan_id: 'pid3',
@@ -967,7 +967,7 @@ describe('Firebase Security Rules', function() {
 
     describe('color', function() {
       it('should allow the user to change the color', function(done) {
-        testRef.child('/item/iid1/color').set('ffaaff', function(error) {
+        testRef.child('/item/iid1/color').set('#ffaaff', function(error) {
           expect(error).toBe(null);
           done();
         });
@@ -980,15 +980,15 @@ describe('Firebase Security Rules', function() {
         });
       });
 
-      it('should not allow the user to use a color longer than 6 chars', function(done) {
-        testRef.child('/item/iid1/color').set('ffffffa', function(error) {
+      it('should not allow the user to use a color longer than 6 letters', function(done) {
+        testRef.child('/item/iid1/color').set('#ffffffa', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
       });
 
       it('should not allow the user to use a color that contains non-hex chars', function(done) {
-        testRef.child('/item/iid1/color').set('ffffgg', function(error) {
+        testRef.child('/item/iid1/color').set('#ffffgg', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
