@@ -4,7 +4,6 @@ var app = angular.module('simapApp');
 
 app.service('CategoryService', [
   '$firebase',
-  '$log',
   'CATEGORY_NODE',
   'FirebaseService',
   'GuidService',
@@ -12,11 +11,10 @@ app.service('CategoryService', [
   'SessionService',
   function(
     $firebase,
-    $log,
     CATEGORY_NODE,
     FirebaseService,
     GuidService,
-    randomeColor,
+    randomColor,
     SessionService
   ) {
 
