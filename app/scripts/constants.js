@@ -20,3 +20,5 @@ app.constant('DAYS_IN_MONTH', 30.4368);
 
 app.constant('DEFAULT_GOAL_MONTHS', 3);
 app.constant('DEFAULT_GOAL_DAYS', 91);
+
+app.constant('DEFAULT_CATEGORY_NAME', 'New Category Name');

@@ -5,6 +5,7 @@ var app = angular.module('simapApp');
 app.service('CategoryService', [
   '$firebase',
   'CATEGORY_NODE',
+  'DEFAULT_CATEGORY_NAME',
   'FirebaseService',
   'GuidService',
   'randomColor',
@@ -12,6 +13,7 @@ app.service('CategoryService', [
   function(
     $firebase,
     CATEGORY_NODE,
+    DEFAULT_CATEGORY_NAME,
     FirebaseService,
     GuidService,
     randomColor,
@@ -28,7 +30,7 @@ app.service('CategoryService', [
 
     return newCategoryObj.$loaded().then(function() {
       newCategoryObj.owner = uid;
-      newCategoryObj.name = 'New Category Name';
+      newCategoryObj.name = DEFAULT_CATEGORY_NAME;
       newCategoryObj.color = randomColor();
 
       return newCategoryObj.$save().then(function() {
