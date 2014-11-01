@@ -8,7 +8,8 @@ describe('Service: SessionService', function() {
       syncedUser,
       mockUserNode,
       $rootScope,
-      deferredLoaded;
+      deferredLoaded,
+      deferredSave;
 
   // Injected dependencies
   var SessionService,
@@ -31,7 +32,7 @@ describe('Service: SessionService', function() {
     $log = jasmine.createSpyObj('$log', ['debug', 'error']);
     $location = jasmine.createSpyObj('$location', ['path']);
 
-    syncedUser = jasmine.createSpyObj('syncedUser', ['$loaded', '$destroy']);
+    syncedUser = jasmine.createSpyObj('syncedUser', ['$loaded', '$save', '$destroy']);
     $firebaseObj = jasmine.createSpyObj('$firebaseObj', ['$asObject'])
     $firebaseObj.$asObject.and.callFake(function() { return syncedUser; });
     $firebase = jasmine.createSpy('$firebase').and.returnValue($firebaseObj);
@@ -53,6 +54,9 @@ describe('Service: SessionService', function() {
 
     deferredLoaded = $q.defer();
     syncedUser.$loaded.and.returnValue(deferredLoaded.promise);
+
+    deferredSave = $q.defer();
+    syncedUser.$save.and.returnValue(deferredSave.promise);
   }));
 
   it('should have a null session to start with', function() {
@@ -107,6 +111,81 @@ describe('Service: SessionService', function() {
       SessionService.closeSession();
 
       expect(syncedUser.$destroy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('bindToUser', function() {
+    beforeEach(function() {
+      SessionService.startSession(user);
+      syncedUser.categories = {};
+    });
+
+    it('should log an error and bail if the type isn\'t a bindable type', function() {
+      SessionService.bindToUser('an-invalid-type', 'some-id');
+
+      expect($log.error).toHaveBeenCalledWith('bindToUser cannot bind %s', 'an-invalid-type');
+    });
+
+    it('should do the binding', function() {
+      SessionService.bindToUser('categories', 'someCategoryId');
+
+      expect(syncedUser.categories.someCategoryId).toBe(true);
+    });
+
+    it('should handle uninitialized type lists in the session', function() {
+      syncedUser.categories = null;
+      SessionService.bindToUser('categories', 'someCategoryId');
+
+      expect(syncedUser.categories.someCategoryId).toBe(true);
+    });
+
+    it('should save the user with the new binding', function() {
+      SessionService.bindToUser('categories', 'anotherCategoryId');
+
+      expect(syncedUser.$save).toHaveBeenCalled();
+    });
+
+    it('should return a promise containing the newly bound id', function(done) {
+      var bindResult = SessionService.bindToUser('categories', 'anotherCategoryId');
+      deferredSave.resolve();
+
+      bindResult.then(function(boundId) {
+        expect(boundId).toBe('anotherCategoryId');
+        done();
+      });
+
+      $rootScope.$digest();
+    });
+  });
+
+  describe('unbindFromUser', function() {
+    beforeEach(function() {
+      SessionService.startSession(user);
+      SessionService.bindToUser('categories', 'realCategoryId');
+    });
+
+    it('should log an error and bail if the type isn\'t a bindable type', function() {
+      SessionService.unbindFromUser('an-invalid-type', 'some-id');
+
+      expect($log.error).toHaveBeenCalledWith('unbindFromUser cannot unbind %s', 'an-invalid-type');
+    });
+
+    it('should do the unbinding', function() {
+      SessionService.unbindFromUser('categories', 'realCategoryId');
+
+      expect(syncedUser.categories.realCategoryId).toBe(null);
+    });
+
+    it('should log an error and bail if the binding didn\'t exist', function() {
+      SessionService.unbindFromUser('categories', 'someCategoryId');
+
+      expect($log.error).toHaveBeenCalledWith('unbindFromUser id %s was not bound to user', 'someCategoryId');
+    });
+
+    it('should save the user with the new binding list', function() {
+      SessionService.unbindFromUser('categories', 'realCategoryId');
+
+      expect(syncedUser.$save).toHaveBeenCalled();
     });
   });
 

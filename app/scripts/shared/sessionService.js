@@ -2,13 +2,21 @@
 
 var app = angular.module('simapApp');
 
-app.service('SessionService', ['$log',
-                               '$location',
-                               '$firebase',
-                               'FirebaseService',
-                               'USER_NODE',
-                               'HOME',
-  function($log, $location, $firebase, FirebaseService, USER_NODE, HOME) {
+app.service('SessionService', [
+  '$firebase',
+  '$location',
+  '$log',
+  'FirebaseService',
+  'HOME',
+  'USER_NODE',
+  function(
+    $firebase,
+    $location,
+    $log,
+    FirebaseService,
+    HOME,
+    USER_NODE
+  ) {
 
   var syncedUser = null;
 
@@ -27,6 +35,22 @@ app.service('SessionService', ['$log',
   this.currentSession = function() {
     return syncedUser;
   };
+
+  this.startSession = function(user) {
+    $log.debug('starting session', user);
+
+    var userNode = FirebaseService.getRef().child(USER_NODE + user.uid);
+    syncedUser = $firebase(userNode).$asObject();
+    return syncedUser.$loaded().then(function(data) {
+      $log.debug('started session', data);
+      $location.path(HOME);
+    }, function(error) {
+      $log.error('error starting session', error);
+      _closeSession();
+    });
+  };
+
+  this.closeSession = _closeSession;
 
   this.bindToUser = function(type, id) {
     if (!isBindableType(type)) {
@@ -51,7 +75,8 @@ app.service('SessionService', ['$log',
       return;
     }
 
-    if (syncedUser[type] === undefined || syncedUser[type] === null) {
+    if (syncedUser[type] === undefined || syncedUser[type] === null ||
+        syncedUser[type][id] === undefined || syncedUser[type][id] === null) {
       $log.error('unbindFromUser id %s was not bound to user', id);
       return null;
     }
@@ -61,21 +86,5 @@ app.service('SessionService', ['$log',
 
     return syncedUser.$save();
   };
-
-  this.startSession = function(user) {
-    $log.debug('starting session', user);
-
-    var userNode = FirebaseService.getRef().child(USER_NODE + user.uid);
-    syncedUser = $firebase(userNode).$asObject();
-    return syncedUser.$loaded().then(function(data) {
-      $log.debug('started session', data);
-      $location.path(HOME);
-    }, function(error) {
-      $log.error('error starting session', error);
-      _closeSession();
-    });
-  };
-
-  this.closeSession = _closeSession;
 
 }]);
