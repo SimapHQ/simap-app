@@ -11,6 +11,7 @@ app.constant('USER_NODE', 'user/');
 app.constant('FAMILY_NODE', 'family/');
 app.constant('GOAL_NODE', 'goal/');
 app.constant('CATEGORY_NODE', 'category/');
+app.constant('ITEM_NODE', 'item/');
 
 app.constant('DEFAULT_FAMILY_SIZE_ADULTS', 1);
 app.constant('DEFAULT_FAMILY_SIZE_CHILDREN', 0);
@@ -22,3 +23,4 @@ app.constant('DEFAULT_GOAL_MONTHS', 3);
 app.constant('DEFAULT_GOAL_DAYS', 91);
 
 app.constant('DEFAULT_CATEGORY_NAME', 'New Category Name');
+app.constant('DEFAULT_ITEM_NAME', 'New Item Name');

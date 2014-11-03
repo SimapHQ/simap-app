@@ -9,7 +9,7 @@ describe('Controller: CategoriesCtrl', function () {
   var CategoriesCtrl,
       $scope,
       $location,
-      CategoriesService,
+      ListService,
       CategoryService;
 
   beforeEach(function() {
@@ -23,7 +23,7 @@ describe('Controller: CategoriesCtrl', function () {
 
     $location = jasmine.createSpyObj('$location', ['path']);
 
-    CategoriesService = jasmine.createSpyObj('CategoriesService', ['getCategories']);
+    ListService = jasmine.createSpyObj('ListService', ['getList']);
 
     CategoryService = jasmine.createSpyObj('CategoryService', ['createNew', 'removeOld']);
 
@@ -36,7 +36,7 @@ describe('Controller: CategoriesCtrl', function () {
     CategoriesCtrl = $controller('CategoriesCtrl', {
       $scope: $scope,
       $location: $location,
-      CategoriesService: CategoriesService,
+      ListService: ListService,
       CategoryService: CategoryService
     });
   }));
@@ -46,7 +46,7 @@ describe('Controller: CategoriesCtrl', function () {
   });
 
   it('should populate the category list', function() {
-    expect(CategoriesService.getCategories).toHaveBeenCalled();
+    expect(ListService.getList).toHaveBeenCalled();
   });
 
   it('should create a new category when addNewCategory is called', function() {
@@ -80,7 +80,7 @@ describe('Controller: CategoriesCtrl', function () {
     deferredRemove.resolve();
     $rootScope.$digest();
 
-    expect(CategoriesService.getCategories.calls.count()).toBe(2);
+    expect(ListService.getList.calls.count()).toBe(2);
   });
 
   it('should not let the user delete a category that still contains items', function() {

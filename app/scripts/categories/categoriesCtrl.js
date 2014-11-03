@@ -5,19 +5,19 @@ var app = angular.module('simapApp');
 app.controller('CategoriesCtrl', [
   '$location',
   '$scope',
-  'CategoriesService',
   'CategoryService',
+  'ListService',
   function (
     $location,
     $scope,
-    CategoriesService,
-    CategoryService
+    CategoryService,
+    ListService
     ) {
 
   $scope.helpBlock = 'Categories let you group your items. Here you can select a category to edit, delete a category, and add a new category.';
 
   var refresh = function() {
-    $scope.categories = CategoriesService.getCategories();
+    $scope.categories = ListService.getList('categories');
   };
 
   $scope.addNewCategory = function() {
