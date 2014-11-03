@@ -1,26 +1,40 @@
 'use strict';
 
-angular.module('simapApp').controller('ItemsCtrl', ['$scope', '$location', 'randomColor', function ($scope, $location, randomColor) {
-  $scope.helpBlock = 'Here\"s your list of items.';
-  
-  $scope.items = {
-    'i1': { name: 'Beans', color: randomColor() },
-    'i2': { name: 'Corn', color: randomColor() },
-    'i3': { name: 'Flour', color: randomColor() },
-    'i4': { name: 'Sugar', color: randomColor() },
-    'i5': { name: 'Toilet Paper', color: randomColor() },
-    'i6': { name: 'Pork and Beans', color: randomColor() }
+var app = angular.module('simapApp');
+
+app.controller('ItemsCtrl', [
+  '$location',
+  '$scope',
+  'ItemService',
+  'ListService',
+  function (
+    $location,
+    $scope,
+    ItemService,
+    ListService
+    ) {
+
+  $scope.helpBlock = '';
+
+  var refresh = function() {
+    $scope.items = ListService.getList('items');
   };
 
   $scope.addNewItem = function() {
-    $location.path('/item/edit/45');
+    ItemService.createNew().then(function(newItemId) {
+      $scope.editItem(newItemId);
+    });
   };
 
-  $scope.editItem = function() {
-    $location.path('/item/edit/itemid');
+  $scope.editItem = function(key) {
+    $location.path('/item/edit/' + key);
   };
 
   $scope.removeItem = function(key) {
-    delete $scope.items[key];
+    ItemService.removeOld(key).then(function() {
+      refresh();
+    });
   };
+
+  refresh();
 }]);
