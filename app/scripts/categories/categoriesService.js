@@ -3,18 +3,14 @@
 var app = angular.module('simapApp');
 
 app.service('CategoriesService', [
-  '$firebase',
   'CATEGORY_NODE',
   'FirebaseService',
   'SessionService',
   function(
-    $firebase,
     CATEGORY_NODE,
     FirebaseService,
     SessionService
   ) {
-
-  var firebaseRef = FirebaseService.getRef();
 
   this.getCategories = function() {
     var categories = {},
@@ -26,7 +22,7 @@ app.service('CategoriesService', [
 
     categoryIds = Object.keys(categoryIds);
     categoryIds.forEach(function(categoryId) {
-      var category = $firebase(firebaseRef.child(CATEGORY_NODE + categoryId)).$asObject();
+      var category = FirebaseService.getObject(CATEGORY_NODE + categoryId);
       category.$loaded().then(function() {
         categories[categoryId] = {
           name: category.name,
