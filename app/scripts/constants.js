@@ -12,6 +12,8 @@ app.constant('FAMILY_NODE', 'family/');
 app.constant('GOAL_NODE', 'goal/');
 app.constant('CATEGORY_NODE', 'category/');
 app.constant('ITEM_NODE', 'item/');
+app.constant('PLAN_NODE', 'plan/');
+app.constant('UNIT_NODE', 'unit/');
 
 app.constant('DEFAULT_FAMILY_SIZE_ADULTS', 1);
 app.constant('DEFAULT_FAMILY_SIZE_CHILDREN', 0);
@@ -24,3 +26,10 @@ app.constant('DEFAULT_GOAL_DAYS', 91);
 
 app.constant('DEFAULT_CATEGORY_NAME', 'New Category Name');
 app.constant('DEFAULT_ITEM_NAME', 'New Item Name');
+app.constant('DEFAULT_UNIT_NAME', 'New Unit Name');
+
+app.constant('RATIONED_PLAN_TYPE', 'ration');
+app.constant('BASELINE_PLAN_TYPE', 'baseline');
+
+app.constant('DEFAULT_RATION_AMOUNT', 1);
+app.constant('DEFAULT_RATION_TIME', 'day');

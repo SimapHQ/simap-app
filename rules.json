@@ -170,7 +170,7 @@
       "$item_id": {
 
         // An item may only be read by the owner.
-        ".read": "root.child('item/' + $item_id + '/owner').val() === auth.uid",
+        ".read": "!data.exists() || root.child('item/' + $item_id + '/owner').val() === auth.uid",
 
         // An item may be created by any user, but only modified by the owner.
         ".write": "!data.exists() || root.child('item/' + $item_id + '/owner').val() === auth.uid",
@@ -237,7 +237,7 @@
       "$unit_id": {
 
         // A unit may be read only by its owner.
-        ".read": "root.child('unit/' + $unit_id + '/owner').val() === auth.uid",
+        ".read": "!data.exists() || root.child('unit/' + $unit_id + '/owner').val() === auth.uid",
 
         // A unit may be created by an user, but only modified by the creator.
         ".write": "!data.exists() || root.child('unit/' + $unit_id + '/owner').val() === auth.uid",
@@ -299,7 +299,7 @@
       "$plan_id": {
 
         // A plan may be read only by its owner
-        ".read": "root.child('plan/' + $plan_id + '/owner').val() === auth.uid",
+        ".read": "!data.exists() || root.child('plan/' + $plan_id + '/owner').val() === auth.uid",
 
         // A plan may be create by any user, but only modfied by the creator.
         ".write": "!data.exists() || root.child('plan/' + $plan_id + '/owner').val() === auth.uid",

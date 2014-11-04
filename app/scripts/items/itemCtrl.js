@@ -2,7 +2,14 @@
 
 var app = angular.module('simapApp');
 
-app.controller('ItemCtrl', ['$scope', '$location', 'randomColor', function ($scope, $location, randomColor) {
+app.controller('ItemCtrl', [
+  '$scope',
+  '$location',
+  function (
+    $scope,
+    $location
+  ) {
+
   $scope.helpBlock = 'Every piece of food or household item that you store is represented as an item. You can choose which category to group an item under, define different units for each item, and specify volume requirements for adults and children.';
   $scope.infoHelpBlock = 'Each item has this basic information';
   $scope.unitsHelpBlock = 'You can create different units for each item to make tracking easy. Some examples of possible units are cups, cans, lbs or boxes. You can use anything you like.';
