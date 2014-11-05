@@ -16,6 +16,4 @@ app.controller('UnitCtrl', [
 
   FirebaseService.getObject(UNIT_NODE + $scope.unitId).$bindTo($scope, 'unit');
 
-  // TODO: editing a unit's name should update the primary unit selector too.
-
 }]);
