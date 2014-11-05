@@ -24,12 +24,12 @@ app.config(['$routeProvider', '$logProvider', function ($routeProvider, $logProv
       authRequired: true
     })
     .when('/items', {
-      templateUrl: 'views/items.html',
+      templateUrl: 'scripts/items/items.html',
       controller: 'ItemsCtrl',
       authRequired: true
     })
     .when('/item/edit/:itemId', {
-      templateUrl: 'views/item.html',
+      templateUrl: 'scripts/items/item.html',
       controller: 'ItemCtrl',
       authRequired: true
     })

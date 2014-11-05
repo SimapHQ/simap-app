@@ -31,6 +31,7 @@ app.controller('ItemsCtrl', [
   };
 
   $scope.removeItem = function(key) {
+    // TODO: Ask for confirmation!
     ItemService.removeOld(key).then(function() {
       refresh();
     });

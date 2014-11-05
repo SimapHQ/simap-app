@@ -18,9 +18,13 @@ app.service('UnitService', [
     UNIT_NODE
   ) {
 
-  // var firebaseRef = FirebaseService.getRef();
+  var firebaseRef = FirebaseService.getRef();
 
   this.createNew = function() {
+    return this.createNewWithName(DEFAULT_UNIT_NAME);
+  };
+
+  this.createNewWithName = function(newUnitName) {
     var uid = SessionService.currentSession().uid,
         newUnitId = GuidService.generateGuid();
 
@@ -28,13 +32,27 @@ app.service('UnitService', [
 
     return newUnitObj.$loaded().then(function() {
       newUnitObj.owner = uid;
-      newUnitObj.name = DEFAULT_UNIT_NAME;
+      newUnitObj.name = newUnitName;
 
       return newUnitObj.$save().then(function() {
         return newUnitId;
       });
     }).finally(function() {
       newUnitObj.$destroy();
+    });
+  };
+
+  this.removeOld = function(unitId) {
+    return $firebase(firebaseRef.child(UNIT_NODE + unitId)).$remove();
+  };
+
+  this.getName = function(unitId) {
+    var unitObj = FirebaseService.getObject(UNIT_NODE + unitId);
+
+    return unitObj.$loaded().then(function() {
+      return unitObj.name;
+    }).finally(function() {
+      unitObj.$destroy();
     });
   };
 

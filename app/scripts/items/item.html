@@ -5,19 +5,15 @@
 <div class="col-xs-12">
   <div class="form-group">
     <label for="item-name">Name</label>
-    <input type="text" class="form-control" id="item-name" ng-model="name" placeholder="Name"/>
+    <input type="text" class="form-control" id="item-name" ng-model="item.name" placeholder="Name"/>
   </div>
   <div class="form-group">
     <label for="new-item-category">Category</label>
-    <select id="new-item-category" class="form-control">
-      <option>Vegetables</option>
-      <option>Meats and Proteins</option>
-      <option>Household Items</option>
-    </select>
+    <select ng-model="item.category_id" ng-options="key as category.name for (key, category) in categories" id="new-item-category" class="form-control"></select>
   </div>
   <div class="form-group">
     <label for="item-color">Color</label>
-    <div colorpicker colorpicker-position="bottom" class="form-control square" ng-model="color" ng-style="{ 'background-color': color }" href=""></div>
+    <div colorpicker colorpicker-position="bottom" class="form-control square" ng-model="item.color" ng-style="{ 'background-color': item.color }" href=""></div>
   </div>
 </div>
 
@@ -27,22 +23,22 @@
     <label>Add Units</label>
   </div>
   <div class="col-xs-12">
-    <form ng-submit="addUnit()">
+    <form ng-submit="addNewUnit()">
       <input type="text" class="form-control" ng-model="newUnitName" placeholder="Unit Name"/>
       <input type="submit" ng-hide="true"/>
     </form>
   </div>
 </div>
 <span class="spacer"></span>
-<div ng-repeat="(key, value) in units" class="clearfix">
+<div ng-repeat="(unitId, _) in units" ng-controller="UnitCtrl" class="clearfix">
   <div ng-hide="editing">
     <div class="col-xs-10">
       <p class="hpad-10 vpad-2">
-        <a ng-click="editing=!editing">{{value.name}}</a>
+        <a ng-click="editing=!editing">{{unit.name}}</a>
       </p>
     </div>
-    <div class="col-xs-2">
-      <a ng-click="removeUnit(key)">
+    <div class="col-xs-2" ng-hide="item.primary_unit === unitId">
+      <a ng-click="removeUnit(unitId)">
         <span class="glyphicon glyphicon-trash"></span>
       </a>
     </div>
@@ -50,30 +46,30 @@
   <div ng-show="editing">
     <div class="col-xs-12 form-group">
       <form ng-submit="editing=!editing">
-        <input type="text" class="form-control" ng-model="value.name"/>
+        <input type="text" class="form-control" ng-model="unit.name" ng-change="units[unitId].name = unit.name"/>
         <input type="submit" ng-hide="true"/>
       </form>
     </div>
   </div>
 </div>
 
-<div class="col-xs-12">
+<div class="col-xs-12" ng-show="hasMultipleUnits()">
   <div class="form-group">
     <label for="master-unit">Select Primary Unit</label>
-    <select id="master-unit" class="form-control" ng-model="masterUnit" ng-options="unit.name for (id, unit) in units">
+    <select id="master-unit" class="form-control" ng-model="item.primary_unit" ng-options="id as unit.name for (id, unit) in units">
     </select>
   </div>
 </div>
 
-<div ng-show="masterUnit">
+<div ng-show="hasMultipleUnits()">
   <div class="col-xs-12">
     <div class="form-group">
       <label>Define Unit Conversions</label>
     </div>
   </div>
-  <div ng-repeat="unit in units | simapExclude:'name':masterUnit" class="clearfix form-group">
+  <div ng-repeat="(unitId, unit) in units | simapExclude:'id':item.primary_unit" class="clearfix form-group">
     <div class="col-xs-4 text-right vpad-6 nowrap">
-      <span>1 {{masterUnit.name}} =</span>
+      <span>1 {{units[item.primary_unit].name}} =</span>
     </div>
     <div class="col-xs-4">
       <input type="number" class="form-control">
@@ -100,7 +96,7 @@
     <label>An Adult Needs</label>
   </div>
   <div class="col-xs-4 form-group">
-    <input type="number" class="form-control" ng-model="adultRationAmount">  
+    <input type="number" class="form-control" ng-model="adultRationAmount">
   </div>
   <div class="col-xs-4 form-group">
     <select class="form-control" ng-model="adultRationUnit" ng-options="unit.name for (id, unit) in units">
@@ -118,7 +114,7 @@
     <label>A Child Needs</label>
   </div>
   <div class="col-xs-4 form-group">
-    <input type="number" class="form-control" ng-model="childRationAmount">  
+    <input type="number" class="form-control" ng-model="childRationAmount">
   </div>
   <div class="col-xs-4 form-group">
     <select class="form-control" ng-model="childRationUnit" ng-options="unit.name for (id, unit) in units">
@@ -146,5 +142,5 @@
     </select>
   </div>
 </div>
-  
+
 <simap-save-button on-save="save()"></simap-save-button>

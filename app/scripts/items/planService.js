@@ -24,7 +24,7 @@ app.service('PlanService', [
     SessionService
   ) {
 
-  // var firebaseRef = FirebaseService.getRef();
+  var firebaseRef = FirebaseService.getRef();
 
   this.createRationPlan = function(unitId) {
     var uid = SessionService.currentSession().uid,
@@ -52,6 +52,14 @@ app.service('PlanService', [
     }).finally(function() {
       newPlanObj.$destroy();
     });
+  };
+
+  // this.createBaselinePlan = function(unitId) {
+
+  // };
+
+  this.removePlan = function(planId) {
+    return $firebase(firebaseRef.child(PLAN_NODE + planId)).$remove();
   };
 
 }]);

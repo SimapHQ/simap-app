@@ -62,13 +62,27 @@ app.service('ItemService', [
   };
 
   this.removeOld = function(itemId) {
-    if (SessionService.currentSession().categories[itemId] !== true) {
+    if (SessionService.currentSession().items[itemId] !== true) {
       return;
     }
 
-    // TODO: Make sure the item is unused...
-    return $firebase(firebaseRef.child(ITEM_NODE + itemId)).$remove().then(function() {
-      return SessionService.unbindFromUser('items', itemId);
+    var itemObj = FirebaseService.getObject(ITEM_NODE + itemId);
+
+    return itemObj.$loaded().then(function() {
+      var unitRemovalPromises = [];
+      Object.keys(itemObj.units).forEach(function(unitId) {
+        unitRemovalPromises.push(UnitService.removeOld(unitId));
+      });
+
+      return $q.all(unitRemovalPromises).then(function() {
+        return PlanService.removePlan(itemObj.plan_id).then(function() {
+          return $firebase(firebaseRef.child(ITEM_NODE + itemId)).$remove().then(function() {
+            return SessionService.unbindFromUser('items', itemId);
+          });
+        });
+      });
+    }).finally(function() {
+      itemObj.$destroy();
     });
   };
 
