@@ -4,6 +4,8 @@ var app = angular.module('simapApp');
 
 app.service('UnitService', [
   '$firebase',
+  '$q',
+  'CONVERSION_NODE',
   'DEFAULT_UNIT_NAME',
   'FirebaseService',
   'GuidService',
@@ -11,6 +13,8 @@ app.service('UnitService', [
   'UNIT_NODE',
   function(
     $firebase,
+    $q,
+    CONVERSION_NODE,
     DEFAULT_UNIT_NAME,
     FirebaseService,
     GuidService,
@@ -43,7 +47,10 @@ app.service('UnitService', [
   };
 
   this.removeOld = function(unitId) {
-    return $firebase(firebaseRef.child(UNIT_NODE + unitId)).$remove();
+    return $q.all([
+      $firebase(firebaseRef.child(UNIT_NODE + unitId)).$remove(),
+      $firebase(firebaseRef.child(CONVERSION_NODE + unitId)).$remove()
+    ]);
   };
 
   this.getName = function(unitId) {

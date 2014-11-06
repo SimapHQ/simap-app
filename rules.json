@@ -264,7 +264,7 @@
       "$unit_id": {
 
         // A conversion object may be read only by its owner.
-        ".read": "root.child('conversion/' + $unit_id + '/owner').val() === auth.uid",
+        ".read": "!data.exists() || root.child('conversion/' + $unit_id + '/owner').val() === auth.uid",
 
         // A conversion may be created by any user, but only modified by the creator.
         ".write": "!data.exists() || root.child('conversion/' + $unit_id + '/owner').val() === auth.uid",

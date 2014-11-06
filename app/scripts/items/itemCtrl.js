@@ -6,21 +6,26 @@ app.controller('ItemCtrl', [
   '$location',
   '$routeParams',
   '$scope',
+  'CONVERSION_NODE',
   'FirebaseService',
   'ITEM_NODE',
   'ListService',
+  'SessionService',
   'UnitService',
   function (
     $location,
     $routeParams,
     $scope,
+    CONVERSION_NODE,
     FirebaseService,
     ITEM_NODE,
     ListService,
+    SessionService,
     UnitService
   ) {
 
   var itemId = $routeParams.itemId;
+  var unbindConversion;
 
   var refreshUnits = function() {
     $scope.units = {};
@@ -36,6 +41,7 @@ app.controller('ItemCtrl', [
 
   FirebaseService.getObject(ITEM_NODE + itemId).$bindTo($scope, 'item').then(function() {
     refreshUnits();
+    $scope.refreshConversion();
   });
 
   $scope.categories = ListService.getList('categories');
@@ -51,6 +57,7 @@ app.controller('ItemCtrl', [
   $scope.removeUnit = function(unitId) {
     UnitService.removeOld(unitId).then(function() {
       delete $scope.item.units[unitId];
+      delete $scope.conversion[unitId];
       refreshUnits();
     });
   };
@@ -61,6 +68,27 @@ app.controller('ItemCtrl', [
     }
 
     return Object.keys($scope.units).length > 1;
+  };
+
+  $scope.refreshConversion = function() {
+    if (unbindConversion !== undefined) {
+      unbindConversion();
+    }
+
+    FirebaseService.getObject(CONVERSION_NODE + $scope.item.primary_unit).$bindTo($scope, 'conversion').then(function(unbindFunction) {
+      unbindConversion = unbindFunction;
+      $scope.conversion.owner = SessionService.currentSession().uid;
+
+      Object.keys($scope.conversion).forEach(function(unitId) {
+        if (unitId === 'owner') {
+          return;
+        }
+
+        if ($scope.item.units[unitId] !== true) {
+          delete $scope.conversion[unitId];
+        }
+      });
+    });
   };
 
   $scope.save = function() {

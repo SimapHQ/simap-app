@@ -14,6 +14,7 @@ app.constant('CATEGORY_NODE', 'category/');
 app.constant('ITEM_NODE', 'item/');
 app.constant('PLAN_NODE', 'plan/');
 app.constant('UNIT_NODE', 'unit/');
+app.constant('CONVERSION_NODE', 'conversion/');
 
 app.constant('DEFAULT_FAMILY_SIZE_ADULTS', 1);
 app.constant('DEFAULT_FAMILY_SIZE_CHILDREN', 0);
