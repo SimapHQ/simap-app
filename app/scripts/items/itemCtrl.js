@@ -45,6 +45,22 @@ app.controller('ItemCtrl', [
     FirebaseService.getObject(PLAN_NODE + $scope.item.plan_id).$bindTo($scope, 'plan');
   };
 
+  var updatePlan = function(unitIdBeingRemoved) {
+    // Ration case
+    if ($scope.plan.adult.unit_id === unitIdBeingRemoved) {
+      $scope.plan.adult.unit_id = $scope.item.primary_unit;
+    }
+
+    if ($scope.plan.child.unit_id === unitIdBeingRemoved) {
+      $scope.plan.child.unit_id = $scope.item.primary_unit;
+    }
+
+    // Baseline case
+    if ($scope.plan.unit_id === unitIdBeingRemoved) {
+      $scope.plan.unit_id = $scope.item.primary_unit;
+    }
+  };
+
   FirebaseService.getObject(ITEM_NODE + itemId).$bindTo($scope, 'item').then(function() {
     refreshUnits();
     $scope.refreshConversion();
@@ -65,6 +81,7 @@ app.controller('ItemCtrl', [
     UnitService.removeOld(unitId).then(function() {
       delete $scope.item.units[unitId];
       delete $scope.conversion[unitId];
+      updatePlan(unitId);
       refreshUnits();
     });
   };
