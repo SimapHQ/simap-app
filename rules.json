@@ -320,14 +320,12 @@
         // BASELINE
         "amount": {
           // The amount must be a number greater than 0.
-          ".validate": "root.child('plan/' + $plan_id + '/type').val() === 'baseline' &&
-                        newData.isNumber() && newData.val() > 0"
+          ".validate": "newData.isNumber() && newData.val() > 0"
         },
 
         "unit_id": {
           // The unit must be owned by the current user.
-          ".validate": "root.child('plan/' + $plan_id + '/type').val() === 'baseline' &&
-                        root.child('unit/' + newData.val()).exists() &&
+          ".validate": "root.child('unit/' + newData.val()).exists() &&
                         root.child('unit/' + newData.val() + '/owner').val() === auth.uid"
         },
 

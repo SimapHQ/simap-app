@@ -10,6 +10,7 @@ app.controller('ItemCtrl', [
   'FirebaseService',
   'ITEM_NODE',
   'ListService',
+  'PLAN_NODE',
   'SessionService',
   'UnitService',
   function (
@@ -20,6 +21,7 @@ app.controller('ItemCtrl', [
     FirebaseService,
     ITEM_NODE,
     ListService,
+    PLAN_NODE,
     SessionService,
     UnitService
   ) {
@@ -39,9 +41,14 @@ app.controller('ItemCtrl', [
     });
   };
 
+  var refreshPlan = function() {
+    FirebaseService.getObject(PLAN_NODE + $scope.item.plan_id).$bindTo($scope, 'plan');
+  };
+
   FirebaseService.getObject(ITEM_NODE + itemId).$bindTo($scope, 'item').then(function() {
     refreshUnits();
     $scope.refreshConversion();
+    refreshPlan();
   });
 
   $scope.categories = ListService.getList('categories');
