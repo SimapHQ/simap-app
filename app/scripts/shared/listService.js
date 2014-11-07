@@ -3,11 +3,13 @@
 var app = angular.module('simapApp');
 
 app.service('ListService', [
+  '$q',
   'CATEGORY_NODE',
   'FirebaseService',
   'ITEM_NODE',
   'SessionService',
   function(
+    $q,
     CATEGORY_NODE,
     FirebaseService,
     ITEM_NODE,
@@ -20,27 +22,35 @@ app.service('ListService', [
   };
 
   this.getList = function(type) {
-    var list = {},
-        itemIds = SessionService.currentSession()[type];
+    var entityList = {},
+        entityPromises = [],
+        entityIds = SessionService.currentSession()[type];
 
-    if (itemIds === undefined) {
-      return list;
+    if (entityIds === undefined) {
+      return entityList;
     }
 
-    itemIds = Object.keys(itemIds);
-    itemIds.forEach(function(itemId) {
-      var item = FirebaseService.getObject(NODE[type] + itemId);
-      item.$loaded().then(function() {
-        list[itemId] = {
-          name: item.name,
-          color: item.color
+    entityIds = Object.keys(entityIds);
+    entityIds.forEach(function(entityId) {
+      var promise = $q.defer(),
+          entity = FirebaseService.getObject(NODE[type] + entityId);
+
+      entityPromises.push(promise);
+
+      entity.$loaded().then(function() {
+        entityList[entityId] = {
+          name: entity.name,
+          color: entity.color
         };
+        promise.resolve();
       }).finally(function() {
-        item.$destroy();
+        entity.$destroy();
       });
     });
 
-    return list;
+    return $q.all(entityPromises).then(function() {
+      return entityList;
+    });
   };
 
 }]);

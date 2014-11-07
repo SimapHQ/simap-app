@@ -17,7 +17,9 @@ app.controller('ItemsCtrl', [
   $scope.helpBlock = '';
 
   var refresh = function() {
-    $scope.items = ListService.getList('items');
+    ListService.getList('items').then(function(items) {
+      $scope.items = items;
+    });
   };
 
   $scope.addNewItem = function() {

@@ -17,7 +17,9 @@ app.controller('CategoriesCtrl', [
   $scope.helpBlock = 'Categories let you group your items. Here you can select a category to edit, delete a category, and add a new category.';
 
   var refresh = function() {
-    $scope.categories = ListService.getList('categories');
+    ListService.getList('categories').then(function(categories) {
+      $scope.categories = categories;
+    });
   };
 
   $scope.addNewCategory = function() {
