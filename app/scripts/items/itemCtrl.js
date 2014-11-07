@@ -115,6 +115,18 @@ app.controller('ItemCtrl', [
     });
   };
 
+  $scope.updateInverse = function(toUnitId) {
+    var inverseConversion = {owner: SessionService.currentSession().uid},
+        invertedValue = 1 / $scope.conversion[toUnitId];
+
+    if (!isFinite(invertedValue)) {
+      return;
+    }
+
+    inverseConversion[$scope.item.primary_unit] = invertedValue;
+    FirebaseService.getRef().child(CONVERSION_NODE + toUnitId).update(inverseConversion);
+  };
+
   $scope.save = function() {
     $location.path('/items');
   };
