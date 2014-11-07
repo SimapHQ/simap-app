@@ -19,8 +19,8 @@ app.config(['$routeProvider', '$logProvider', function ($routeProvider, $logProv
       controller: 'LoginCtrl'
     })
     .when('/home', {
-      templateUrl: 'views/main.html',
-      controller: 'MainCtrl',
+      templateUrl: 'scripts/home/home.html',
+      controller: 'HomeCtrl',
       authRequired: true
     })
     .when('/items', {

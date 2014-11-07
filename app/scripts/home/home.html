@@ -14,8 +14,8 @@
 </div>
 
 <simap-help-header size="h4" label="'Category Breakdown'" help-block="categoryHelp"></simap-help-header>
-<div class="col-xs-12 clearfix" ng-repeat="(key, value) in categories">
-  <h4>{{value.name}}</h4>
+<div class="col-xs-12 clearfix" ng-repeat="(categoryId, category) in categories">
+  <h4>{{category.name}}</h4>
   <div class="form-group col-xs-12">
     <div style="float:left">
       <label>Rations:</label>
@@ -32,7 +32,7 @@
       <div class="col-xs-12">
         <div class="pull-left">
           <span>{{value.name}}</span>
-        </div>  
+        </div>
         <div class="pull-right">
           <span>
             {{value.amount}} {{value.units}}
@@ -40,7 +40,7 @@
           <a ng-click="updateInventory = !updateInventory" class="hpad-10">
             <span class="glyphicon glyphicon-plus-sign"></span>
           </a>
-          <a ng-click="updateInventory = !updateInventory" class="hpad-10"> 
+          <a ng-click="updateInventory = !updateInventory" class="hpad-10">
             <span class="glyphicon glyphicon-minus-sign"></span>
           </a>
         </div>
