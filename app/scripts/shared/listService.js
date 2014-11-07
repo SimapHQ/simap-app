@@ -32,17 +32,17 @@ app.service('ListService', [
 
     entityIds = Object.keys(entityIds);
     entityIds.forEach(function(entityId) {
-      var promise = $q.defer(),
+      var deferred = $q.defer(),
           entity = FirebaseService.getObject(NODE[type] + entityId);
 
-      entityPromises.push(promise);
+      entityPromises.push(deferred.promise);
 
       entity.$loaded().then(function() {
         entityList[entityId] = {
           name: entity.name,
           color: entity.color
         };
-        promise.resolve();
+        deferred.resolve();
       }).finally(function() {
         entity.$destroy();
       });
