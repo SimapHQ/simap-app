@@ -21,30 +21,41 @@ angular.module('simapApp').controller('HomeCtrl', [
   ) {
 
   var refreshHomeData = function() {
-    $scope.categories = ListService.getList('categories');
-
+    $scope.categories = {};
     $scope.items = {};
     $scope.units = {};
     $scope.plans = {};
     $scope.conversions = {};
 
-    Object.keys(SessionService.currentSession().items).forEach(function(itemId) {
-      loadItem(itemId).then(function(loadedItem) {
-        $scope.items[itemId] = loadedItem;
+    refreshCategories().then(function() {
+      Object.keys(SessionService.currentSession().items).forEach(function(itemId) {
+        loadItem(itemId).then(function(loadedItem) {
+          $scope.items[loadedItem.category_id][itemId] = loadedItem;
 
-        FirebaseService.getRef().child(PLAN_NODE + loadedItem.plan_id).once('value', function(dataSnapshot) {
-          $scope.plans[itemId] = dataSnapshot.val();
-        });
-
-        Object.keys(loadedItem.units).forEach(function(unitId) {
-          UnitService.getName(unitId).then(function(unitName) {
-            $scope.units[unitId] = {name: unitName};
+          FirebaseService.getRef().child(PLAN_NODE + loadedItem.plan_id).once('value', function(dataSnapshot) {
+            $scope.plans[itemId] = dataSnapshot.val();
           });
 
-          FirebaseService.getRef().child(CONVERSION_NODE + unitId).once('value', function(dataSnapshot) {
-            $scope.conversions[unitId] = dataSnapshot.val();
+          Object.keys(loadedItem.units).forEach(function(unitId) {
+            UnitService.getName(unitId).then(function(unitName) {
+              $scope.units[unitId] = {name: unitName};
+            });
+
+            FirebaseService.getRef().child(CONVERSION_NODE + unitId).once('value', function(dataSnapshot) {
+              $scope.conversions[unitId] = dataSnapshot.val();
+            });
           });
         });
+      });
+    });
+  };
+
+  var refreshCategories = function() {
+    return ListService.getList('categories').then(function(categories) {
+      $scope.categories = categories;
+
+      Object.keys(categories).forEach(function(categoryId) {
+        $scope.items[categoryId] = {};
       });
     });
   };

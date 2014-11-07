@@ -27,15 +27,15 @@
     </div>
     <!-- <simap-progress-bar items="progressItems"></simap-progress-bar> -->
   </div>
-  <div class="clearfix form-group" ng-repeat="(key, value) in value.items">
+  <div class="clearfix form-group" ng-repeat="(itemId, item) in items[categoryId]">
     <div class="clearfix">
       <div class="col-xs-12">
         <div class="pull-left">
-          <span>{{value.name}}</span>
+          <span>{{item.name}}</span>
         </div>
         <div class="pull-right">
           <span>
-            {{value.amount}} {{value.units}}
+            {{item.amount}} {{units[item.primary_unit].name}}
           </span>
           <a ng-click="updateInventory = !updateInventory" class="hpad-10">
             <span class="glyphicon glyphicon-plus-sign"></span>

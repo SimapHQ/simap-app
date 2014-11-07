@@ -67,7 +67,9 @@ app.controller('ItemCtrl', [
     refreshPlan();
   });
 
-  $scope.categories = ListService.getList('categories');
+  ListService.getList('categories').then(function(categories) {
+    $scope.categories = categories;
+  });
 
   $scope.addNewUnit = function() {
     UnitService.createNewWithName($scope.newUnitName).then(function(newUnitId) {
