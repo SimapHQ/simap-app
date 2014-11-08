@@ -1,8 +1,8 @@
 'use strict';
 
 var app = angular.module('simapApp');
- 
-app.directive('simapProgressBar', ['randomColor', function(randomColor) {
+
+app.directive('simapProgressBar', function() {
   var linkFn = function(scope, element) {
     var barWidth = element[0].offsetWidth;
     var items = scope.items;
@@ -11,10 +11,8 @@ app.directive('simapProgressBar', ['randomColor', function(randomColor) {
       item = items[item];
       var segment =  angular.element('<div class=\"segment\"></div>');
       segment.css({
-        // backgroundColor: item.color,
-        // width: item.width * barWidth
-        backgroundColor: randomColor(),
-        width: ((Math.random() * 20 + 10) / 100) * barWidth
+        backgroundColor: item.color,
+        width: item.width * barWidth
       });
       element.append(segment);
     });
@@ -29,4 +27,4 @@ app.directive('simapProgressBar', ['randomColor', function(randomColor) {
     templateUrl: 'views/templates/progress-bar.html',
     link: linkFn
   };
-}]);
+});

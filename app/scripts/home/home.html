@@ -4,13 +4,13 @@
 <div class="form-group col-xs-12">
   <div style="float:left">
     <label>Rations:</label>
-    <span>54%</span>
+    <span>TODO</span>
   </div>
   <div style="float:right;">
     <label>Baselines:</label>
-    <span>5/13</span>
+    <span></span>
   </div>
-  <!-- <simap-progress-bar items="progressItems"></simap-progress-bar> -->
+  <simap-progress-bar items="overallProgressItems"></simap-progress-bar>
 </div>
 
 <simap-help-header size="h4" label="'Category Breakdown'" help-block="categoryHelp"></simap-help-header>
@@ -19,19 +19,19 @@
   <div class="form-group col-xs-12">
     <div style="float:left">
       <label>Rations:</label>
-      <span>54%</span>
+      <span>TODO</span>
     </div>
     <div style="float:right;">
       <label>Baselines:</label>
       <span>5/13</span>
     </div>
-    <!-- <simap-progress-bar items="progressItems"></simap-progress-bar> -->
+    <!-- <simap-progress-bar items="itemLevelProgress"></simap-progress-bar> -->
   </div>
   <div class="clearfix form-group" ng-repeat="(itemId, item) in items[categoryId]">
     <div class="clearfix">
       <div class="col-xs-12">
         <div class="pull-left">
-          <span>{{item.name}}</span>
+          <span>{{item.name}} <span ng-show="isBaselineMet(categoryId, itemId)">BASELINE MET</span></span>
         </div>
         <div class="pull-right">
           <span>

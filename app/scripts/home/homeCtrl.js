@@ -3,19 +3,25 @@
 angular.module('simapApp').controller('HomeCtrl', [
   '$scope',
   'CONVERSION_NODE',
+  'FAMILY_NODE',
   'FirebaseService',
+  'GOAL_NODE',
   'ITEM_NODE',
   'ListService',
   'PLAN_NODE',
+  'randomColor',
   'SessionService',
   'UnitService',
   function (
     $scope,
     CONVERSION_NODE,
+    FAMILY_NODE,
     FirebaseService,
+    GOAL_NODE,
     ITEM_NODE,
     ListService,
     PLAN_NODE,
+    randomColor,
     SessionService,
     UnitService
   ) {
@@ -33,7 +39,7 @@ angular.module('simapApp').controller('HomeCtrl', [
           $scope.items[loadedItem.category_id][itemId] = loadedItem;
 
           FirebaseService.getRef().child(PLAN_NODE + loadedItem.plan_id).once('value', function(dataSnapshot) {
-            $scope.plans[itemId] = dataSnapshot.val();
+            $scope.plans[loadedItem.category_id][itemId] = dataSnapshot.val();
           });
 
           Object.keys(loadedItem.units).forEach(function(unitId) {
@@ -48,6 +54,14 @@ angular.module('simapApp').controller('HomeCtrl', [
         });
       });
     });
+
+    FirebaseService.getRef().child(FAMILY_NODE + SessionService.currentSession().family_id).once('value', function(dataSnapshot) {
+      $scope.family = dataSnapshot.val();
+    });
+
+    FirebaseService.getRef().child(GOAL_NODE + SessionService.currentSession().goal_id).once('value', function(dataSnapshot) {
+      $scope.goal = dataSnapshot.val();
+    });
   };
 
   var refreshCategories = function() {
@@ -56,6 +70,7 @@ angular.module('simapApp').controller('HomeCtrl', [
 
       Object.keys(categories).forEach(function(categoryId) {
         $scope.items[categoryId] = {};
+        $scope.plans[categoryId] = {};
       });
     });
   };
@@ -69,6 +84,31 @@ angular.module('simapApp').controller('HomeCtrl', [
       return itemObj;
     });
   };
+
+  $scope.isBaselineMet = function(categoryId, itemId) {
+    if ($scope.items[categoryId] === undefined ||
+        $scope.items[categoryId][itemId] === undefined) {
+      return false;
+    }
+
+    var item = $scope.items[categoryId][itemId];
+    var plan = $scope.plans[categoryId][item.plan_id];
+
+    if (item === undefined || plan === undefined) {
+      return false;
+    }
+
+    var necessary = plan.amount;
+    if (plan.unit_id !== item.primary_unit) {
+      necessary = necessary * $scope.conversion[plan.unit_id][item.primary_unit];
+    }
+
+    return item.amount >= necessary;
+  };
+
+
+  $scope.overallProgressItems = {};
+
 
   refreshHomeData();
 
