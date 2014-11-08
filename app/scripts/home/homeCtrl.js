@@ -3,9 +3,9 @@
 angular.module('simapApp').controller('HomeCtrl', [
   '$scope',
   'CONVERSION_NODE',
-  'FAMILY_NODE',
+  'FamilyService',
   'FirebaseService',
-  'GOAL_NODE',
+  'GoalService',
   'ITEM_NODE',
   'ListService',
   'PLAN_NODE',
@@ -15,9 +15,9 @@ angular.module('simapApp').controller('HomeCtrl', [
   function (
     $scope,
     CONVERSION_NODE,
-    FAMILY_NODE,
+    FamilyService,
     FirebaseService,
-    GOAL_NODE,
+    GoalService,
     ITEM_NODE,
     ListService,
     PLAN_NODE,
@@ -27,6 +27,9 @@ angular.module('simapApp').controller('HomeCtrl', [
   ) {
 
   var refreshHomeData = function() {
+    $scope.family = FamilyService.getFamily();
+    $scope.goal = GoalService.getGoal();
+
     $scope.categories = {};
     $scope.items = {};
     $scope.units = {};
@@ -53,14 +56,6 @@ angular.module('simapApp').controller('HomeCtrl', [
           });
         });
       });
-    });
-
-    FirebaseService.getRef().child(FAMILY_NODE + SessionService.currentSession().family_id).once('value', function(dataSnapshot) {
-      $scope.family = dataSnapshot.val();
-    });
-
-    FirebaseService.getRef().child(GOAL_NODE + SessionService.currentSession().goal_id).once('value', function(dataSnapshot) {
-      $scope.goal = dataSnapshot.val();
     });
   };
 
@@ -108,7 +103,7 @@ angular.module('simapApp').controller('HomeCtrl', [
 
 
   $scope.overallProgressItems = {};
-
+  $scope.preparedUntilDate = GoalService.getPreparedUntilDate();
 
   refreshHomeData();
 

@@ -33,12 +33,8 @@ angular.module('simapApp').controller('PlanningCtrl', [
         return 'Calculating...';
       }
 
-      return Date.today().add($scope.goal.months).months().toString('MMMM dd, yyyy');
+      return GoalService.getPreparedUntilDate($scope.goal.months);
     };
-
-    $scope.func = function() {
-      return 5;
-    }
 
     $scope.save = function() {
       $q.all([

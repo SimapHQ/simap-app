@@ -55,19 +55,26 @@ app.config(['$routeProvider', '$logProvider', function ($routeProvider, $logProv
   $logProvider.debugEnabled(true);
 }]);
 
-app.run(['$rootScope', '$location', '$log', 'SessionService', function($rootScope, $location, $log, SessionService) {
+app.run([
+  '$rootScope',
+  '$location',
+  '$log',
+  'SessionService',
+  'UserService',
+  function(
+    $rootScope,
+    $location,
+    $log,
+    SessionService,
+    UserService
+  ) {
 
   $rootScope.$on('$routeChangeStart', function(event, next) {
     if (next.authRequired && SessionService.currentSession() === null) {
       $location.path('/login');
     } else if ($location.path() === '/login' && SessionService.currentSession() !== null) {
-      $log.debug('attempted /login, but already logged in. going /home.');
       $location.path('/home');
     }
-  });
-
-  $rootScope.$on('$routeChangeSuccess', function(routeChangeEvent) {
-    $log.debug('route change successful.', routeChangeEvent);
   });
 
   $rootScope.$on('$routeChangeError', function(routeChangeEvent, current, previous, eventObj) {
@@ -76,7 +83,12 @@ app.run(['$rootScope', '$location', '$log', 'SessionService', function($rootScop
   });
 
   $rootScope.$on('$firebaseSimpleLogin:login', function(event, user) {
-    SessionService.startSession(user);
+    UserService.updateUser(user).then(function() {
+      SessionService.startSession(user);
+    }, function(error) {
+      $log.error('error updating user', user, error);
+      authClient.$logout();
+    });
   });
 
   $rootScope.$on('$firebaseSimpleLogin:logout', function() {

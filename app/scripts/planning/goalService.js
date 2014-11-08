@@ -49,6 +49,15 @@ app.service('GoalService', [
     return syncedGoal;
   };
 
+  this.getPreparedUntilDate = function(monthsOverride) {
+    var months = syncedGoal.months;
+    if (monthsOverride !== undefined) {
+      months = monthsOverride;
+    }
+
+    return Date.today().add(months).months().toString('MMMM dd, yyyy');
+  };
+
   var _createNewGoal = function(syncedUser) {
     var newGoalId = GuidService.generateGuid();
     syncedGoal = FirebaseService.getObject(GOAL_NODE + newGoalId);

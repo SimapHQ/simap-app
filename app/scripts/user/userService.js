@@ -40,14 +40,14 @@ app.service('UserService', [
     syncedUser.provider_uid = user.id;
     syncedUser.display_name = user.displayName;
 
-    syncedUser.$save().then(function() {
+    return syncedUser.$save().then(function() {
       return _postUpdate(user);
     });
   };
 
   var _updateExistingUser = function(user, syncedUser) {
     syncedUser.display_name = user.displayName;
-    syncedUser.$save().then(function() {
+    return syncedUser.$save().then(function() {
       return _postUpdate(user);
     });
   };

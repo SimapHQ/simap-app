@@ -25,7 +25,6 @@ app.service('SessionService', [
   };
 
   var _closeSession = function() {
-    $log.debug('closing session');
     if (syncedUser !== null) {
       syncedUser.$destroy();
       syncedUser = null;
@@ -37,12 +36,8 @@ app.service('SessionService', [
   };
 
   this.startSession = function(user) {
-    $log.debug('starting session', user);
-
-    var userNode = FirebaseService.getRef().child(USER_NODE + user.uid);
-    syncedUser = $firebase(userNode).$asObject();
-    return syncedUser.$loaded().then(function(data) {
-      $log.debug('started session', data);
+    syncedUser = FirebaseService.getObject(USER_NODE + user.uid);
+    return syncedUser.$loaded().then(function() {
       $location.path(HOME);
     }, function(error) {
       $log.error('error starting session', error);
