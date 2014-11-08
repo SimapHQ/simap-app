@@ -11,6 +11,7 @@ app.service('GoalService', [
   'FirebaseService',
   'GOAL_NODE',
   'GuidService',
+  'SessionService',
   'USER_NODE',
   function(
     $firebase,
@@ -21,12 +22,14 @@ app.service('GoalService', [
     FirebaseService,
     GOAL_NODE,
     GuidService,
+    SessionService,
     USER_NODE
   ) {
-  var firebaseRef = FirebaseService.getRef();
 
-  this.updateUser = function(uid) {
-    var syncedUser = $firebase(firebaseRef.child(USER_NODE + uid)).$asObject();
+  var syncedGoal;
+
+  this.updateUsersGoal = function(uid) {
+    var syncedUser = FirebaseService.getObject(USER_NODE + uid);
     return syncedUser.$loaded().then(function() {
       if (syncedUser.goal_id === undefined || syncedUser.goal_id === null) {
         return _createNewGoal(syncedUser);
@@ -38,9 +41,17 @@ app.service('GoalService', [
     });
   };
 
+  this.getGoal = function() {
+    if (syncedGoal === undefined) {
+      syncedGoal = FirebaseService.getObject(GOAL_NODE + SessionService.currentSession().goal_id);
+    }
+
+    return syncedGoal;
+  };
+
   var _createNewGoal = function(syncedUser) {
     var newGoalId = GuidService.generateGuid();
-    var syncedGoal = $firebase(firebaseRef.child(GOAL_NODE + newGoalId)).$asObject();
+    syncedGoal = FirebaseService.getObject(GOAL_NODE + newGoalId);
 
     return syncedGoal.$loaded().then(function() {
       syncedGoal.owner = syncedUser.uid;
@@ -51,19 +62,15 @@ app.service('GoalService', [
         syncedUser.goal_id = newGoalId;
         return syncedUser.$save();
       });
-    }).finally(function() {
-      syncedGoal.$destroy();
     });
   };
 
   var _updateExistingGoal = function(syncedUser) {
-    var syncedGoal = $firebase(firebaseRef.child(GOAL_NODE + syncedUser.goal_id)).$asObject();
+    syncedGoal = FirebaseService.getObject(GOAL_NODE + syncedUser.goal_id);
 
     return syncedGoal.$loaded().then(function() {
       // Update goal schema as necessary
       return syncedGoal.$save();
-    }).finally(function() {
-      syncedGoal.$destroy();
     });
   };
 }]);

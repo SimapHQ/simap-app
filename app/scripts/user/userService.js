@@ -54,8 +54,8 @@ app.service('UserService', [
 
   var _postUpdate = function(user) {
     return $q.all([
-      FamilyService.updateUser(user.uid),
-      GoalService.updateUser(user.uid)
+      FamilyService.updateUsersFamily(user.uid),
+      GoalService.updateUsersGoal(user.uid)
     ]);
   };
 

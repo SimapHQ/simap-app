@@ -10,6 +10,7 @@ app.service('FamilyService', [
   'FAMILY_NODE',
   'FirebaseService',
   'GuidService',
+  'SessionService',
   'USER_NODE',
   function(
     $firebase,
@@ -19,12 +20,14 @@ app.service('FamilyService', [
     FAMILY_NODE,
     FirebaseService,
     GuidService,
+    SessionService,
     USER_NODE
   ) {
-  var firebaseRef = FirebaseService.getRef();
 
-  this.updateUser = function(uid) {
-    var syncedUser = $firebase(firebaseRef.child(USER_NODE + uid)).$asObject();
+  var syncedFamily;
+
+  this.updateUsersFamily = function(uid) {
+    var syncedUser = FirebaseService.getObject(USER_NODE + uid);
     return syncedUser.$loaded().then(function() {
       if (syncedUser.family_id === undefined || syncedUser.family_id === null) {
         return _createNewFamily(syncedUser);
@@ -36,9 +39,17 @@ app.service('FamilyService', [
     });
   };
 
+  this.getFamily = function() {
+    if (syncedFamily === undefined) {
+      syncedFamily = FirebaseService.getObject(FAMILY_NODE + SessionService.currentSession().family_id);
+    }
+
+    return syncedFamily;
+  };
+
   var _createNewFamily = function(syncedUser) {
     var newFamilyId = GuidService.generateGuid();
-    var syncedFamily = $firebase(firebaseRef.child(FAMILY_NODE + newFamilyId)).$asObject();
+    syncedFamily = FirebaseService.getObject(FAMILY_NODE + newFamilyId);
 
     return syncedFamily.$loaded().then(function() {
       syncedFamily.owner = syncedUser.uid;
@@ -49,19 +60,15 @@ app.service('FamilyService', [
         syncedUser.family_id = newFamilyId;
         return syncedUser.$save();
       });
-    }).finally(function() {
-      syncedFamily.$destroy();
     });
   };
 
   var _updateExistingFamily = function(syncedUser) {
-    var syncedFamily = $firebase(firebaseRef.child(FAMILY_NODE + syncedUser.family_id)).$asObject();
+    syncedFamily = FirebaseService.getObject(FAMILY_NODE + syncedUser.family_id);
 
     return syncedFamily.$loaded().then(function() {
       // Update family schema as necessary
       return syncedFamily.$save();
-    }).finally(function() {
-      syncedFamily.$destroy();
     });
   };
 }]);
