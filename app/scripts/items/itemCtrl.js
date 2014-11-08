@@ -103,7 +103,7 @@ app.controller('ItemCtrl', [
 
     FirebaseService.getObject(CONVERSION_NODE + $scope.item.primary_unit).$bindTo($scope, 'conversion').then(function(unbindFunction) {
       unbindConversion = unbindFunction;
-      $scope.conversion.owner = SessionService.currentSession().uid;
+      $scope.conversion.owner = SessionService.currentSession('uid');
 
       Object.keys($scope.conversion).forEach(function(unitId) {
         if (unitId === 'owner') {
@@ -118,7 +118,7 @@ app.controller('ItemCtrl', [
   };
 
   $scope.updateInverse = function(toUnitId) {
-    var inverseConversion = {owner: SessionService.currentSession().uid},
+    var inverseConversion = {owner: SessionService.currentSession('uid')},
         invertedValue = 1 / $scope.conversion[toUnitId];
 
     if (!isFinite(invertedValue)) {

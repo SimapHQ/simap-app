@@ -31,8 +31,16 @@ app.service('SessionService', [
     }
   };
 
-  this.currentSession = function() {
-    return syncedUser;
+  this.currentSession = function(key) {
+    if (key === undefined) {
+      return syncedUser;
+    }
+
+    if (syncedUser[key] === undefined) {
+      return {}
+    }
+
+    return syncedUser[key];
   };
 
   this.startSession = function(user) {

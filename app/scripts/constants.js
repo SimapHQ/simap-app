@@ -4,6 +4,7 @@ var app = angular.module('simapApp');
 
 app.constant('HOME', '/home');
 app.constant('LOGIN', '/login');
+app.constant('CATEGORIES', '/categories');
 
 app.constant('FIREBASE_URL', 'https://simap-test.firebaseio.com/');
 

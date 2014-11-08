@@ -7,7 +7,6 @@ angular.module('simapApp').controller('HomeCtrl', [
   'FirebaseService',
   'GoalService',
   'ITEM_NODE',
-  'ListService',
   'PLAN_NODE',
   'randomColor',
   'SessionService',
@@ -19,7 +18,6 @@ angular.module('simapApp').controller('HomeCtrl', [
     FirebaseService,
     GoalService,
     ITEM_NODE,
-    ListService,
     PLAN_NODE,
     randomColor,
     SessionService,
@@ -37,7 +35,7 @@ angular.module('simapApp').controller('HomeCtrl', [
     $scope.conversions = {};
 
     refreshCategories().then(function() {
-      Object.keys(SessionService.currentSession().items).forEach(function(itemId) {
+      Object.keys(SessionService.currentSession('items')).forEach(function(itemId) {
         loadItem(itemId).then(function(loadedItem) {
           $scope.items[loadedItem.category_id][itemId] = loadedItem;
 

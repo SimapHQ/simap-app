@@ -20,13 +20,14 @@ app.service('CategoryService', [
     SessionService
   ) {
 
-  var firebaseRef = FirebaseService.getRef();
+  var firebaseRef = FirebaseService.getRef(),
+      categories = {};
 
   this.createNew = function() {
-    var uid = SessionService.currentSession().uid,
+    var uid = SessionService.currentSession('uid');
         newCategoryId = GuidService.generateGuid();
 
-    var newCategoryObj = $firebase(firebaseRef.child(CATEGORY_NODE + newCategoryId)).$asObject();
+    var newCategoryObj = FirebaseService.getObject(CATEGORY_NODE + newCategoryId);
 
     return newCategoryObj.$loaded().then(function() {
       newCategoryObj.owner = uid;
@@ -34,22 +35,40 @@ app.service('CategoryService', [
       newCategoryObj.color = randomColor();
 
       return newCategoryObj.$save().then(function() {
+        categories[newCategoryId] = newCategoryObj;
         return SessionService.bindToUser('categories', newCategoryId);
       });
-    }).finally(function() {
-      newCategoryObj.$destroy();
     });
   };
 
   this.removeOld = function(categoryId) {
-    if (SessionService.currentSession().categories[categoryId] !== true) {
+    if (SessionService.currentSession('categories')[categoryId] !== true) {
       return;
     }
 
     // TODO: Make sure the category is unused...
     return $firebase(firebaseRef.child(CATEGORY_NODE + categoryId)).$remove().then(function() {
+      delete categories[categoryId];
       return SessionService.unbindFromUser('categories', categoryId);
     });
   };
+
+  this.getCategories = function() {
+    return categories;
+  };
+
+  var refreshCategories = function() {
+    Object.keys(categories).forEach(function(categoryId) {
+      categories[categoryId].$destroy();
+    });
+
+    categories = {};
+
+    Object.keys(SessionService.currentSession().categories).forEach(function(categoryId) {
+      categories[categoryId] = FirebaseService.getObject(CATEGORY_NODE + categoryId);
+    });
+  };
+
+  refreshCategories();
 
 }]);

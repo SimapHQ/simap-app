@@ -1,21 +1,26 @@
 <simap-help-header size="h3" label="'Edit Category'"></simap-help-header>
-<div class="form-group">
-  <label for="category-name">Name</label>
-  <input type="text"
-         class="form-control"
-         id="category-name"
-         ng-model="category.name"
-         placeholder="Name"
-         minlength="1"
-         maxlength="48"/>
-</div>
-<div class="form-group">
-  <label for="category-color">Color</label>
-  <div colorpicker
-       colorpicker-position="bottom"
-       class="form-control square"
-       ng-model="category.color"
-       ng-style="{ 'background-color': category.color }"
-       href="">
+<form name="categoryForm">
+  <div class="form-group">
+    <label for="category-name">Name</label>
+    <input type="text"
+           class="form-control"
+           id="category-name"
+           ng-model="category.name"
+           placeholder="Name"
+           minlength="1"
+           maxlength="48"
+           required/>
   </div>
-</div>
+  <div class="form-group">
+    <label for="category-color">Color</label>
+    <div colorpicker
+         colorpicker-position="bottom"
+         class="form-control square"
+         ng-model="category.color"
+         ng-style="{ 'background-color': category.color }"
+         href="">
+    </div>
+  </div>
+</form>
+
+<simap-save-button on-save="save()" ng-show="categoryForm.$valid"></simap-save-button>

@@ -29,7 +29,7 @@ app.service('ItemService', [
   var firebaseRef = FirebaseService.getRef();
 
   this.createNew = function() {
-    var uid = SessionService.currentSession().uid,
+    var uid = SessionService.currentSession('uid'),
         newItemId = GuidService.generateGuid();
 
     var newItemObj = FirebaseService.getObject(ITEM_NODE + newItemId);
@@ -38,7 +38,7 @@ app.service('ItemService', [
       newItemObj.owner = uid;
       newItemObj.name = DEFAULT_ITEM_NAME;
       newItemObj.color = randomColor();
-      newItemObj.category_id = Object.keys(SessionService.currentSession().categories)[0];
+      newItemObj.category_id = Object.keys(SessionService.currentSession('categories'))[0];
       newItemObj.amount = 0;
 
       var newUnitPromise = UnitService.createNew().then(function(newUnitId) {
@@ -62,7 +62,7 @@ app.service('ItemService', [
   };
 
   this.removeOld = function(itemId) {
-    if (SessionService.currentSession().items[itemId] !== true) {
+    if (SessionService.currentSession('items')[itemId] !== true) {
       return;
     }
 

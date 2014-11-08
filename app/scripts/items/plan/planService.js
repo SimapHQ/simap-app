@@ -27,7 +27,7 @@ app.service('PlanService', [
   var firebaseRef = FirebaseService.getRef();
 
   this.createRationPlan = function(unitId) {
-    var uid = SessionService.currentSession().uid,
+    var uid = SessionService.currentSession('uid'),
         newPlanId = GuidService.generateGuid();
 
     var newPlanObj = FirebaseService.getObject(PLAN_NODE + newPlanId);

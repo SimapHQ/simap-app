@@ -43,7 +43,7 @@ app.service('GoalService', [
 
   this.getGoal = function() {
     if (syncedGoal === undefined) {
-      syncedGoal = FirebaseService.getObject(GOAL_NODE + SessionService.currentSession().goal_id);
+      syncedGoal = FirebaseService.getObject(GOAL_NODE + SessionService.currentSession('goal_id'));
     }
 
     return syncedGoal;

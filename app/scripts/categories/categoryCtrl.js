@@ -4,20 +4,30 @@ var app = angular.module('simapApp');
 
 app.controller('CategoryCtrl', [
   '$firebase',
+  '$location',
   '$routeParams',
   '$scope',
-  'CATEGORY_NODE',
+  'CATEGORIES',
+  'CategoryService',
   'FirebaseService',
   function (
     $firebase,
+    $location,
     $routeParams,
     $scope,
-    CATEGORY_NODE,
+    CATEGORIES,
+    CategoryService,
     FirebaseService
   ) {
 
-  var categoryId = $routeParams.categoryId,
-      ref = FirebaseService.getRef();
+  var categoryId = $routeParams.categoryId;
 
-  $firebase(ref.child(CATEGORY_NODE + categoryId)).$asObject().$bindTo($scope, 'category');
+  $scope.category = CategoryService.getCategories()[categoryId];
+
+  $scope.save = function() {
+    $scope.category.$save().then(function() {
+      $location.path(CATEGORIES);
+    });
+  };
+
 }]);

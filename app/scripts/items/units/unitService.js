@@ -29,7 +29,7 @@ app.service('UnitService', [
   };
 
   this.createNewWithName = function(newUnitName) {
-    var uid = SessionService.currentSession().uid,
+    var uid = SessionService.currentSession('uid'),
         newUnitId = GuidService.generateGuid();
 
     var newUnitObj = FirebaseService.getObject(UNIT_NODE + newUnitId);
