@@ -1,29 +1,29 @@
 <simap-help-header size="h3" label="'Home'"></simap-help-header>
 
 <simap-help-header size="h4" label="'Overall Progress'" help-block="progressHelp"></simap-help-header>
-<div class="form-group col-xs-12">
+<div class="form-group col-xs-12" ng-controller="ProgressCtrl">
   <div style="float:left">
     <label>Rations:</label>
     <span>TODO</span>
   </div>
   <div style="float:right;">
     <label>Baselines:</label>
-    <span></span>
+    <span>{{baselinesMet()}}/{{totalBaselines()}}</span>
   </div>
   <!-- <simap-progress-bar items="overallProgressItems"></simap-progress-bar> -->
 </div>
 
 <simap-help-header size="h4" label="'Category Breakdown'" help-block="categoryHelp"></simap-help-header>
-<div class="col-xs-12 clearfix" ng-repeat="(categoryId, category) in categories">
+<div class="col-xs-12 clearfix" ng-repeat="(categoryId, category) in categories" ng-hide="empty(items[categoryId])">
   <h4>{{category.name}}</h4>
-  <div class="form-group col-xs-12">
+  <div class="form-group col-xs-12" ng-controller="ProgressCtrl">
     <div style="float:left">
       <label>Rations:</label>
       <span>TODO</span>
     </div>
     <div style="float:right;">
       <label>Baselines:</label>
-      <span>5/13</span>
+      <span>{{baselinesMet()}}/{{totalBaselines()}}</span>
     </div>
     <!-- <simap-progress-bar items="itemLevelProgress"></simap-progress-bar> -->
   </div>
