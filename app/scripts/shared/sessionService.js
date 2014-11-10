@@ -4,14 +4,12 @@ var app = angular.module('simapApp');
 
 app.service('SessionService', [
   '$firebase',
-  '$location',
   '$log',
   'FirebaseService',
   'HOME',
   'USER_NODE',
   function(
     $firebase,
-    $location,
     $log,
     FirebaseService,
     HOME,
@@ -37,7 +35,7 @@ app.service('SessionService', [
     }
 
     if (syncedUser[key] === undefined) {
-      return {}
+      return {};
     }
 
     return syncedUser[key];
@@ -45,9 +43,7 @@ app.service('SessionService', [
 
   this.startSession = function(user) {
     syncedUser = FirebaseService.getObject(USER_NODE + user.uid);
-    return syncedUser.$loaded().then(function() {
-      $location.path(HOME);
-    }, function(error) {
+    return syncedUser.$loaded().then(undefined, function(error) {
       $log.error('error starting session', error);
       _closeSession();
     });
@@ -88,6 +84,10 @@ app.service('SessionService', [
     syncedUser[type][id] = null;
 
     return syncedUser.$save();
+  };
+
+  this.uid = function() {
+    return this.currentSession('uid');
   };
 
 }]);

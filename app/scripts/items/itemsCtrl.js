@@ -6,21 +6,17 @@ app.controller('ItemsCtrl', [
   '$location',
   '$scope',
   'ItemService',
-  'ListService',
+  'ItemsService',
   function (
     $location,
     $scope,
     ItemService,
-    ListService
+    ItemsService
     ) {
 
   $scope.helpBlock = '';
 
-  var refresh = function() {
-    ListService.getList('items').then(function(items) {
-      $scope.items = items;
-    });
-  };
+  $scope.items = ItemsService.getItems();
 
   $scope.addNewItem = function() {
     ItemService.createNew().then(function(newItemId) {
@@ -35,9 +31,8 @@ app.controller('ItemsCtrl', [
   $scope.removeItem = function(key) {
     // TODO: Ask for confirmation!
     ItemService.removeOld(key).then(function() {
-      refresh();
+      // refresh();
     });
   };
 
-  refresh();
 }]);

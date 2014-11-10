@@ -3,12 +3,12 @@
 var app = angular.module('simapApp');
 
 app.filter('simapExclude', function() {
-  return function(items, nameKey, itemToExclude) {
-    var filtered = [];
+  return function(items, valueToExclude) {
+    var filtered = {};
 
     angular.forEach(items, function(item) {
-      if (item[nameKey].trim() !== itemToExclude){
-        filtered.push(item);
+      if (item.$id !== valueToExclude){
+        filtered[item.$id] = item;
       }
     });
 

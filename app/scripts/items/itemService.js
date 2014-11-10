@@ -5,10 +5,12 @@ var app = angular.module('simapApp');
 app.service('ItemService', [
   '$firebase',
   '$q',
+  'CategoriesService',
   'DEFAULT_ITEM_NAME',
-  'FirebaseService',
+  'DEFAULT_UNIT_NAME',
   'GuidService',
   'ITEM_NODE',
+  'ItemsService',
   'PlanService',
   'randomColor',
   'SessionService',
@@ -16,73 +18,53 @@ app.service('ItemService', [
   function(
     $firebase,
     $q,
+    CategoriesService,
     DEFAULT_ITEM_NAME,
-    FirebaseService,
+    DEFAULT_UNIT_NAME,
     GuidService,
     ITEM_NODE,
+    ItemsService,
     PlanService,
     randomColor,
     SessionService,
     UnitService
   ) {
 
-  var firebaseRef = FirebaseService.getRef();
-
   this.createNew = function() {
-    var uid = SessionService.currentSession('uid'),
-        newItemId = GuidService.generateGuid();
+    return UnitService.createNew().then(function(newUnitId) {
+      return PlanService.createNew(newUnitId).then(function(newPlanId) {
+        var newItem = {
+          name: DEFAULT_ITEM_NAME,
+          color: randomColor(),
+          category_id: Object.keys(CategoriesService.getCategories())[0],
+          amount: 0,
+          units: {},
+          primary_unit: newUnitId,
+          plan_id: newPlanId
+        };
+        newItem.units[newUnitId] = true;
 
-    var newItemObj = FirebaseService.getObject(ITEM_NODE + newItemId);
-
-    return newItemObj.$loaded().then(function() {
-      newItemObj.owner = uid;
-      newItemObj.name = DEFAULT_ITEM_NAME;
-      newItemObj.color = randomColor();
-      newItemObj.category_id = Object.keys(SessionService.currentSession('categories'))[0];
-      newItemObj.amount = 0;
-
-      var newUnitPromise = UnitService.createNew().then(function(newUnitId) {
-        newItemObj.units = {};
-        newItemObj.units[newUnitId] = true;
-        newItemObj.primary_unit = newUnitId;
-
-        return PlanService.createRationPlan(newUnitId).then(function(newPlanId) {
-          newItemObj.plan_id = newPlanId;
+        return ItemsService.addNew(newItem).then(function(newItemId) {
+          return SessionService.bindToUser('items', newItemId);
         });
       });
-
-      return newUnitPromise.then(function() {
-        return newItemObj.$save();
-      }).then(function() {
-        return SessionService.bindToUser('items', newItemId);
-      });
-    }).finally(function() {
-      newItemObj.$destroy();
     });
   };
 
   this.removeOld = function(itemId) {
-    if (SessionService.currentSession('items')[itemId] !== true) {
-      return;
-    }
+    var itemObj = ItemsService.getItems()[itemId],
+        unitRemovalPromises = [];
 
-    var itemObj = FirebaseService.getObject(ITEM_NODE + itemId);
+    Object.keys(itemObj.units).forEach(function(unitId) {
+      unitRemovalPromises.push(UnitService.removeOld(unitId));
+    });
 
-    return itemObj.$loaded().then(function() {
-      var unitRemovalPromises = [];
-      Object.keys(itemObj.units).forEach(function(unitId) {
-        unitRemovalPromises.push(UnitService.removeOld(unitId));
-      });
-
-      return $q.all(unitRemovalPromises).then(function() {
-        return PlanService.removePlan(itemObj.plan_id).then(function() {
-          return $firebase(firebaseRef.child(ITEM_NODE + itemId)).$remove().then(function() {
-            return SessionService.unbindFromUser('items', itemId);
-          });
+    return $q.all(unitRemovalPromises).then(function() {
+      return PlanService.removeOld(itemObj.plan_id).then(function() {
+        return ItemsService.removeOld(itemId).then(function(removedId) {
+          return SessionService.unbindFromUser('items', removedId);
         });
       });
-    }).finally(function() {
-      itemObj.$destroy();
     });
   };
 

@@ -33,5 +33,7 @@ app.constant('DEFAULT_UNIT_NAME', 'New Unit Name');
 app.constant('RATIONED_PLAN_TYPE', 'ration');
 app.constant('BASELINE_PLAN_TYPE', 'baseline');
 
-app.constant('DEFAULT_RATION_AMOUNT', 1);
-app.constant('DEFAULT_RATION_TIME', 'day');
+app.constant('DEFAULT_PLAN_AMOUNT', 1);
+app.constant('DEFAULT_PLAN_TIME', 'day');
+
+app.constant('DEFAULT_CONVERSION_VALUE', 1.0);

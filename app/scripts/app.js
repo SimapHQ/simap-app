@@ -12,7 +12,13 @@ var app = angular.module('simapApp', ['ngAnimate',
                                       'colorpicker.module',
                                       'firebase']);
 
-app.config(['$routeProvider', '$logProvider', function ($routeProvider, $logProvider) {
+app.config([
+  '$logProvider',
+  '$routeProvider',
+  function (
+    $logProvider,
+    $routeProvider
+  ) {
   $routeProvider
     .when('/login', {
       templateUrl: 'scripts/login/login.html',
@@ -56,15 +62,25 @@ app.config(['$routeProvider', '$logProvider', function ($routeProvider, $logProv
 }]);
 
 app.run([
-  '$rootScope',
   '$location',
   '$log',
+  '$q',
+  '$rootScope',
+  'CategoriesService',
+  'HOME',
+  'ItemsService',
+  'LoginService',
   'SessionService',
   'UserService',
   function(
-    $rootScope,
     $location,
     $log,
+    $q,
+    $rootScope,
+    CategoriesService,
+    HOME,
+    ItemsService,
+    LoginService,
     SessionService,
     UserService
   ) {
@@ -84,10 +100,17 @@ app.run([
 
   $rootScope.$on('$firebaseSimpleLogin:login', function(event, user) {
     UserService.updateUser(user).then(function() {
-      SessionService.startSession(user);
+      SessionService.startSession(user).then(function() {
+        $q.all([
+          CategoriesService.refreshCategories(),
+          ItemsService.refreshItems()
+        ]).then(function() {
+          $location.path(HOME);
+        });
+      });
     }, function(error) {
       $log.error('error updating user', user, error);
-      authClient.$logout();
+      LoginService.logout();
     });
   });
 

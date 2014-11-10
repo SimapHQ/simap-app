@@ -3,26 +3,22 @@
 var app = angular.module('simapApp');
 
 app.controller('CategoryCtrl', [
-  '$firebase',
   '$location',
   '$routeParams',
   '$scope',
   'CATEGORIES',
-  'CategoryService',
-  'FirebaseService',
+  'CategoriesService',
   function (
-    $firebase,
     $location,
     $routeParams,
     $scope,
     CATEGORIES,
-    CategoryService,
-    FirebaseService
+    CategoriesService
   ) {
 
   var categoryId = $routeParams.categoryId;
 
-  $scope.category = CategoryService.getCategories()[categoryId];
+  $scope.category = CategoriesService.getCategories()[categoryId];
 
   $scope.save = function() {
     $scope.category.$save().then(function() {

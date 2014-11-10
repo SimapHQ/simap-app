@@ -4,133 +4,116 @@ var app = angular.module('simapApp');
 
 app.controller('ItemCtrl', [
   '$location',
+  '$q',
   '$routeParams',
   '$scope',
-  'CONVERSION_NODE',
-  'FirebaseService',
-  'ITEM_NODE',
-  'ListService',
-  'PLAN_NODE',
-  'SessionService',
+  'CategoriesService',
+  'ConversionsService',
+  'DEFAULT_CONVERSION_VALUE',
+  'ItemsService',
+  'PlansService',
   'UnitService',
+  'UnitsService',
   function (
     $location,
+    $q,
     $routeParams,
     $scope,
-    CONVERSION_NODE,
-    FirebaseService,
-    ITEM_NODE,
-    ListService,
-    PLAN_NODE,
-    SessionService,
-    UnitService
+    CategoriesService,
+    ConversionsService,
+    DEFAULT_CONVERSION_VALUE,
+    ItemsService,
+    PlansService,
+    UnitService,
+    UnitsService
   ) {
 
   var itemId = $routeParams.itemId;
-  var unbindConversion;
+
+  var filterUnits = function() {
+    var itemUnitIds = Object.keys($scope.item.units),
+        itemUnits = {},
+        allUnits = UnitsService.getUnits();
+
+    Object.keys(allUnits).forEach(function(unitId) {
+      if ($.inArray(unitId, itemUnitIds) >= 0) {
+        itemUnits[unitId] = allUnits[unitId];
+      }
+    });
+
+    return itemUnits;
+  };
 
   var refreshUnits = function() {
-    $scope.units = {};
-    Object.keys($scope.item.units).forEach(function(unitId) {
-      UnitService.getName(unitId).then(function(unitName) {
-        $scope.units[unitId] = {
-          id: unitId,
-          name: unitName
-        };
-      });
-    });
+    $scope.units = filterUnits();
   };
 
-  var refreshPlan = function() {
-    FirebaseService.getObject(PLAN_NODE + $scope.item.plan_id).$bindTo($scope, 'plan');
+  var initializeConversion = function(unitId) {
+    $scope.conversions[$scope.item.primary_unit][unitId] = DEFAULT_CONVERSION_VALUE;
+    $scope.updateInverse(unitId);
   };
 
-  var updatePlan = function(unitIdBeingRemoved) {
-    // Ration case
-    if ($scope.plan.adult.unit_id === unitIdBeingRemoved) {
-      $scope.plan.adult.unit_id = $scope.item.primary_unit;
-    }
 
-    if ($scope.plan.child.unit_id === unitIdBeingRemoved) {
-      $scope.plan.child.unit_id = $scope.item.primary_unit;
-    }
-
-    // Baseline case
-    if ($scope.plan.unit_id === unitIdBeingRemoved) {
-      $scope.plan.unit_id = $scope.item.primary_unit;
-    }
-  };
-
-  FirebaseService.getObject(ITEM_NODE + itemId).$bindTo($scope, 'item').then(function() {
-    refreshUnits();
-    $scope.refreshConversion();
-    refreshPlan();
-  });
-
-  ListService.getList('categories').then(function(categories) {
-    $scope.categories = categories;
-  });
+  $scope.item = ItemsService.getItems()[itemId];
+  $scope.categories = CategoriesService.getCategories();
+  $scope.units = filterUnits();
+  $scope.unitIds = Object.keys($scope.units);
+  $scope.conversions = ConversionsService.getConversions();
+  $scope.plan = PlansService.getPlans()[$scope.item.plan_id];
 
   $scope.addNewUnit = function() {
     UnitService.createNewWithName($scope.newUnitName).then(function(newUnitId) {
-      $scope.item.units[newUnitId] = true;
       $scope.newUnitName = '';
+      $scope.item.units[newUnitId] = true;
       refreshUnits();
+      initializeConversion(newUnitId);
+      $scope.item.$save();
     });
   };
 
   $scope.removeUnit = function(unitId) {
     UnitService.removeOld(unitId).then(function() {
       delete $scope.item.units[unitId];
-      delete $scope.conversion[unitId];
-      updatePlan(unitId);
+      $scope.item.$save();
       refreshUnits();
     });
   };
 
   $scope.hasMultipleUnits = function() {
-    if ($scope.units === undefined) {
-      return false;
-    }
-
-    return Object.keys($scope.units).length > 1;
+    return $scope.units !== undefined && Object.keys($scope.units).length > 1;
   };
 
-  $scope.refreshConversion = function() {
-    if (unbindConversion !== undefined) {
-      unbindConversion();
-    }
-
-    FirebaseService.getObject(CONVERSION_NODE + $scope.item.primary_unit).$bindTo($scope, 'conversion').then(function(unbindFunction) {
-      unbindConversion = unbindFunction;
-      $scope.conversion.owner = SessionService.currentSession('uid');
-
-      Object.keys($scope.conversion).forEach(function(unitId) {
-        if (unitId === 'owner') {
-          return;
-        }
-
-        if ($scope.item.units[unitId] !== true) {
-          delete $scope.conversion[unitId];
-        }
-      });
-    });
-  };
-
-  $scope.updateInverse = function(toUnitId) {
-    var inverseConversion = {owner: SessionService.currentSession('uid')},
-        invertedValue = 1 / $scope.conversion[toUnitId];
+  $scope.updateInverse = function(unitId) {
+    var invertedValue = 1 / $scope.conversions[$scope.item.primary_unit][unitId];
 
     if (!isFinite(invertedValue)) {
       return;
     }
 
-    inverseConversion[$scope.item.primary_unit] = invertedValue;
-    FirebaseService.getRef().child(CONVERSION_NODE + toUnitId).update(inverseConversion);
+    $scope.conversions[unitId][$scope.item.primary_unit] = invertedValue;
+  };
+
+  $scope.allFormsValid = function() {
+    return $scope.itemForm.$valid &&
+           $scope.primaryUnitForm.$valid &&
+           $scope.conversionsForm.$valid &&
+           $scope.planningForm.$valid;
   };
 
   $scope.save = function() {
-    $location.path('/items');
+    var savePromises = [
+      $scope.item.$save(),
+      $scope.plan.$save()
+    ];
+
+    Object.keys($scope.item.units).forEach(function(unitId) {
+      savePromises.push($scope.units[unitId].$save());
+      savePromises.push($scope.conversions[unitId].$save());
+    });
+
+    $q.all(savePromises).then(function() {
+      $location.path('/items');
+    });
   };
 
   $scope.helpBlock = 'Every piece of food or household item that you store is represented as an item. You can choose which category to group an item under, define different units for each item, and specify volume requirements for adults and children.';

@@ -3,17 +3,21 @@
 var app = angular.module('simapApp');
 
 app.controller('UnitCtrl', [
-  '$location',
   '$scope',
-  'FirebaseService',
-  'UNIT_NODE',
   function (
-    $location,
-    $scope,
-    FirebaseService,
-    UNIT_NODE
+    $scope
   ) {
 
-  FirebaseService.getObject(UNIT_NODE + $scope.unitId).$bindTo($scope, 'unit');
+  $scope.editing = false;
+
+  $scope.startEdit = function() {
+    $scope.editedUnitName = $scope.unit.name;
+    $scope.editing = true;
+  };
+
+  $scope.finishEdit = function() {
+    $scope.unit.name = $scope.editedUnitName;
+    $scope.editing = false;
+  };
 
 }]);

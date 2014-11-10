@@ -3,18 +3,20 @@
 <simap-help-header size="h4" label="'Information'" help-block="infoHelpBlock"></simap-help-header>
 
 <div class="col-xs-12">
-  <div class="form-group">
-    <label for="item-name">Name</label>
-    <input type="text" class="form-control" id="item-name" ng-model="item.name" placeholder="Name"/>
-  </div>
-  <div class="form-group">
-    <label for="new-item-category">Category</label>
-    <select ng-model="item.category_id" ng-options="key as category.name for (key, category) in categories" id="new-item-category" class="form-control"></select>
-  </div>
-  <div class="form-group">
-    <label for="item-color">Color</label>
-    <div colorpicker colorpicker-position="bottom" class="form-control square" ng-model="item.color" ng-style="{ 'background-color': item.color }" href=""></div>
-  </div>
+  <form name="itemForm">
+    <div class="form-group">
+      <label for="item-name">Name</label>
+      <input type="text" class="form-control" id="item-name" ng-model="item.name" placeholder="Name" required/>
+    </div>
+    <div class="form-group">
+      <label for="new-item-category">Category</label>
+      <select ng-model="item.category_id" ng-options="key as category.name for (key, category) in categories" id="new-item-category" class="form-control" required></select>
+    </div>
+    <div class="form-group">
+      <label for="item-color">Color</label>
+      <div colorpicker colorpicker-position="bottom" class="form-control square" ng-model="item.color" ng-style="{ 'background-color': item.color }" href=""></div>
+    </div>
+  </form>
 </div>
 
 <simap-help-header size="h4" label="'Item Units'" help-block="unitsHelpBlock"></simap-help-header>
@@ -30,11 +32,11 @@
   </div>
 </div>
 <span class="spacer"></span>
-<div ng-repeat="(unitId, _) in units" ng-controller="UnitCtrl" class="clearfix">
+<div ng-repeat="(unitId, unit) in units" ng-controller="UnitCtrl" class="clearfix">
   <div ng-hide="editing">
     <div class="col-xs-10">
       <p class="hpad-10 vpad-2">
-        <a ng-click="editing=!editing">{{unit.name}}</a>
+        <a ng-click="startEdit()">{{unit.name}}</a>
       </p>
     </div>
     <div class="col-xs-2" ng-hide="item.primary_unit === unitId">
@@ -45,8 +47,8 @@
   </div>
   <div ng-show="editing">
     <div class="col-xs-12 form-group">
-      <form ng-submit="editing=!editing">
-        <input type="text" class="form-control" ng-model="unit.name" ng-change="units[unitId].name = unit.name"/>
+      <form ng-submit="finishEdit()">
+        <input type="text" class="form-control" ng-model="editedUnitName" maxlength="16" required/>
         <input type="submit" ng-hide="true"/>
       </form>
     </div>
@@ -54,11 +56,13 @@
 </div>
 
 <div class="col-xs-12" ng-show="hasMultipleUnits()">
-  <div class="form-group">
-    <label for="master-unit">Select Primary Unit</label>
-    <select id="master-unit" class="form-control" ng-model="item.primary_unit" ng-options="id as unit.name for (id, unit) in units" ng-change="refreshConversion()">
-    </select>
-  </div>
+  <form name="primaryUnitForm">
+    <div class="form-group">
+      <label for="master-unit">Select Primary Unit</label>
+      <select id="master-unit" class="form-control" ng-model="item.primary_unit" ng-options="id as unit.name for (id, unit) in units" required>
+      </select>
+    </div>
+  </form>
 </div>
 
 <div ng-show="hasMultipleUnits()">
@@ -67,80 +71,84 @@
       <label>Define Unit Conversions</label>
     </div>
   </div>
-  <div ng-repeat="(unitId, unit) in units | simapExclude:'id':item.primary_unit" class="clearfix form-group">
-    <div class="col-xs-4 text-right vpad-6 nowrap">
-      <span>1 {{units[item.primary_unit].name}} =</span>
+  <form name="conversionsForm">
+    <div ng-repeat="(unitId, unit) in units | simapExclude:item.primary_unit" class="clearfix form-group">
+      <div class="col-xs-4 text-right vpad-6 nowrap">
+        <span>1 {{units[item.primary_unit].name}} =</span>
+      </div>
+      <div class="col-xs-4">
+        <input type="number" class="form-control" ng-model="conversions[item.primary_unit][unitId]" ng-change="updateInverse(unitId)" required>
+      </div>
+      <div class="col-xs-4 vpad-6 nowrap">
+        <span>{{units[unitId].name}}</span>
+      </div>
     </div>
-    <div class="col-xs-4">
-      <input type="number" class="form-control" ng-model="conversion[unit.id]" ng-change="updateInverse(unit.id)">
-    </div>
-    <div class="col-xs-4 vpad-6 nowrap">
-      <span>{{unit.name}}</span>
-    </div>
-  </div>
+  </form>
 </div>
 
 <simap-help-header size="h4" label="'Planning'" help-block="planningHelpBlock"></simap-help-header>
-<div class="col-xs-12">
-  <div class="form-group">
-    <label for="planning-type">Select Planning Type</label>
-    <select id="planning-type" class="form-control" ng-model="plan.type">
-      <option value="ration">Rationed</option>
-      <option value="baseline">Baseline</option>
-    </select>
-  </div>
-</div>
-
-<div ng-show="plan.type === 'ration'">
+<form name="planningForm">
   <div class="col-xs-12">
-    <label>An Adult Needs</label>
+    <div class="form-group">
+      <label for="planning-type">Select Planning Type</label>
+      <select id="planning-type" class="form-control" ng-model="plan.type" ng-disabled="!planningForm.$valid" required>
+        <option value="ration">Rationed</option>
+        <option value="baseline">Baseline</option>
+      </select>
+    </div>
   </div>
-  <div class="col-xs-4 form-group">
-    <input type="number" class="form-control" ng-model="plan.adult.amount">
-  </div>
-  <div class="col-xs-4 form-group">
-    <select class="form-control" ng-model="plan.adult.unit_id" ng-options="id as unit.name for (id, unit) in units">
-    </select>
-  </div>
-  <div class="col-xs-4 form-group">
-    <select class="form-control" ng-model="plan.adult.time">
-      <option value="day">Day</option>
-      <option value="week">Week</option>
-      <option value="month">Month</option>
-      <option value="year">Year</option>
-    </select>
-  </div>
-  <div class="col-xs-12">
-    <label>A Child Needs</label>
-  </div>
-  <div class="col-xs-4 form-group">
-    <input type="number" class="form-control" ng-model="plan.child.amount">
-  </div>
-  <div class="col-xs-4 form-group">
-    <select class="form-control" ng-model="plan.child.unit_id" ng-options="id as unit.name for (id, unit) in units">
-    </select>
-  </div>
-  <div class="col-xs-4 form-group">
-    <select class="form-control" ng-model="plan.child.time">
-      <option value="day">Day</option>
-      <option value="week">Week</option>
-      <option value="month">Month</option>
-      <option value="year">Year</option>
-    </select>
-  </div>
-</div>
 
-<div ng-show="plan.type === 'baseline'">
-  <div class="col-xs-12">
-    <label>Define Baseline</label>
+  <div ng-show="plan.type === 'ration'">
+    <div class="col-xs-12">
+      <label>An Adult Needs</label>
+    </div>
+    <div class="col-xs-4 form-group">
+      <input type="number" class="form-control" ng-model="plan.adult.amount" required>
+    </div>
+    <div class="col-xs-4 form-group">
+      <select class="form-control" ng-model="plan.adult.unit_id" ng-options="id as unit.name for (id, unit) in units" required>
+      </select>
+    </div>
+    <div class="col-xs-4 form-group">
+      <select class="form-control" ng-model="plan.adult.time" required>
+        <option value="day">Day</option>
+        <option value="week">Week</option>
+        <option value="month">Month</option>
+        <option value="year">Year</option>
+      </select>
+    </div>
+    <div class="col-xs-12">
+      <label>A Child Needs</label>
+    </div>
+    <div class="col-xs-4 form-group">
+      <input type="number" class="form-control" ng-model="plan.child.amount" required>
+    </div>
+    <div class="col-xs-4 form-group">
+      <select class="form-control" ng-model="plan.child.unit_id" ng-options="id as unit.name for (id, unit) in units" required>
+      </select>
+    </div>
+    <div class="col-xs-4 form-group">
+      <select class="form-control" ng-model="plan.child.time" required>
+        <option value="day">Day</option>
+        <option value="week">Week</option>
+        <option value="month">Month</option>
+        <option value="year">Year</option>
+      </select>
+    </div>
   </div>
-  <div class="col-xs-6 form-group">
-    <input type="number" class="form-control" ng-model="plan.amount">
-  </div>
-  <div class="col-xs-6 form-group">
-    <select class="form-control" ng-model="plan.unit_id" ng-options="id as unit.name for (id, unit) in units">
-    </select>
-  </div>
-</div>
 
-<simap-save-button on-save="save()"></simap-save-button>
+  <div ng-show="plan.type === 'baseline'">
+    <div class="col-xs-12">
+      <label>Define Baseline</label>
+    </div>
+    <div class="col-xs-6 form-group">
+      <input type="number" class="form-control" ng-model="plan.amount" required>
+    </div>
+    <div class="col-xs-6 form-group">
+      <select class="form-control" ng-model="plan.unit_id" ng-options="id as unit.name for (id, unit) in units" required>
+      </select>
+    </div>
+  </div>
+</form>
+
+<simap-save-button on-save="save()" ng-show="allFormsValid()"></simap-save-button>

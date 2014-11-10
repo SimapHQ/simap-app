@@ -1,3 +1,11 @@
+@import "color-definitions.scss";
+
 input.ng-invalid {
   border: 2px solid maroon;
+}
+
+.form-control[disabled] {
+  background-color: $second-color;
+  border: 2px solid darkorange;
+  opacity: 0.3
 }

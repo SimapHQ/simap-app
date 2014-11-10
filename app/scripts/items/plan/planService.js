@@ -3,63 +3,39 @@
 var app = angular.module('simapApp');
 
 app.service('PlanService', [
-  '$firebase',
-  'BASELINE_PLAN_TYPE',
-  'DEFAULT_RATION_AMOUNT',
-  'DEFAULT_RATION_TIME',
-  'FirebaseService',
-  'GuidService',
-  'PLAN_NODE',
+  'DEFAULT_PLAN_AMOUNT',
+  'DEFAULT_PLAN_TIME',
+  'PlansService',
   'RATIONED_PLAN_TYPE',
-  'SessionService',
   function(
-    $firebase,
-    BASELINE_PLAN_TYPE,
-    DEFAULT_RATION_AMOUNT,
-    DEFAULT_RATION_TIME,
-    FirebaseService,
-    GuidService,
-    PLAN_NODE,
-    RATIONED_PLAN_TYPE,
-    SessionService
+    DEFAULT_PLAN_AMOUNT,
+    DEFAULT_PLAN_TIME,
+    PlansService,
+    RATIONED_PLAN_TYPE
   ) {
 
-  var firebaseRef = FirebaseService.getRef();
-
-  this.createRationPlan = function(unitId) {
-    var uid = SessionService.currentSession('uid'),
-        newPlanId = GuidService.generateGuid();
-
-    var newPlanObj = FirebaseService.getObject(PLAN_NODE + newPlanId);
-
-    return newPlanObj.$loaded().then(function() {
-      newPlanObj.owner = uid;
-      newPlanObj.type = RATIONED_PLAN_TYPE;
-      newPlanObj.adult = {
-        amount: DEFAULT_RATION_AMOUNT,
+  this.createNew = function(unitId) {
+    var newPlanObj = {
+      type: RATIONED_PLAN_TYPE,
+      adult: {
+        amount: DEFAULT_PLAN_AMOUNT,
         unit_id: unitId,
-        time: DEFAULT_RATION_TIME
-      };
-      newPlanObj.child = {
-        amount: DEFAULT_RATION_AMOUNT,
+        time: DEFAULT_PLAN_TIME
+      },
+      child: {
+        amount: DEFAULT_PLAN_AMOUNT,
         unit_id: unitId,
-        time: DEFAULT_RATION_TIME
-      };
+        time: DEFAULT_PLAN_TIME
+      },
+      amount: DEFAULT_PLAN_AMOUNT,
+      unit_id: unitId
+    };
 
-      return newPlanObj.$save().then(function() {
-        return newPlanId;
-      });
-    }).finally(function() {
-      newPlanObj.$destroy();
-    });
+    return PlansService.addNew(newPlanObj);
   };
 
-  // this.createBaselinePlan = function(unitId) {
-
-  // };
-
-  this.removePlan = function(planId) {
-    return $firebase(firebaseRef.child(PLAN_NODE + planId)).$remove();
+  this.removeOld = function(planId) {
+    return PlansService.removeOld(planId);
   };
 
 }]);

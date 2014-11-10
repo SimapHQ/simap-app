@@ -4,18 +4,12 @@ var app = angular.module('simapApp');
 
 app.service('LoginService', [
   '$firebaseSimpleLogin',
-  '$location',
   '$log',
   'FirebaseService',
-  'SessionService',
-  'UserService',
   function(
     $firebaseSimpleLogin,
-    $location,
     $log,
-    FirebaseService,
-    SessionService,
-    UserService
+    FirebaseService
     ) {
 
   var authClient = $firebaseSimpleLogin(FirebaseService.getRef());
