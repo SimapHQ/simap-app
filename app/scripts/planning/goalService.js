@@ -31,7 +31,7 @@ app.service('GoalService', [
   this.updateUsersGoal = function(uid) {
     var syncedUser = FirebaseService.getObject(USER_NODE + uid);
     return syncedUser.$loaded().then(function() {
-      if (syncedUser.goal_id === undefined || syncedUser.goal_id === null) {
+      if (syncedUser.goalId === undefined || syncedUser.goalId === null) {
         return _createNewGoal(syncedUser);
       } else {
         return _updateExistingGoal(syncedUser);
@@ -43,7 +43,7 @@ app.service('GoalService', [
 
   this.getGoal = function() {
     if (syncedGoal === undefined) {
-      syncedGoal = FirebaseService.getObject(GOAL_NODE + SessionService.currentSession('goal_id'));
+      syncedGoal = FirebaseService.getObject(GOAL_NODE + SessionService.currentSession('goalId'));
     }
 
     return syncedGoal;
@@ -68,14 +68,14 @@ app.service('GoalService', [
       syncedGoal.days = DEFAULT_GOAL_DAYS;
 
       return syncedGoal.$save().then(function() {
-        syncedUser.goal_id = newGoalId;
+        syncedUser.goalId = newGoalId;
         return syncedUser.$save();
       });
     });
   };
 
   var _updateExistingGoal = function(syncedUser) {
-    syncedGoal = FirebaseService.getObject(GOAL_NODE + syncedUser.goal_id);
+    syncedGoal = FirebaseService.getObject(GOAL_NODE + syncedUser.goalId);
 
     return syncedGoal.$loaded().then(function() {
       // Update goal schema as necessary

@@ -47,7 +47,7 @@ app.service('ProgressService', [
 
   var isBaselineMet = function(itemId) {
     var item = items[itemId],
-        plan = plans[items[itemId].plan_id];
+        plan = plans[items[itemId].planId];
 
     if (plan.type !== BASELINE_PLAN_TYPE) {
       $log.error('isBaselineMet called on item with non-baseline plan', item, plan);
@@ -55,8 +55,8 @@ app.service('ProgressService', [
     }
 
     var itemAmount = item.amount;
-    if (plan.unit_id !== item.primary_unit) {
-      itemAmount = itemAmount * conversions[item.primary_unit][plan.unit_id];
+    if (plan.unitId !== item.primaryUnitId) {
+      itemAmount = itemAmount * conversions[item.primaryUnitId][plan.unitId];
     }
 
     return itemAmount >= plan.amount;
@@ -64,14 +64,14 @@ app.service('ProgressService', [
 
   var unique = function(value, index, self) {
     return self.indexOf(value) === index;
-  }
+  };
 
   var countCategoriesWithRations = function() {
     var categoriesContainingRations = [];
 
     Object.keys(items).forEach(function(itemId) {
-      if (plans[items[itemId].plan_id].type === RATIONED_PLAN_TYPE) {
-        categoriesContainingRations.push(items[itemId].category_id);
+      if (plans[items[itemId].planId].type === RATIONED_PLAN_TYPE) {
+        categoriesContainingRations.push(items[itemId].categoryId);
       }
     });
 
@@ -82,8 +82,8 @@ app.service('ProgressService', [
     var itemCount = 0;
 
     Object.keys(items).forEach(function(itemId) {
-      if (plans[items[itemId].plan_id].type === RATIONED_PLAN_TYPE &&
-          items[itemId].category_id === categoryId) {
+      if (plans[items[itemId].planId].type === RATIONED_PLAN_TYPE &&
+          items[itemId].categoryId === categoryId) {
         itemCount += 1;
       }
     });
@@ -108,12 +108,12 @@ app.service('ProgressService', [
     var adultAmount = plan.adult.amount,
         childAmount = plan.child.amount;
 
-    if (plan.adult.unit_id !== item.primary_unit) {
-      adultAmount = adultAmount * conversions[plan.adult.unit_id][item.primary_unit];
+    if (plan.adult.unitId !== item.primaryUnitId) {
+      adultAmount = adultAmount * conversions[plan.adult.unitId][item.primaryUnitId];
     }
 
-    if (plan.child.unit_id !== item.primary_unit) {
-      childAmount = childAmount * conversions[plan.child.unit_id][item.primary_unit];
+    if (plan.child.unitId !== item.primaryUnitId) {
+      childAmount = childAmount * conversions[plan.child.unitId][item.primaryUnitId];
     }
 
     // Convert amount to day-scope, if not already.
@@ -129,7 +129,7 @@ app.service('ProgressService', [
 
   var calculateItemProgress = function(itemId) {
     var item = items[itemId],
-        plan = plans[items[itemId].plan_id];
+        plan = plans[items[itemId].planId];
 
     if (plan.type !== RATIONED_PLAN_TYPE) {
       $log.error('calculateItemProgress called on item with non-ration plan', item, plan);
@@ -146,8 +146,8 @@ app.service('ProgressService', [
         itemProgress = [];
 
     Object.keys(items).forEach(function(itemId) {
-      if ((categoryId !== undefined && items[itemId].category_id !== categoryId) ||
-          plans[items[itemId].plan_id].type !== RATIONED_PLAN_TYPE) {
+      if ((categoryId !== undefined && items[itemId].categoryId !== categoryId) ||
+          plans[items[itemId].planId].type !== RATIONED_PLAN_TYPE) {
         return;
       }
 
@@ -170,11 +170,11 @@ app.service('ProgressService', [
 
     Object.keys(items).forEach(function(itemId) {
       var item = items[itemId];
-      if (categoryId !== undefined && item.category_id !== categoryId) {
+      if (categoryId !== undefined && item.categoryId !== categoryId) {
         return;
       }
 
-      if (plans[item.plan_id].type === BASELINE_PLAN_TYPE && isBaselineMet(itemId)) {
+      if (plans[item.planId].type === BASELINE_PLAN_TYPE && isBaselineMet(itemId)) {
         met += 1;
       }
     });
@@ -187,11 +187,11 @@ app.service('ProgressService', [
 
     Object.keys(items).forEach(function(itemId) {
       var item = items[itemId];
-      if (categoryId !== undefined && item.category_id !== categoryId) {
+      if (categoryId !== undefined && item.categoryId !== categoryId) {
         return;
       }
 
-      if (plans[item.plan_id].type === BASELINE_PLAN_TYPE) {
+      if (plans[item.planId].type === BASELINE_PLAN_TYPE) {
         total += 1;
       }
     });
@@ -221,8 +221,8 @@ app.service('ProgressService', [
         rationItemCount = countRationItemsInCategory(categoryId);
 
     Object.keys(items).forEach(function(itemId) {
-      if (items[itemId].category_id !== categoryId ||
-          plans[items[itemId].plan_id].type !== RATIONED_PLAN_TYPE) {
+      if (items[itemId].categoryId !== categoryId ||
+          plans[items[itemId].planId].type !== RATIONED_PLAN_TYPE) {
         return;
       }
 

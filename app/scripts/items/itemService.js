@@ -36,11 +36,11 @@ app.service('ItemService', [
         var newItem = {
           name: DEFAULT_ITEM_NAME,
           color: randomColor(),
-          category_id: Object.keys(CategoriesService.getCategories())[0],
+          categoryId: Object.keys(CategoriesService.getCategories())[0],
           amount: 0,
           units: {},
-          primary_unit: newUnitId,
-          plan_id: newPlanId
+          primaryUnitId: newUnitId,
+          planId: newPlanId
         };
         newItem.units[newUnitId] = true;
 
@@ -60,7 +60,7 @@ app.service('ItemService', [
     });
 
     return $q.all(unitRemovalPromises).then(function() {
-      return PlanService.removeOld(itemObj.plan_id).then(function() {
+      return PlanService.removeOld(itemObj.planId).then(function() {
         return ItemsService.removeOld(itemId).then(function(removedId) {
           return SessionService.unbindFromUser('items', removedId);
         });

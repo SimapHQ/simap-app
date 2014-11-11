@@ -10,7 +10,7 @@
     </div>
     <div class="form-group">
       <label for="new-item-category">Category</label>
-      <select ng-model="item.category_id" ng-options="key as category.name for (key, category) in categories" id="new-item-category" class="form-control" required></select>
+      <select ng-model="item.categoryId" ng-options="key as category.name for (key, category) in categories" id="new-item-category" class="form-control" required></select>
     </div>
     <div class="form-group">
       <label for="item-color">Color</label>
@@ -39,7 +39,7 @@
         <a ng-click="startEdit()">{{unit.name}}</a>
       </p>
     </div>
-    <div class="col-xs-2" ng-hide="item.primary_unit === unitId">
+    <div class="col-xs-2" ng-hide="item.primaryUnitId === unitId">
       <a ng-click="removeUnit(unitId)">
         <span class="glyphicon glyphicon-trash"></span>
       </a>
@@ -59,7 +59,7 @@
   <form name="primaryUnitForm">
     <div class="form-group">
       <label for="master-unit">Select Primary Unit</label>
-      <select id="master-unit" class="form-control" ng-model="item.primary_unit" ng-options="id as unit.name for (id, unit) in units" required>
+      <select id="master-unit" class="form-control" ng-model="item.primaryUnitId" ng-options="id as unit.name for (id, unit) in units" required>
       </select>
     </div>
   </form>
@@ -72,12 +72,12 @@
     </div>
   </div>
   <form name="conversionsForm">
-    <div ng-repeat="(unitId, unit) in units | simapExclude:item.primary_unit" class="clearfix form-group">
+    <div ng-repeat="(unitId, unit) in units | simapExclude:item.primaryUnitId" class="clearfix form-group">
       <div class="col-xs-4 text-right vpad-6 nowrap">
-        <span>1 {{units[item.primary_unit].name}} =</span>
+        <span>1 {{units[item.primaryUnitId].name}} =</span>
       </div>
       <div class="col-xs-4">
-        <input type="number" class="form-control" ng-model="conversions[item.primary_unit][unitId]" ng-change="updateInverse(unitId)" required>
+        <input type="number" class="form-control" ng-model="conversions[item.primaryUnitId][unitId]" ng-change="updateInverse(unitId)" required>
       </div>
       <div class="col-xs-4 vpad-6 nowrap">
         <span>{{units[unitId].name}}</span>
@@ -106,7 +106,7 @@
       <input type="number" class="form-control" ng-model="plan.adult.amount" required>
     </div>
     <div class="col-xs-4 form-group">
-      <select class="form-control" ng-model="plan.adult.unit_id" ng-options="id as unit.name for (id, unit) in units" required>
+      <select class="form-control" ng-model="plan.adult.unitId" ng-options="id as unit.name for (id, unit) in units" required>
       </select>
     </div>
     <div class="col-xs-4 form-group">
@@ -124,7 +124,7 @@
       <input type="number" class="form-control" ng-model="plan.child.amount" required>
     </div>
     <div class="col-xs-4 form-group">
-      <select class="form-control" ng-model="plan.child.unit_id" ng-options="id as unit.name for (id, unit) in units" required>
+      <select class="form-control" ng-model="plan.child.unitId" ng-options="id as unit.name for (id, unit) in units" required>
       </select>
     </div>
     <div class="col-xs-4 form-group">
@@ -145,7 +145,7 @@
       <input type="number" class="form-control" ng-model="plan.amount" required>
     </div>
     <div class="col-xs-6 form-group">
-      <select class="form-control" ng-model="plan.unit_id" ng-options="id as unit.name for (id, unit) in units" required>
+      <select class="form-control" ng-model="plan.unitId" ng-options="id as unit.name for (id, unit) in units" required>
       </select>
     </div>
   </div>

@@ -37,8 +37,8 @@ app.service('UserService', [
   var _createNewUser = function(user, syncedUser) {
     syncedUser.uid = user.uid;
     syncedUser.provider = user.provider;
-    syncedUser.provider_uid = user.id;
-    syncedUser.display_name = user.displayName;
+    syncedUser.providerUid = user.id;
+    syncedUser.displayName = user.displayName;
 
     return syncedUser.$save().then(function() {
       return _postUpdate(user);
@@ -46,7 +46,7 @@ app.service('UserService', [
   };
 
   var _updateExistingUser = function(user, syncedUser) {
-    syncedUser.display_name = user.displayName;
+    syncedUser.displayName = user.displayName;
     return syncedUser.$save().then(function() {
       return _postUpdate(user);
     });

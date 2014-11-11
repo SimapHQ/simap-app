@@ -32,7 +32,7 @@ app.service('PlansService', [
 
     var planIds = [];
     Object.keys(items).forEach(function(itemId) {
-      planIds.push(items[itemId].plan_id);
+      planIds.push(items[itemId].planId);
     });
 
     var loadedPromises = [];

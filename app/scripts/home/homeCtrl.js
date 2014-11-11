@@ -29,7 +29,7 @@ angular.module('simapApp').controller('HomeCtrl', [
 
     var items = ItemsService.getItems();
     Object.keys(items).forEach(function(itemId) {
-      $scope.items[items[itemId].category_id][itemId] = items[itemId];
+      $scope.items[items[itemId].categoryId][itemId] = items[itemId];
     });
   };
 

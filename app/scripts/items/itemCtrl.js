@@ -49,7 +49,7 @@ app.controller('ItemCtrl', [
   };
 
   var initializeConversion = function(unitId) {
-    $scope.conversions[$scope.item.primary_unit][unitId] = DEFAULT_CONVERSION_VALUE;
+    $scope.conversions[$scope.item.primaryUnitId][unitId] = DEFAULT_CONVERSION_VALUE;
     $scope.updateInverse(unitId);
   };
 
@@ -59,7 +59,7 @@ app.controller('ItemCtrl', [
   $scope.units = filterUnits();
   $scope.unitIds = Object.keys($scope.units);
   $scope.conversions = ConversionsService.getConversions();
-  $scope.plan = PlansService.getPlans()[$scope.item.plan_id];
+  $scope.plan = PlansService.getPlans()[$scope.item.planId];
 
   $scope.addNewUnit = function() {
     UnitService.createNewWithName($scope.newUnitName).then(function(newUnitId) {
@@ -84,13 +84,13 @@ app.controller('ItemCtrl', [
   };
 
   $scope.updateInverse = function(unitId) {
-    var invertedValue = 1 / $scope.conversions[$scope.item.primary_unit][unitId];
+    var invertedValue = 1 / $scope.conversions[$scope.item.primaryUnitId][unitId];
 
     if (!isFinite(invertedValue)) {
       return;
     }
 
-    $scope.conversions[unitId][$scope.item.primary_unit] = invertedValue;
+    $scope.conversions[unitId][$scope.item.primaryUnitId] = invertedValue;
   };
 
   $scope.allFormsValid = function() {

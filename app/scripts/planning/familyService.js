@@ -29,7 +29,7 @@ app.service('FamilyService', [
   this.updateUsersFamily = function(uid) {
     var syncedUser = FirebaseService.getObject(USER_NODE + uid);
     return syncedUser.$loaded().then(function() {
-      if (syncedUser.family_id === undefined || syncedUser.family_id === null) {
+      if (syncedUser.familyId === undefined || syncedUser.familyId === null) {
         return _createNewFamily(syncedUser);
       } else {
         return _updateExistingFamily(syncedUser);
@@ -41,7 +41,7 @@ app.service('FamilyService', [
 
   this.getFamily = function() {
     if (syncedFamily === undefined) {
-      syncedFamily = FirebaseService.getObject(FAMILY_NODE + SessionService.currentSession().family_id);
+      syncedFamily = FirebaseService.getObject(FAMILY_NODE + SessionService.currentSession().familyId);
     }
 
     return syncedFamily;
@@ -57,14 +57,14 @@ app.service('FamilyService', [
       syncedFamily.children = DEFAULT_FAMILY_SIZE_CHILDREN;
 
       return syncedFamily.$save().then(function() {
-        syncedUser.family_id = newFamilyId;
+        syncedUser.familyId = newFamilyId;
         return syncedUser.$save();
       });
     });
   };
 
   var _updateExistingFamily = function(syncedUser) {
-    syncedFamily = FirebaseService.getObject(FAMILY_NODE + syncedUser.family_id);
+    syncedFamily = FirebaseService.getObject(FAMILY_NODE + syncedUser.familyId);
 
     return syncedFamily.$loaded().then(function() {
       // Update family schema as necessary

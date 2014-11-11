@@ -19,16 +19,16 @@ app.service('PlanService', [
       type: RATIONED_PLAN_TYPE,
       adult: {
         amount: DEFAULT_PLAN_AMOUNT,
-        unit_id: unitId,
+        unitId: unitId,
         time: DEFAULT_PLAN_TIME
       },
       child: {
         amount: DEFAULT_PLAN_AMOUNT,
-        unit_id: unitId,
+        unitId: unitId,
         time: DEFAULT_PLAN_TIME
       },
       amount: DEFAULT_PLAN_AMOUNT,
-      unit_id: unitId
+      unitId: unitId
     };
 
     return PlansService.addNew(newPlanObj);
