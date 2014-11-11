@@ -62,6 +62,35 @@ app.service('ProgressService', [
     return itemAmount >= plan.amount;
   };
 
+  var unique = function(value, index, self) {
+    return self.indexOf(value) === index;
+  }
+
+  var countCategoriesWithRations = function() {
+    var categoriesContainingRations = [];
+
+    Object.keys(items).forEach(function(itemId) {
+      if (plans[items[itemId].plan_id].type === RATIONED_PLAN_TYPE) {
+        categoriesContainingRations.push(items[itemId].category_id);
+      }
+    });
+
+    return categoriesContainingRations.filter(unique).length;
+  };
+
+  var countRationItemsInCategory = function(categoryId) {
+    var itemCount = 0;
+
+    Object.keys(items).forEach(function(itemId) {
+      if (plans[items[itemId].plan_id].type === RATIONED_PLAN_TYPE &&
+          items[itemId].category_id === categoryId) {
+        itemCount += 1;
+      }
+    });
+
+    return itemCount;
+  };
+
   var convertToPerDay = function(amount, from) {
     if (from === TIME_DAY) {
       return amount;
@@ -131,7 +160,7 @@ app.service('ProgressService', [
 
     totalProgress = itemProgress.reduce(function(previousValue, currentValue) {
       return previousValue + (currentValue / itemProgress.length);
-    });
+    }, 0.0);
 
     return totalProgress;
   };
@@ -173,12 +202,13 @@ app.service('ProgressService', [
   this.calculateRationProgress = _calculateRationProgress;
 
   this.getOverallProgressBarItems = function() {
-    var items = {};
+    var items = {},
+        categoriesWithRationsCount = countCategoriesWithRations();
 
     Object.keys(categories).forEach(function(categoryId) {
       items[categoryId] = {
         name: categories[categoryId],
-        width: _calculateRationProgress(categoryId),
+        width: _calculateRationProgress(categoryId) / categoriesWithRationsCount,
         color: categories[categoryId].color
       };
     });
@@ -187,7 +217,8 @@ app.service('ProgressService', [
   };
 
   this.getCategoryProgressBarItems = function(categoryId) {
-    var progressItems = {};
+    var progressItems = {},
+        rationItemCount = countRationItemsInCategory(categoryId);
 
     Object.keys(items).forEach(function(itemId) {
       if (items[itemId].category_id !== categoryId ||
@@ -197,7 +228,7 @@ app.service('ProgressService', [
 
       progressItems[itemId] = {
         name: items[itemId].name,
-        width: calculateItemProgress(itemId),
+        width: calculateItemProgress(itemId) / rationItemCount,
         color: items[itemId].color
       };
     });
