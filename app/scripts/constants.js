@@ -6,7 +6,7 @@ app.constant('HOME', '/home');
 app.constant('LOGIN', '/login');
 app.constant('CATEGORIES', '/categories');
 
-app.constant('FIREBASE_URL', 'https://simap-test.firebaseio.com/');
+app.constant('FIREBASE_URL', 'https://simap-test.firebaseio.com/userData');
 
 app.constant('USER_NODE', 'user/');
 app.constant('FAMILY_NODE', 'family/');

@@ -6,7 +6,7 @@ var async = require('async'),
     firebaseTokenGenerator = require('firebase-token-generator');
 
 var TARGET = 'simap-test',
-    FIREBASE_URL = 'https://' + TARGET + '.firebaseio.com',
+    FIREBASE_URL = 'https://' + TARGET + '.firebaseio.com/userData',
     PERMISSION_DENIED = /PERMISSION_DENIED/;
 
 var secret = JSON.parse(fs.readFileSync('/Users/drautb/.firebases/' + TARGET)).token,
