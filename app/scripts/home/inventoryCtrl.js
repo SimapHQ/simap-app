@@ -27,6 +27,11 @@ angular.module('simapApp').controller('InventoryCtrl', [
   };
 
   $scope.applyUpdate = function(item) {
+    if ($scope.updatingAmount === undefined || $scope.updateAmount === null) {
+      $scope.updatingInventory = false;
+      return;
+    }
+
     var amount = $scope.updateAmount * $scope.modifier;
 
     if (item.primaryUnitId !== $scope.updateUnit.$id) {

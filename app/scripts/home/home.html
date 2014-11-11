@@ -48,10 +48,10 @@
     </div>
     <div ng-show="updatingInventory" class="update-inventory">
       <div class="clearfix col-md-5 form-group">
-        <input type="number" class="form-control" ng-model="updateAmount"/>
+        <input type="number" class="form-control" ng-model="updateAmount" min="0" required/>
       </div>
       <div class="clearfix col-md-5 form-group">
-        <select class="form-control" ng-model="updateUnit" ng-options="unit.name for (id, unit) in itemUnits[itemId]"></select>
+        <select class="form-control" ng-model="updateUnit" ng-options="unit.name for (id, unit) in itemUnits[itemId]" required></select>
       </div>
       <div class="clearfix col-md-1 form-group text-right">
         <div class="col-xs-12 text-right form-group vpad-8">
