@@ -9,6 +9,10 @@ app.directive('simapProgressBar', function() {
 
     Object.keys(items).forEach(function(item) {
       item = items[item];
+      if (item.width === 0.0) {
+        return;
+      }
+
       var segment =  angular.element('<div class=\"segment\"></div>');
       segment.css({
         backgroundColor: item.color,

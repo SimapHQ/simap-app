@@ -2,18 +2,35 @@
 
 angular.module('simapApp').controller('ProgressCtrl', [
   '$scope',
+  'CategoriesService',
   'ProgressService',
   function (
     $scope,
+    CategoriesService,
     ProgressService
   ) {
 
+  var refreshProgressBars = function() {
+    $scope.overallProgressBarItems = ProgressService.getOverallProgressBarItems();
+    $scope.progressBarItems = {};
+
+    Object.keys(CategoriesService.getCategories()).forEach(function(categoryId) {
+      $scope.progressBarItems[categoryId] = ProgressService.getCategoryProgressBarItems(categoryId);
+    });
+  };
+
   $scope.baselinesMet = function() {
-    return ProgressService.countBaselines($scope.categoryId).met;
+    return ProgressService.countMetBaselines($scope.categoryId);
   };
 
   $scope.totalBaselines = function() {
-    return ProgressService.countBaselines($scope.categoryId).total;
+    return ProgressService.countTotalBaselines($scope.categoryId);
   };
+
+  $scope.rationProgress = function() {
+    return ProgressService.calculateRationProgress($scope.categoryId) * 100;
+  };
+
+  refreshProgressBars();
 
 }]);

@@ -7,33 +7,50 @@ app.service('ProgressService', [
   'BASELINE_PLAN_TYPE',
   'CategoriesService',
   'ConversionsService',
+  'DAYS_IN_MONTH',
+  'DAYS_IN_WEEK',
+  'DAYS_IN_YEAR',
+  'FamilyService',
   'GoalService',
   'ItemsService',
   'PlansService',
-  'UnitsService',
+  'RATIONED_PLAN_TYPE',
+  'TIME_DAY',
+  'TIME_MONTH',
+  'TIME_WEEK',
+  'TIME_YEAR',
   function (
     $log,
     BASELINE_PLAN_TYPE,
     CategoriesService,
     ConversionsService,
+    DAYS_IN_MONTH,
+    DAYS_IN_WEEK,
+    DAYS_IN_YEAR,
+    FamilyService,
     GoalService,
     ItemsService,
     PlansService,
-    UnitsService
+    RATIONED_PLAN_TYPE,
+    TIME_DAY,
+    TIME_MONTH,
+    TIME_WEEK,
+    TIME_YEAR
   ) {
 
   var categories = CategoriesService.getCategories();
   var items = ItemsService.getItems();
-  var units = UnitsService.getUnits();
   var conversions = ConversionsService.getConversions();
   var plans = PlansService.getPlans();
+  var goal = GoalService.getGoal();
+  var family = FamilyService.getFamily();
 
   var isBaselineMet = function(itemId) {
     var item = items[itemId],
         plan = plans[items[itemId].plan_id];
 
     if (plan.type !== BASELINE_PLAN_TYPE) {
-      $log.warn('isBaselineMet called on item with non-baseline plan', item, plan);
+      $log.error('isBaselineMet called on item with non-baseline plan', item, plan);
       return;
     }
 
@@ -45,9 +62,99 @@ app.service('ProgressService', [
     return itemAmount >= plan.amount;
   };
 
-  this.countBaselines = function(categoryId) {
-    var met = 0,
-        total = 0;
+  var convertToPerDay = function(amount, from) {
+    if (from === TIME_DAY) {
+      return amount;
+    } else if (from === TIME_WEEK) {
+      return amount / DAYS_IN_WEEK;
+    } else if (from === TIME_MONTH) {
+      return amount / DAYS_IN_MONTH;
+    } else if (from === TIME_YEAR) {
+      return amount / DAYS_IN_YEAR;
+    }
+  };
+
+  var calculateRationGoal = function(item, plan) {
+    // Convert amounts to primary units
+    var adultAmount = plan.adult.amount,
+        childAmount = plan.child.amount;
+
+    if (plan.adult.unit_id !== item.primary_unit) {
+      adultAmount = adultAmount * conversions[plan.adult.unit_id][item.primary_unit];
+    }
+
+    if (plan.child.unit_id !== item.primary_unit) {
+      childAmount = childAmount * conversions[plan.child.unit_id][item.primary_unit];
+    }
+
+    // Convert amount to day-scope, if not already.
+    adultAmount = convertToPerDay(adultAmount, plan.adult.time);
+    childAmount = convertToPerDay(childAmount, plan.child.time);
+
+    // Account for each family member
+    adultAmount = adultAmount * family.adults;
+    childAmount = childAmount * family.children;
+
+    return adultAmount + childAmount;
+  };
+
+  var calculateItemProgress = function(itemId) {
+    var item = items[itemId],
+        plan = plans[items[itemId].plan_id];
+
+    if (plan.type !== RATIONED_PLAN_TYPE) {
+      $log.error('calculateItemProgress called on item with non-ration plan', item, plan);
+      return;
+    }
+
+    var neededPerDay = calculateRationGoal(item, plan);
+
+    return Math.min(item.amount / (neededPerDay * goal.days), 1.0);
+  };
+
+  var _calculateRationProgress = function(categoryId) {
+    var totalProgress = 0.0,
+        itemProgress = [];
+
+    Object.keys(items).forEach(function(itemId) {
+      if ((categoryId !== undefined && items[itemId].category_id !== categoryId) ||
+          plans[items[itemId].plan_id].type !== RATIONED_PLAN_TYPE) {
+        return;
+      }
+
+      itemProgress.push(calculateItemProgress(itemId));
+    });
+
+    if (itemProgress.length === 0) {
+      return 0;
+    }
+
+    totalProgress = itemProgress.reduce(function(previousValue, currentValue) {
+      return previousValue + (currentValue / itemProgress.length);
+    });
+
+    return totalProgress;
+  };
+
+  this.countMetBaselines = function(categoryId) {
+    var met = 0;
+
+    Object.keys(items).forEach(function(itemId) {
+      var item = items[itemId];
+      if (categoryId !== undefined && item.category_id !== categoryId) {
+        return;
+      }
+
+      if (plans[item.plan_id].type === BASELINE_PLAN_TYPE && isBaselineMet(itemId)) {
+        met += 1;
+      }
+    });
+
+    return met;
+  };
+
+  this.countTotalBaselines = function(categoryId) {
+    var total = 0;
 
     Object.keys(items).forEach(function(itemId) {
       var item = items[itemId];
@@ -57,18 +164,45 @@ app.service('ProgressService', [
 
       if (plans[item.plan_id].type === BASELINE_PLAN_TYPE) {
         total += 1;
-
-        if (isBaselineMet(itemId)) {
-          met += 1;
-        }
       }
     });
 
-    return {met: met, total: total};
+    return total;
   };
 
-  this.getItemProgress = function(itemId) {
+  this.calculateRationProgress = _calculateRationProgress;
 
+  this.getOverallProgressBarItems = function() {
+    var items = {};
+
+    Object.keys(categories).forEach(function(categoryId) {
+      items[categoryId] = {
+        name: categories[categoryId],
+        width: _calculateRationProgress(categoryId),
+        color: categories[categoryId].color
+      };
+    });
+
+    return items;
+  };
+
+  this.getCategoryProgressBarItems = function(categoryId) {
+    var progressItems = {};
+
+    Object.keys(items).forEach(function(itemId) {
+      if (items[itemId].category_id !== categoryId ||
+          plans[items[itemId].plan_id].type !== RATIONED_PLAN_TYPE) {
+        return;
+      }
+
+      progressItems[itemId] = {
+        name: items[itemId].name,
+        width: calculateItemProgress(itemId),
+        color: items[itemId].color
+      };
+    });
+
+    return progressItems;
   };
 
 }]);
