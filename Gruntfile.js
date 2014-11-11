@@ -1,6 +1,8 @@
 // Generated on 2014-08-31 using generator-angular 0.9.5
 'use strict';
 
+/*jshint camelcase: false */
+
 // # Globbing
 // for performance reasons we're only matching one level down:
 // 'test/spec/{,*/}*.js'
@@ -360,11 +362,11 @@ module.exports = function (grunt) {
           cwd: '.',
           src: 'bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*',
           dest: '<%= yeoman.dist %>'
-        }, { 
-          expand: true, 
-          cwd: '.', 
-          src: 'bower_components/font-awesome/fonts/*', 
-          dest: '<%= yeoman.dist %>' 
+        }, {
+          expand: true,
+          cwd: '.',
+          src: 'bower_components/font-awesome/fonts/*',
+          dest: '<%= yeoman.dist %>'
         }]
       },
       styles: {
@@ -413,7 +415,7 @@ module.exports = function (grunt) {
     },
 
     execute: {
-      update_security_rules: {
+      updateSecurityRules: {
         src: ['test/acceptance/firebase/updateSecurityRules.js']
       }
     }
@@ -450,7 +452,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-execute');
   grunt.loadNpmTasks('grunt-jasmine-node');
   grunt.registerTask('acceptance', [
-    'execute:update_security_rules',
+    'execute:updateSecurityRules',
     'jasmine_node'
   ]);
 

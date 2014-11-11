@@ -3,14 +3,18 @@
 /**
  * Main module of the application.
  */
-var app = angular.module('simapApp', ['ngAnimate',
-                                      'ngCookies',
-                                      'ngResource',
-                                      'ngRoute',
-                                      'ngSanitize',
-                                      'ngTouch',
-                                      'colorpicker.module',
-                                      'firebase']);
+var app = angular.module('simapApp', [
+  'angulartics',
+  'angulartics.google.analytics',
+  'colorpicker.module',
+  'firebase',
+  'ngAnimate',
+  'ngCookies',
+  'ngResource',
+  'ngRoute',
+  'ngSanitize',
+  'ngTouch'
+]);
 
 app.config([
   '$logProvider',
