@@ -3,14 +3,12 @@
 angular.module('simapApp').controller('HomeCtrl', [
   '$scope',
   'CategoriesService',
-  'ConversionsService',
   'ItemsService',
   'PlansService',
   'UnitsService',
   function (
     $scope,
     CategoriesService,
-    ConversionsService,
     ItemsService,
     PlansService,
     UnitsService
@@ -19,8 +17,8 @@ angular.module('simapApp').controller('HomeCtrl', [
   var refreshHomeData = function() {
     $scope.categories = CategoriesService.getCategories();
     $scope.items = {};
+    $scope.itemUnits = {};
     $scope.units = UnitsService.getUnits();
-    $scope.conversions = ConversionsService.getConversions();
     $scope.plans = PlansService.getPlans();
 
     Object.keys($scope.categories).forEach(function(categoryId) {
@@ -30,6 +28,11 @@ angular.module('simapApp').controller('HomeCtrl', [
     var items = ItemsService.getItems();
     Object.keys(items).forEach(function(itemId) {
       $scope.items[items[itemId].categoryId][itemId] = items[itemId];
+
+      $scope.itemUnits[itemId] = {};
+      Object.keys(items[itemId].units).forEach(function(unitId) {
+        $scope.itemUnits[itemId][unitId] = $scope.units[unitId];
+      });
     });
   };
 
