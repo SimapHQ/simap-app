@@ -15,15 +15,15 @@ var secret = JSON.parse(fs.readFileSync('/Users/drautb/.firebases/' + TARGET)).t
 var testUserA = {
   uid: 'test:123',
   provider: 'test',
-  provider_uid: '123',
-  display_name: 'drautb-test-a'
+  providerUid: '123',
+  displayName: 'drautb-test-a'
 };
 
 var testUserB = {
   uid: 'test:456',
   provider: 'test',
-  provider_uid: '456',
-  display_name: 'drautb-test-b'
+  providerUid: '456',
+  displayName: 'drautb-test-b'
 };
 
 var baseUserState = {};
@@ -87,8 +87,8 @@ describe('Firebase Security Rules', function() {
       testUser = {
         uid: 'agent:007',
         provider: 'agent',
-        provider_uid: '007',
-        display_name: 'Bond, James Bond'
+        providerUid: '007',
+        displayName: 'Bond, James Bond'
       };
 
       setup({}, testUser, done);
@@ -110,8 +110,8 @@ describe('Firebase Security Rules', function() {
       });
     });
 
-    it('should not let the user register whose provider_uid is absent from the uid', function(done) {
-      testUser.provider_uid = 'blah';
+    it('should not let the user register whose providerUid is absent from the uid', function(done) {
+      testUser.providerUid = 'blah';
       testRef.child('/user/' + testUser.uid).set(testUser, function(error) {
         expect(error.code).toMatch(PERMISSION_DENIED);
         done();
@@ -215,39 +215,39 @@ describe('Firebase Security Rules', function() {
       });
     });
 
-    describe('provider_uid', function() {
-      it('should not allow the user to change their provider_uid', function(done) {
-        testRef.child('/user/' + testUserA.uid + '/provider_uid').set('new-provider-uid', function(error) {
+    describe('providerUid', function() {
+      it('should not allow the user to change their providerUid', function(done) {
+        testRef.child('/user/' + testUserA.uid + '/providerUid').set('new-provider-uid', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
       });
 
-      it('should not allow the user to delete their provider_uid', function(done) {
-        testRef.child('/user/' + testUserA.uid + '/provider_uid').remove(function(error) {
+      it('should not allow the user to delete their providerUid', function(done) {
+        testRef.child('/user/' + testUserA.uid + '/providerUid').remove(function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
       });
     });
 
-    describe('display_name', function() {
-      it('should allow the user to change their display_name', function(done) {
-        testRef.child('/user/' + testUserA.uid + '/display_name').set('new-display-name', function(error) {
+    describe('displayName', function() {
+      it('should allow the user to change their displayName', function(done) {
+        testRef.child('/user/' + testUserA.uid + '/displayName').set('new-display-name', function(error) {
           expect(error).toBe(null);
           done();
         });
       });
 
-      it('should not allow the user to use an empty display_name', function(done) {
-        testRef.child('/user/' + testUserA.uid + '/display_name').set('', function(error) {
+      it('should not allow the user to use an empty displayName', function(done) {
+        testRef.child('/user/' + testUserA.uid + '/displayName').set('', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
       });
 
-      it('should not allow the user to delete their display_name', function(done) {
-        testRef.child('/user/' + testUserA.uid + '/display_name').remove(function(error) {
+      it('should not allow the user to delete their displayName', function(done) {
+        testRef.child('/user/' + testUserA.uid + '/displayName').remove(function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
@@ -256,14 +256,14 @@ describe('Firebase Security Rules', function() {
 
     describe('family', function() {
       it('should allow the user to index their family', function(done) {
-        testRef.child('/user/' + testUserA.uid + '/family_id').set('fid1', function(error) {
+        testRef.child('/user/' + testUserA.uid + '/familyId').set('fid1', function(error) {
           expect(error).toBe(null);
           done();
         });
       });
 
       it('should not allow the user to index another user\'s family', function(done) {
-        testRef.child('/user/' + testUserA.uid + '/family_id').set('fid2', function(error) {
+        testRef.child('/user/' + testUserA.uid + '/familyId').set('fid2', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
@@ -279,7 +279,7 @@ describe('Firebase Security Rules', function() {
       });
 
       it('should not allow the user to index another user\'s goal', function(done) {
-        testRef.child('/user/' + testUserA.uid + '/goal').set('gid2', function(error) {
+        testRef.child('/user/' + testUserA.uid + '/goalId').set('gid2', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
@@ -341,7 +341,7 @@ describe('Firebase Security Rules', function() {
       });
 
       it('should not allow the user to modify another user\'s data', function(done) {
-        testRef.child('/user/' + testUserB.uid + '/display_name').set('mine now!', function(error) {
+        testRef.child('/user/' + testUserB.uid + '/displayName').set('mine now!', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
@@ -846,13 +846,13 @@ describe('Firebase Security Rules', function() {
         owner: testUserA.uid,
         name: 'My new item',
         color: '#ffffff',
-        category_id: 'cid1',
+        categoryId: 'cid1',
         amount: 0,
-        plan_id: 'pid1',
+        planId: 'pid1',
         units: {
           uid1: true
         },
-        primary_unit: 'uid1'
+        primaryUnitId: 'uid1'
       };
 
       setup({
@@ -877,26 +877,26 @@ describe('Firebase Security Rules', function() {
             owner: testUserA.uid,
             name: 'My new item',
             color: '#ffffff',
-            category_id: 'cid1',
+            categoryId: 'cid1',
             amount: 0,
-            plan_id: 'pid1',
+            planId: 'pid1',
             units: {
               uid1: true,
               uid2: true
             },
-            primary_unit: 'uid1'
+            primaryUnitId: 'uid1'
           },
           'iid2': {
             owner: testUserB.uid,
             name: 'My new item',
             color: '#ffffff',
-            category_id: 'cid3',
+            categoryId: 'cid3',
             amount: 0,
-            plan_id: 'pid3',
+            planId: 'pid3',
             units: {
               uid3: true
             },
-            primary_unit: 'uid3'
+            primaryUnitId: 'uid3'
           }
         }
       }, testUserA, done);
@@ -995,23 +995,23 @@ describe('Firebase Security Rules', function() {
       });
     });
 
-    describe('category_id', function() {
+    describe('categoryId', function() {
       it('should allow the user to change the category', function(done) {
-        testRef.child('/item/iid1/category_id').set('cid2', function(error) {
+        testRef.child('/item/iid1/categoryId').set('cid2', function(error) {
           expect(error).toBe(null);
           done();
         });
       });
 
       it('should not allow the user to remove the category', function(done) {
-        testRef.child('/item/iid1/category_id').remove(function(error) {
+        testRef.child('/item/iid1/categoryId').remove(function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
       });
 
       it('should not allow the user to a category that belongs to another user', function(done) {
-        testRef.child('/item/iid1/category_id').set('cid3', function(error) {
+        testRef.child('/item/iid1/categoryId').set('cid3', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
@@ -1034,23 +1034,23 @@ describe('Firebase Security Rules', function() {
       });
     });
 
-    describe('plan_id', function() {
+    describe('planId', function() {
       it('should allow the user to change the storage plan', function(done) {
-        testRef.child('/item/iid1/plan_id').set('pid2', function(error) {
+        testRef.child('/item/iid1/planId').set('pid2', function(error) {
           expect(error).toBe(null);
           done();
         });
       });
 
       it('should not allow the user to remove the plan', function(done) {
-        testRef.child('/item/iid1/plan_id').remove(function(error) {
+        testRef.child('/item/iid1/planId').remove(function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
       });
 
       it('should not allow the user to use a plan that belongs to another user', function(done) {
-        testRef.child('/item/iid1/plan_id').set('pid3', function(error) {
+        testRef.child('/item/iid1/planId').set('pid3', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
@@ -1087,23 +1087,23 @@ describe('Firebase Security Rules', function() {
       });
     });
 
-    describe('primary_unit', function() {
+    describe('primaryUnitId', function() {
       it('should allow the user to change the primary unit', function(done) {
-        testRef.child('/item/iid1/primary_unit').set('uid2', function(error) {
+        testRef.child('/item/iid1/primaryUnitId').set('uid2', function(error) {
           expect(error).toBe(null);
           done();
         });
       });
 
       it('should not allow the user to remove the primary unit', function(done) {
-        testRef.child('/item/iid1/primary_unit').remove(function(error) {
+        testRef.child('/item/iid1/primaryUnitId').remove(function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
       });
 
       it('should not allow the user to use a unit that belongs to another user', function(done) {
-        testRef.child('/item/iid1/primary_unit').set('uid3', function(error) {
+        testRef.child('/item/iid1/primaryUnitId').set('uid3', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
@@ -1423,12 +1423,12 @@ describe('Firebase Security Rules', function() {
         type: 'ration',
         adult: {
           amount: 1,
-          unit_id: 'unit1',
+          unitId: 'unit1',
           time: 'day'
         },
         child: {
           amount: 2,
-          unit_id: 'unit1',
+          unitId: 'unit1',
           time: 'week'
         }
       };
@@ -1437,7 +1437,7 @@ describe('Firebase Security Rules', function() {
         owner: testUserA.uid,
         type: 'baseline',
         amount: 100,
-        unit_id: 'unit2'
+        unitId: 'unit2'
       };
 
       setup({
@@ -1461,19 +1461,19 @@ describe('Firebase Security Rules', function() {
             owner: testUserA.uid,
             type: 'baseline',
             amount: 20,
-            unit_id: 'unit1'
+            unitId: 'unit1'
           },
           'pid2': {
             owner: testUserA.uid,
             type: 'ration',
             adult: {
               amount: 1,
-              unit_id: 'unit1',
+              unitId: 'unit1',
               time: 'day'
             },
             child: {
               amount: 2,
-              unit_id: 'unit2',
+              unitId: 'unit2',
               time: 'week'
             }
           },
@@ -1481,19 +1481,19 @@ describe('Firebase Security Rules', function() {
             owner: testUserB.uid,
             type: 'baseline',
             amount: 20,
-            unit_id: 'unit3'
+            unitId: 'unit3'
           },
           'pid4': {
             owner: testUserB.uid,
             type: 'ration',
             adult: {
               amount: 1,
-              unit_id: 'unit3',
+              unitId: 'unit3',
               time: 'day'
             },
             child: {
               amount: 2,
-              unit_id: 'unit3',
+              unitId: 'unit3',
               time: 'week'
             }
           }
@@ -1511,7 +1511,7 @@ describe('Firebase Security Rules', function() {
       });
 
       it('should not allow the user to create a baseline plan with units that belong to another user', function(done) {
-        newBaselinePlan.unit_id = 'unit3';
+        newBaselinePlan.unitId = 'unit3';
         testRef.child('/plan/pid5').set(newBaselinePlan, function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
@@ -1519,7 +1519,7 @@ describe('Firebase Security Rules', function() {
       });
 
       it('should not allow the user to create a rationed plan with units that belong to another user', function(done) {
-        newRationPlan.adult.unit_id = 'unit3';
+        newRationPlan.adult.unitId = 'unit3';
         testRef.child('/plan/pid5').set(newRationPlan, function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
@@ -1582,14 +1582,14 @@ describe('Firebase Security Rules', function() {
       });
 
       it('should allow the user to change the unit', function(done) {
-        testRef.child('/plan/pid1/unit_id').set('unit2', function(error) {
+        testRef.child('/plan/pid1/unitId').set('unit2', function(error) {
           expect(error).toBe(null);
           done();
         });
       });
 
       it('should not allow the user to use a unit that belongs to another user', function(done) {
-        testRef.child('/plan/pid1/unit_id').set('unit3', function(error) {
+        testRef.child('/plan/pid1/unitId').set('unit3', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
@@ -1612,14 +1612,14 @@ describe('Firebase Security Rules', function() {
       });
 
       it('should allow the user to change the unit', function(done) {
-        testRef.child('/plan/pid2/adult/unit_id').set('unit2', function(error) {
+        testRef.child('/plan/pid2/adult/unitId').set('unit2', function(error) {
           expect(error).toBe(null);
           done();
         });
       });
 
       it('should not allow the user to use a unit that belongs to another user', function(done) {
-        testRef.child('/plan/pid2/adult/unit_id').set('unit3', function(error) {
+        testRef.child('/plan/pid2/adult/unitId').set('unit3', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
@@ -1656,14 +1656,14 @@ describe('Firebase Security Rules', function() {
       });
 
       it('should allow the user to change the unit', function(done) {
-        testRef.child('/plan/pid2/child/unit_id').set('unit2', function(error) {
+        testRef.child('/plan/pid2/child/unitId').set('unit2', function(error) {
           expect(error).toBe(null);
           done();
         });
       });
 
       it('should not allow the user to use a unit that belongs to another user', function(done) {
-        testRef.child('/plan/pid2/child/unit_id').set('unit3', function(error) {
+        testRef.child('/plan/pid2/child/unitId').set('unit3', function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
