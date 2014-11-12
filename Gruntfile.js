@@ -9,6 +9,8 @@
 // use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
 
+var fs = require('fs');
+
 module.exports = function (grunt) {
 
   grunt.option('stack', true);
@@ -245,7 +247,12 @@ module.exports = function (grunt) {
       html: ['<%= yeoman.dist %>/{,*/}*.html'],
       css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
       options: {
-        assetsDirs: ['<%= yeoman.dist %>','<%= yeoman.dist %>/images']
+        assetsDirs: ['<%= yeoman.dist %>','<%= yeoman.dist %>/images'],
+        blockReplacements: {
+          prodAnalytics: function(block) {
+            return fs.readFileSync(__dirname + '/app/' + block.src[0]);
+          }
+        }
       }
     },
 
