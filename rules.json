@@ -382,6 +382,31 @@
             }
           }
         }
+      },
+
+      /**
+       * HISTORY EVENTS
+       */
+      "history": {
+        "$itemId": {
+
+          // History events for an item may only be read by the owner of the item.
+          ".read": "!data.exists() || root.child('userData/item/' + $itemId + '/owner').val() === auth.uid",
+
+          "$eventId": {
+
+            // Events may be created by the owner of the item, but never deleted or modified.
+            ".write": "!data.exists() && root.child('userData/item/' + $itemId + '/owner').val() === auth.uid",
+
+            // Events must have a timestamp.
+            ".validate": "newData.hasChildren(['timestamp'])",
+
+            "timestamp": {
+              // The timestamp must match the current server timestamp.
+              ".validate": "newData.val() === now"
+            }
+          }
+        }
       }
     }
   }

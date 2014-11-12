@@ -1716,4 +1716,116 @@ describe('Firebase Security Rules', function() {
       });
     });
   });
+
+  describe('history events', function() {
+    var newHistoryEvent;
+
+    beforeEach(function(done) {
+      newHistoryEvent = {
+        someAttr: 'value',
+        timestamp: firebase.ServerValue.TIMESTAMP
+      };
+
+      setup({
+        user: baseUserState,
+        item: {
+          'itemId1': {
+            owner: testUserA.uid
+          },
+          'itemId2': {
+            owner: testUserB.uid
+          }
+        },
+        history: {
+          'itemId1': {
+            'some-event-id': {
+              anotherAttr: 'you win!',
+              timestamp: 4252
+            }
+          },
+          'itemId2': {
+            'another-event-id': {
+              attr: 'value',
+              timestamp: 243545
+            }
+          }
+        }
+      }, testUserA, done);
+    });
+
+    describe('creation', function() {
+      it('should not allow the user to create a history event for an item that belongs to another user', function(done) {
+        testRef.child('/history/itemId2').push(newHistoryEvent, function(error) {
+          expect(error.code).toMatch(PERMISSION_DENIED);
+          done();
+        });
+      });
+
+      it('should not allow the user to create a history event for a non-existent item', function(done) {
+        testRef.child('/history/thisitemdoesntexist').push(newHistoryEvent, function(error) {
+          expect(error.code).toMatch(PERMISSION_DENIED);
+          done();
+        });
+      });
+
+      it('should not allow the user to create a history event without a timestamp', function(done) {
+        delete newHistoryEvent.timestamp;
+        testRef.child('/history/itemId1').push(newHistoryEvent, function(error) {
+          expect(error.code).toMatch(PERMISSION_DENIED);
+          done();
+        });
+      });
+
+      it('should not allow the user to create a history event with a tampered timestamp', function(done) {
+        newHistoryEvent.timestamp = 243552;
+        testRef.child('/history/itemId1').push(newHistoryEvent, function(error) {
+          expect(error.code).toMatch(PERMISSION_DENIED);
+          done();
+        });
+      });
+
+      it('should allow the user to add history events for items that they own', function(done) {
+        testRef.child('/history/itemId1').push(newHistoryEvent, function(error) {
+          expect(error).toBe(null);
+          done();
+        });
+      });
+    });
+
+    describe('all fields', function() {
+      it('should not allow the user to modify history events', function(done) {
+        var event = testRef.child('/history/itemId1').push(newHistoryEvent);
+        event.set({ newAttrName: 'some new value'}, function(error) {
+          expect(error.code).toMatch(PERMISSION_DENIED);
+          done();
+        });
+      });
+
+      it('should not allow the user to modify history event fields', function(done) {
+        var event = testRef.child('/history/itemId1').push(newHistoryEvent);
+        event.update({ someAttr: 'some new value'}, function(error) {
+          expect(error.code).toMatch(PERMISSION_DENIED);
+          done();
+        });
+      });
+    });
+
+    describe('privacy', function() {
+      it('should not allow the user to read history events for items that belong to another user', function(done) {
+        testRef.child('/history/itemId2').once('value', ignored, function(error) {
+          expect(error.code).toMatch(PERMISSION_DENIED);
+          done();
+        });
+      });
+    });
+
+    describe('deletion', function() {
+      it('should not allow the user to delete history events', function(done) {
+        testRef.child('/history/itemId1').remove(function(error) {
+          expect(error.code).toMatch(PERMISSION_DENIED);
+          done();
+        });
+      });
+    });
+  });
 });
