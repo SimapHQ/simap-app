@@ -37,10 +37,10 @@
           <span>
             {{item.amount}} {{units[item.primaryUnitId].name}}
           </span>
-          <a ng-click="updateInventory(item, 1)" class="hpad-10">
+          <a ng-click="updateInventory(item, 1)" class="hpad-10" analytics-on="click" analytics-event="Add Inventory" analytics-category="Item">
             <span class="glyphicon glyphicon-plus-sign"></span>
           </a>
-          <a ng-click="updateInventory(item, -1)" class="hpad-10">
+          <a ng-click="updateInventory(item, -1)" class="hpad-10" analytics-on="click" analytics-event="Remove Inventory" analytics-category="Item">
             <span class="glyphicon glyphicon-minus-sign"></span>
           </a>
         </div>
@@ -55,7 +55,7 @@
       </div>
       <div class="clearfix col-md-1 form-group text-right">
         <div class="col-xs-12 text-right form-group vpad-8">
-          <a href="" ng-click="cancelUpdate()">
+          <a href="" ng-click="cancelUpdate()" analytics-on="click" analytics-event="Cancel Inventory Update" analytics-category="Item">
             <span class="glyphicon glyphicon-remove-sign"></span>
           </a>
         </div>

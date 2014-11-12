@@ -40,11 +40,11 @@
   <div ng-hide="editing">
     <div class="col-xs-10">
       <p class="hpad-10 vpad-2">
-        <a ng-click="startEdit()">{{unit.name}}</a>
+        <a ng-click="startEdit()" analytics-on="click" analytics-event="Edit" analytics-category="Unit" analytics-label="{{unit.name}}">{{unit.name}}</a>
       </p>
     </div>
     <div class="col-xs-2" ng-hide="item.primaryUnitId === unitId">
-      <a ng-click="removeUnit(unitId)">
+      <a ng-click="removeUnit(unitId)" analytics-on="click" analytics-event="Remove" analytics-category="Unit" analytics-label="{{unit.name}}">
         <span class="glyphicon glyphicon-trash"></span>
       </a>
     </div>
@@ -63,7 +63,7 @@
   <form name="primaryUnitForm">
     <div class="form-group">
       <label for="master-unit">Select Primary Unit</label>
-      <select id="master-unit" class="form-control" ng-model="item.primaryUnitId" ng-options="id as unit.name for (id, unit) in units" required>
+      <select id="master-unit" class="form-control" ng-model="item.primaryUnitId" ng-options="id as unit.name for (id, unit) in units"  analytics-on="click" analytics-event="Change Primary Unit" analytics-category="Item" required>
       </select>
     </div>
   </form>
