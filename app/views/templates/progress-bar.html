@@ -1,1 +1,7 @@
-<div class="progress-bar"></div>
+<div class="progress-bar">
+  <div class="segment"
+       ng-repeat="item in items"
+       ng-style="{ 'width': (item.width * barWidth), 'background-color': item.color }"
+       ng-if="item.width > 0.01" >
+  </div>
+</div>
