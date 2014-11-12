@@ -3,10 +3,12 @@
 angular.module('simapApp').controller('ProgressCtrl', [
   '$scope',
   'CategoriesService',
+  'ITEM_AMOUNT_CHANGED_EVENT',
   'ProgressService',
   function (
     $scope,
     CategoriesService,
+    ITEM_AMOUNT_CHANGED_EVENT,
     ProgressService
   ) {
 
@@ -30,6 +32,10 @@ angular.module('simapApp').controller('ProgressCtrl', [
   $scope.rationProgress = function() {
     return ProgressService.calculateRationProgress($scope.categoryId) * 100;
   };
+
+  $scope.$on(ITEM_AMOUNT_CHANGED_EVENT, function() {
+    refreshProgressBars();
+  });
 
   refreshProgressBars();
 

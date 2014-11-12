@@ -44,3 +44,5 @@ app.constant('TIME_DAY', 'day');
 app.constant('TIME_WEEK', 'week');
 app.constant('TIME_MONTH', 'month');
 app.constant('TIME_YEAR', 'year');
+
+app.constant('ITEM_AMOUNT_CHANGED_EVENT', 'simap:itemAmountChanged');

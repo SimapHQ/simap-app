@@ -1,12 +1,16 @@
 'use strict';
 
 angular.module('simapApp').controller('InventoryCtrl', [
+  '$rootScope',
   '$scope',
   'ConversionsService',
+  'ITEM_AMOUNT_CHANGED_EVENT',
   'UnitsService',
   function (
+    $rootScope,
     $scope,
     ConversionsService,
+    ITEM_AMOUNT_CHANGED_EVENT,
     UnitsService
   ) {
 
@@ -27,7 +31,7 @@ angular.module('simapApp').controller('InventoryCtrl', [
   };
 
   $scope.applyUpdate = function(item) {
-    if ($scope.updatingAmount === undefined || $scope.updateAmount === null) {
+    if ($scope.updateAmount === undefined || $scope.updateAmount === null) {
       $scope.updatingInventory = false;
       return;
     }
@@ -40,6 +44,7 @@ angular.module('simapApp').controller('InventoryCtrl', [
 
     item.amount += amount;
     item.$save().then(function() {
+      $rootScope.$broadcast(ITEM_AMOUNT_CHANGED_EVENT);
       $scope.updatingInventory = false;
     });
   };
