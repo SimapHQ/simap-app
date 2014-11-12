@@ -1,21 +1,30 @@
 'use strict';
 
 angular.module('simapApp').controller('InventoryCtrl', [
+  '$firebase',
   '$rootScope',
   '$scope',
   'ConversionsService',
+  'FirebaseService',
+  'HistoryService',
   'ITEM_AMOUNT_CHANGED_EVENT',
+  'ITEM_NODE',
   'UnitsService',
   function (
+    $firebase,
     $rootScope,
     $scope,
     ConversionsService,
+    FirebaseService,
+    HistoryService,
     ITEM_AMOUNT_CHANGED_EVENT,
+    ITEM_NODE,
     UnitsService
   ) {
 
-  var units = UnitsService.getUnits();
-  var conversions = ConversionsService.getConversions();
+  var firebaseRef = FirebaseService.getRef(),
+      units = UnitsService.getUnits(),
+      conversions = ConversionsService.getConversions();
 
   $scope.updatingInventory = false;
 
@@ -36,16 +45,31 @@ angular.module('simapApp').controller('InventoryCtrl', [
       return;
     }
 
-    var amount = $scope.updateAmount * $scope.modifier;
+    var eventObj = {};
+
+    var delta = $scope.updateAmount * $scope.modifier;
+    eventObj.type = ITEM_AMOUNT_CHANGED_EVENT;
+    eventObj.inputDelta = delta;
+    eventObj.unitName = units[item.primaryUnitId].name;
 
     if (item.primaryUnitId !== $scope.updateUnit.$id) {
-      amount = amount * conversions[$scope.updateUnit.$id][item.primaryUnitId];
+      var conversionFactor = conversions[$scope.updateUnit.$id][item.primaryUnitId];
+
+      delta = delta * conversionFactor;
+
+      eventObj.inputUnit = units[$scope.updateUnit.$id].name;
+      eventObj.conversionFactor = conversionFactor;
+      eventObj.finalDelta = delta;
     }
 
-    item.amount += amount;
-    item.$save().then(function() {
-      $rootScope.$broadcast(ITEM_AMOUNT_CHANGED_EVENT);
-      $scope.updatingInventory = false;
+    $firebase(firebaseRef.child(ITEM_NODE + item.$id + '/amount')).$transaction(function(currentAmount) {
+      return currentAmount + delta;
+    }).then(function(updatedSnapshot) {
+      eventObj.newAmount = updatedSnapshot.val();
+      HistoryService.addEvent(item.$id, eventObj).then(function() {
+        $rootScope.$broadcast(ITEM_AMOUNT_CHANGED_EVENT);
+        $scope.updatingInventory = false;
+      });
     });
   };
 

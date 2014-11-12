@@ -10,6 +10,8 @@ app.controller('ItemCtrl', [
   'CategoriesService',
   'ConversionsService',
   'DEFAULT_CONVERSION_VALUE',
+  'HistoryService',
+  'ITEM_PRIMARY_UNIT_CHANGED_EVENT',
   'ItemsService',
   'PlansService',
   'UnitService',
@@ -22,13 +24,16 @@ app.controller('ItemCtrl', [
     CategoriesService,
     ConversionsService,
     DEFAULT_CONVERSION_VALUE,
+    HistoryService,
+    ITEM_PRIMARY_UNIT_CHANGED_EVENT,
     ItemsService,
     PlansService,
     UnitService,
     UnitsService
   ) {
 
-  var itemId = $routeParams.itemId;
+  var itemId = $routeParams.itemId,
+      primaryUnitChangeEvent;
 
   var filterUnits = function() {
     var itemUnitIds = Object.keys($scope.item.units),
@@ -111,7 +116,12 @@ app.controller('ItemCtrl', [
       savePromises.push($scope.conversions[unitId].$save());
     });
 
+    if (primaryUnitChangeEvent !== undefined && primaryUnitChangeEvent !== null) {
+      savePromises.push(HistoryService.addEvent($scope.item.$id, primaryUnitChangeEvent));
+    }
+
     $q.all(savePromises).then(function() {
+      primaryUnitChangeEvent = undefined;
       $location.path('/items');
     });
   };
@@ -120,6 +130,15 @@ app.controller('ItemCtrl', [
     if (newId === prevId) {
       return;
     }
+
+    primaryUnitChangeEvent = {
+      type: ITEM_PRIMARY_UNIT_CHANGED_EVENT,
+      oldAmount: $scope.item.amount,
+      oldPrimaryUnitName: $scope.units[prevId].name,
+      conversionFactor: $scope.conversions[prevId][newId],
+      newAmount: $scope.item.amount * $scope.conversions[prevId][newId],
+      newPrimaryUnitName: $scope.units[newId].name
+    };
 
     $scope.item.amount = $scope.item.amount * $scope.conversions[prevId][newId];
   });

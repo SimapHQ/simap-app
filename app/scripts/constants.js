@@ -8,14 +8,15 @@ app.constant('CATEGORIES', '/categories');
 
 app.constant('FIREBASE_URL', 'https://simap-test.firebaseio.com/userData');
 
-app.constant('USER_NODE', 'user/');
+app.constant('CATEGORY_NODE', 'category/');
+app.constant('CONVERSION_NODE', 'conversion/');
 app.constant('FAMILY_NODE', 'family/');
 app.constant('GOAL_NODE', 'goal/');
-app.constant('CATEGORY_NODE', 'category/');
+app.constant('HISTORY_NODE', 'history/');
 app.constant('ITEM_NODE', 'item/');
 app.constant('PLAN_NODE', 'plan/');
 app.constant('UNIT_NODE', 'unit/');
-app.constant('CONVERSION_NODE', 'conversion/');
+app.constant('USER_NODE', 'user/');
 
 app.constant('DEFAULT_FAMILY_SIZE_ADULTS', 1);
 app.constant('DEFAULT_FAMILY_SIZE_CHILDREN', 0);
@@ -46,3 +47,4 @@ app.constant('TIME_MONTH', 'month');
 app.constant('TIME_YEAR', 'year');
 
 app.constant('ITEM_AMOUNT_CHANGED_EVENT', 'simap:itemAmountChanged');
+app.constant('ITEM_PRIMARY_UNIT_CHANGED_EVENT', 'simap:itemPrimaryUnitChanged');
