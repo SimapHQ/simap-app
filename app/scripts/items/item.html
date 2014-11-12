@@ -9,6 +9,10 @@
       <input type="text" class="form-control" id="item-name" ng-model="item.name" placeholder="Name" required/>
     </div>
     <div class="form-group">
+      <label for="item-amount">Current Inventory</label>
+      <div id="item-amount">{{item.amount}} {{units[item.primaryUnitId].name}}</div>
+    </div>
+    <div class="form-group">
       <label for="new-item-category">Category</label>
       <select ng-model="item.categoryId" ng-options="key as category.name for (key, category) in categories" id="new-item-category" class="form-control" required></select>
     </div>
