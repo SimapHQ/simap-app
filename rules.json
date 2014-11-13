@@ -393,9 +393,12 @@
           // History events for an item may only be read by the owner of the item.
           ".read": "!data.exists() || root.child('userData/item/' + $itemId + '/owner').val() === auth.uid",
 
+          // History can be deleted by the owner of the item
+          ".write": "!newData.exists() && root.child('userData/item/' + $itemId + '/owner').val() === auth.uid",
+
           "$eventId": {
 
-            // Events may be created by the owner of the item, but never deleted or modified.
+            // Events may be created by the owner of the item, but never modified.
             ".write": "!data.exists() && root.child('userData/item/' + $itemId + '/owner').val() === auth.uid",
 
             // Events must have a timestamp.

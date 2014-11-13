@@ -1820,8 +1820,15 @@ describe('Firebase Security Rules', function() {
     });
 
     describe('deletion', function() {
-      it('should not allow the user to delete history events', function(done) {
+      it('should allow the user to delete all history events at once', function(done) {
         testRef.child('/history/itemId1').remove(function(error) {
+          expect(error).toBe(null);
+          done();
+        });
+      });
+
+      it('should not allow the user to delete all history events on an item that belongs to another user', function(done) {
+        testRef.child('/history/itemId2').remove(function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });

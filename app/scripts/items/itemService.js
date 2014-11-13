@@ -67,8 +67,8 @@ app.service('ItemService', [
 
     removalPromises.push(PlanService.removeOld(itemObj.planId));
 
-    // var historyRemovalPromise = $firebase(firebaseRef.child(HISTORY_NODE + itemId)).$remove();
-    // removalPromises.push(historyRemovalPromise);
+    var historyRemovalPromise = $firebase(firebaseRef.child(HISTORY_NODE + itemId)).$remove();
+    removalPromises.push(historyRemovalPromise);
 
     return $q.all(removalPromises).then(function() {
       return ItemsService.removeOld(itemId).then(function(removedId) {
