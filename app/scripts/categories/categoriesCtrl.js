@@ -7,12 +7,14 @@ app.controller('CategoriesCtrl', [
   '$scope',
   'CategoriesService',
   'CategoryService',
+  'SimapModalService',
   'WaitingService',
   function (
     $location,
     $scope,
     CategoriesService,
     CategoryService,
+    SimapModalService,
     WaitingService
     ) {
 
@@ -33,10 +35,29 @@ app.controller('CategoriesCtrl', [
   };
 
   $scope.removeCategory = function(key) {
-    WaitingService.beginWaiting();
-    CategoryService.removeOld(key).then(function() {
-      WaitingService.doneWaiting();
-    });
+    var itemsInCategory = CategoryService.itemsInCategory(key);
+
+    if (itemsInCategory.length > 0) {
+      SimapModalService.showError({
+        title: 'Can\'t Delete Category',
+        msg: 'The category \'' + $scope.categories[key].name +'\' still has items in it. You must move these items to another category before you can delete it.',
+        list: itemsInCategory
+      });
+    } else {
+      SimapModalService.confirmAction({
+        title: 'Delete Category?',
+        msg: 'Are you sure you want to delete the category "' + $scope.categories[key].name + '?" This cannot be undone!'
+      }).then(function(confirmed) {
+        if (!confirmed) {
+          return;
+        }
+
+        WaitingService.beginWaiting();
+        CategoryService.removeOld(key).then(function() {
+          WaitingService.doneWaiting();
+        });
+      });
+    }
   };
 
 }]);

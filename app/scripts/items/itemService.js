@@ -8,7 +8,9 @@ app.service('ItemService', [
   'CategoriesService',
   'DEFAULT_ITEM_NAME',
   'DEFAULT_UNIT_NAME',
+  'FirebaseService',
   'GuidService',
+  'HISTORY_NODE',
   'ITEM_NODE',
   'ItemsService',
   'PlanService',
@@ -21,7 +23,9 @@ app.service('ItemService', [
     CategoriesService,
     DEFAULT_ITEM_NAME,
     DEFAULT_UNIT_NAME,
+    FirebaseService,
     GuidService,
+    HISTORY_NODE,
     ITEM_NODE,
     ItemsService,
     PlanService,
@@ -29,6 +33,8 @@ app.service('ItemService', [
     SessionService,
     UnitService
   ) {
+
+  var firebaseRef = FirebaseService.getRef();
 
   this.createNew = function() {
     return UnitService.createNew().then(function(newUnitId) {
@@ -53,17 +59,20 @@ app.service('ItemService', [
 
   this.removeOld = function(itemId) {
     var itemObj = ItemsService.getItems()[itemId],
-        unitRemovalPromises = [];
+        removalPromises = [];
 
     Object.keys(itemObj.units).forEach(function(unitId) {
-      unitRemovalPromises.push(UnitService.removeOld(unitId));
+      removalPromises.push(UnitService.removeOld(unitId));
     });
 
-    return $q.all(unitRemovalPromises).then(function() {
-      return PlanService.removeOld(itemObj.planId).then(function() {
-        return ItemsService.removeOld(itemId).then(function(removedId) {
-          return SessionService.unbindFromUser('items', removedId);
-        });
+    removalPromises.push(PlanService.removeOld(itemObj.planId));
+
+    // var historyRemovalPromise = $firebase(firebaseRef.child(HISTORY_NODE + itemId)).$remove();
+    // removalPromises.push(historyRemovalPromise);
+
+    return $q.all(removalPromises).then(function() {
+      return ItemsService.removeOld(itemId).then(function(removedId) {
+        return SessionService.unbindFromUser('items', removedId);
       });
     });
   };

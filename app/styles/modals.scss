@@ -1,0 +1,25 @@
+@import "color-definitions.scss";
+
+.modal-content {
+  background-color: $second-color;
+  color: $default-text-color;
+
+  .modal-header,
+  .modal-footer {
+    border-radius: 6px 6px 0px 0px;
+    border: 0;
+  }
+
+  .error {
+    background-color: firebrick;
+  }
+
+  .warn {
+    background-color: #f0ad4e;
+  }
+
+  .btn-warning,
+  .warn {
+    color: $background-color;
+  }
+}

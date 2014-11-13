@@ -1,0 +1,18 @@
+<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header warn">
+        <h4 class="modal-title">{{data.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{data.msg}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" ng-click="confirm(true)" data-dismiss="modal"
+                analytics-on="click" analytics-event="Confirm" anaylytics-category="Modal">Do it!</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal"
+                analytics-on="click" analytics-event="Cancel" anaylytics-category="Modal">No, go back!</button>
+      </div>
+    </div>
+  </div>
+</div>

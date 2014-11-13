@@ -1,0 +1,19 @@
+<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header error">
+        <h4 class="modal-title">{{error.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{error.msg}}</p>
+        <ul>
+          <li ng-repeat="e in error.list">{{e}}</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"
+                analytics-on="click" analytics-event="Error Acknowledged" anaylytics-category="Modal">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>

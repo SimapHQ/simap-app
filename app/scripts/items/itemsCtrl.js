@@ -7,12 +7,14 @@ app.controller('ItemsCtrl', [
   '$scope',
   'ItemService',
   'ItemsService',
+  'SimapModalService',
   'WaitingService',
   function (
     $location,
     $scope,
     ItemService,
     ItemsService,
+    SimapModalService,
     WaitingService
     ) {
 
@@ -33,10 +35,18 @@ app.controller('ItemsCtrl', [
   };
 
   $scope.removeItem = function(key) {
-    // TODO: Ask for confirmation!
-    WaitingService.beginWaiting();
-    ItemService.removeOld(key).then(function() {
-      WaitingService.doneWaiting();
+    SimapModalService.confirmAction({
+      title: 'Delete Item?',
+      msg: 'Are you sure you want to delete the item "' + $scope.items[key].name + '?" This cannot be undone!'
+    }).then(function(confirmed) {
+      if (!confirmed) {
+        return;
+      }
+
+      WaitingService.beginWaiting();
+      ItemService.removeOld(key).then(function() {
+        WaitingService.doneWaiting();
+      });
     });
   };
 

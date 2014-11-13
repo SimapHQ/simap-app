@@ -4,6 +4,7 @@
  * Main module of the application.
  */
 var app = angular.module('simapApp', [
+  'angularModalService',
   'angularSpinner',
   'angulartics',
   'angulartics.google.analytics',
