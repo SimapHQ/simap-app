@@ -7,11 +7,13 @@ app.controller('ItemsCtrl', [
   '$scope',
   'ItemService',
   'ItemsService',
+  'WaitingService',
   function (
     $location,
     $scope,
     ItemService,
-    ItemsService
+    ItemsService,
+    WaitingService
     ) {
 
   $scope.helpBlock = '';
@@ -19,8 +21,10 @@ app.controller('ItemsCtrl', [
   $scope.items = ItemsService.getItems();
 
   $scope.addNewItem = function() {
+    WaitingService.beginWaiting();
     ItemService.createNew().then(function(newItemId) {
       $scope.editItem(newItemId);
+      WaitingService.doneWaiting();
     });
   };
 
@@ -30,8 +34,9 @@ app.controller('ItemsCtrl', [
 
   $scope.removeItem = function(key) {
     // TODO: Ask for confirmation!
+    WaitingService.beginWaiting();
     ItemService.removeOld(key).then(function() {
-      // refresh();
+      WaitingService.doneWaiting();
     });
   };
 

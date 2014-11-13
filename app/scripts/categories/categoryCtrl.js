@@ -8,12 +8,14 @@ app.controller('CategoryCtrl', [
   '$scope',
   'CATEGORIES',
   'CategoriesService',
+  'WaitingService',
   function (
     $location,
     $routeParams,
     $scope,
     CATEGORIES,
-    CategoriesService
+    CategoriesService,
+    WaitingService
   ) {
 
   var categoryId = $routeParams.categoryId;
@@ -21,8 +23,10 @@ app.controller('CategoryCtrl', [
   $scope.category = CategoriesService.getCategories()[categoryId];
 
   $scope.save = function() {
+    WaitingService.beginWaiting();
     $scope.category.$save().then(function() {
       $location.path(CATEGORIES);
+      WaitingService.doneWaiting();
     });
   };
 

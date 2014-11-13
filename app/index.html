@@ -74,6 +74,10 @@
 
       <div ng-view="" class="content clearfix"></div>
 
+      <div class="waiting-modal" ng-controller="WaitingCtrl" ng-show="isWaiting()">
+        <span us-spinner="{lines:11, length:0, width:12,radius:40, corners:1.0, trail:50, speed:0.8, color: '#80bd01'}"></span>
+      </div>
+
       <div class="footer">
         <p>Made with <span class="glyphicon glyphicon-heart"></span></p>
       </div>
@@ -137,6 +141,8 @@
     <script src="bower_components/angulartics/src/angulartics-woopra.js"></script>
     <script src="bower_components/angulartics/src/angulartics-marketo.js"></script>
     <script src="bower_components/angulartics/src/angulartics-intercom.js"></script>
+    <script src="bower_components/spin.js/spin.js"></script>
+    <script src="bower_components/angular-spinner/angular-spinner.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -171,6 +177,9 @@
     <script src="scripts/categories/categoryService.js"></script>
 
     <script src="scripts/shared/filters/exclude.js"></script>
+
+    <script src="scripts/shared/waiting/waitingService.js"></script>
+    <script src="scripts/shared/waiting/waitingCtrl.js"></script>
 
     <script src="scripts/items/itemCtrl.js"></script>
     <script src="scripts/items/itemsCtrl.js"></script>

@@ -9,6 +9,7 @@ angular.module('simapApp').controller('PlanningCtrl', [
   'FamilyService',
   'HOME',
   'GoalService',
+  'WaitingService',
   function (
     $firebase,
     $location,
@@ -17,7 +18,8 @@ angular.module('simapApp').controller('PlanningCtrl', [
     DAYS_IN_MONTH,
     FamilyService,
     HOME,
-    GoalService
+    GoalService,
+    WaitingService
     ) {
 
     $scope.goalChanged = function() {
@@ -37,11 +39,14 @@ angular.module('simapApp').controller('PlanningCtrl', [
     };
 
     $scope.save = function() {
+      WaitingService.beginWaiting();
+
       $q.all([
         $scope.family.$save(),
         $scope.goal.$save()
       ]).then(function() {
         $location.path(HOME);
+        WaitingService.doneWaiting();
       });
     };
 

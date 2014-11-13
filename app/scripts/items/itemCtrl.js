@@ -16,6 +16,7 @@ app.controller('ItemCtrl', [
   'PlansService',
   'UnitService',
   'UnitsService',
+  'WaitingService',
   function (
     $location,
     $q,
@@ -29,7 +30,8 @@ app.controller('ItemCtrl', [
     ItemsService,
     PlansService,
     UnitService,
-    UnitsService
+    UnitsService,
+    WaitingService
   ) {
 
   var itemId = $routeParams.itemId,
@@ -67,20 +69,26 @@ app.controller('ItemCtrl', [
   $scope.plan = PlansService.getPlans()[$scope.item.planId];
 
   $scope.addNewUnit = function() {
+    WaitingService.beginWaiting();
     UnitService.createNewWithName($scope.newUnitName).then(function(newUnitId) {
       $scope.newUnitName = '';
       $scope.item.units[newUnitId] = true;
       refreshUnits();
       initializeConversion(newUnitId);
-      $scope.item.$save();
+      $scope.item.$save().then(function() {
+        WaitingService.doneWaiting();
+      });
     });
   };
 
   $scope.removeUnit = function(unitId) {
+    WaitingService.beginWaiting();
     UnitService.removeOld(unitId).then(function() {
       delete $scope.item.units[unitId];
-      $scope.item.$save();
-      refreshUnits();
+      $scope.item.$save().then(function() {
+        refreshUnits();
+        WaitingService.doneWaiting();
+      });
     });
   };
 
@@ -106,6 +114,8 @@ app.controller('ItemCtrl', [
   };
 
   $scope.save = function() {
+    WaitingService.beginWaiting();
+
     var savePromises = [
       $scope.item.$save(),
       $scope.plan.$save()
@@ -123,6 +133,7 @@ app.controller('ItemCtrl', [
     $q.all(savePromises).then(function() {
       primaryUnitChangeEvent = undefined;
       $location.path('/items');
+      WaitingService.doneWaiting();
     });
   };
 

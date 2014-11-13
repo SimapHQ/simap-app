@@ -165,6 +165,17 @@ span.spacer {
   padding: 8px;
 }
 
+/* Waiting Modal Overlay */
+.waiting-modal {
+  background-color: black;
+  height: 100%;
+  left: 0;
+  opacity: 0.85;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
 /* Custom page footer */
 .footer {
   border-top: 1px solid $second-color;

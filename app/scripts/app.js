@@ -4,6 +4,7 @@
  * Main module of the application.
  */
 var app = angular.module('simapApp', [
+  'angularSpinner',
   'angulartics',
   'angulartics.google.analytics',
   'colorpicker.module',
@@ -76,6 +77,7 @@ app.run([
   'LoginService',
   'SessionService',
   'UserService',
+  'WaitingService',
   function(
     $location,
     $log,
@@ -86,7 +88,8 @@ app.run([
     ItemsService,
     LoginService,
     SessionService,
-    UserService
+    UserService,
+    WaitingService
   ) {
 
   $rootScope.$on('$routeChangeStart', function(event, next) {
@@ -103,12 +106,14 @@ app.run([
   });
 
   $rootScope.$on('$firebaseSimpleLogin:login', function(event, user) {
+    WaitingService.beginWaiting();
     UserService.updateUser(user).then(function() {
       SessionService.startSession(user).then(function() {
         $q.all([
           CategoriesService.refreshCategories(),
           ItemsService.refreshItems()
         ]).then(function() {
+          WaitingService.doneWaiting();
           $location.path(HOME);
         });
       });

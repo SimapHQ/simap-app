@@ -10,6 +10,7 @@ angular.module('simapApp').controller('InventoryCtrl', [
   'ITEM_AMOUNT_CHANGED_EVENT',
   'ITEM_NODE',
   'UnitsService',
+  'WaitingService',
   function (
     $firebase,
     $rootScope,
@@ -19,7 +20,8 @@ angular.module('simapApp').controller('InventoryCtrl', [
     HistoryService,
     ITEM_AMOUNT_CHANGED_EVENT,
     ITEM_NODE,
-    UnitsService
+    UnitsService,
+    WaitingService
   ) {
 
   var firebaseRef = FirebaseService.getRef(),
@@ -45,8 +47,9 @@ angular.module('simapApp').controller('InventoryCtrl', [
       return;
     }
 
-    var eventObj = {};
+    WaitingService.beginWaiting();
 
+    var eventObj = {};
     var delta = $scope.updateAmount * $scope.modifier;
     eventObj.type = ITEM_AMOUNT_CHANGED_EVENT;
     eventObj.inputDelta = delta;
@@ -69,6 +72,7 @@ angular.module('simapApp').controller('InventoryCtrl', [
       HistoryService.addEvent(item.$id, eventObj).then(function() {
         $rootScope.$broadcast(ITEM_AMOUNT_CHANGED_EVENT);
         $scope.updatingInventory = false;
+        WaitingService.doneWaiting();
       });
     });
   };
