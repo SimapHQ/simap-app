@@ -3,7 +3,7 @@
 var fs = require('fs'),
     https = require('https');
 
-var TARGET = 'simap-test',
+var TARGET = 'simap-dev',
     SECRET = JSON.parse(fs.readFileSync('/Users/drautb/.firebases/' + TARGET)).token;
 
 var options = {

@@ -21,6 +21,10 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  grunt.loadNpmTasks('grunt-execute');
+  grunt.loadNpmTasks('grunt-jasmine-node');
+  grunt.loadNpmTasks('grunt-text-replace');
+
   // Configurable paths for the application
   var appConfig = {
     app: require('./bower.json').appPath || 'app',
@@ -149,7 +153,8 @@ module.exports = function (grunt) {
           ]
         }]
       },
-      server: '.tmp'
+      server: '.tmp',
+      reports: 'test/reports'
     },
 
     // Add vendor prefixed styles
@@ -316,7 +321,7 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           cwd: '<%= yeoman.dist %>',
-          src: ['*.html', 'views/{,*/}*.html'],
+          src: ['*.html', 'views/{,*/}*.html', 'scripts/{,*/}*.html'],
           dest: '<%= yeoman.dist %>'
         }]
       }
@@ -356,6 +361,7 @@ module.exports = function (grunt) {
             '.htaccess',
             '*.html',
             'views/{,*/}*.html',
+            'scripts/{,*/}*.html',
             'images/{,*/}*.{webp}',
             'fonts/*'
           ]
@@ -424,8 +430,43 @@ module.exports = function (grunt) {
     execute: {
       updateSecurityRules: {
         src: ['test/acceptance/firebase/updateSecurityRules.js']
+      },
+    },
+
+    shell: {
+      deployDev: {
+        command: 'firebase deploy'
+      },
+      deployProd: {
+        command: function() {
+          var version = JSON.parse(fs.readFileSync(__dirname + '/bower.json')).version;
+          var cmd = 'firebase deploy --firebase simap --version ' + version;
+
+          console.log('Deploying to production with command: ' + cmd);
+          return cmd;
+        }
+      }
+    },
+
+    replace: {
+      prod: {
+        src: ['app/scripts/constants.js'],
+        overwrite: true,
+        replacements: [{
+          from: 'simap-dev.firebaseio.com',
+          to: 'simap.firebaseio.com'
+        }]
+      },
+      dev: {
+        src: ['app/scripts/constants.js'],
+        overwrite: true,
+        replacements: [{
+          from: 'simap.firebaseio.com',
+          to: 'simap-dev.firebaseio.com'
+        }]
       }
     }
+
   });
 
   grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
@@ -456,8 +497,6 @@ module.exports = function (grunt) {
     'karma:unit'
   ]);
 
-  grunt.loadNpmTasks('grunt-execute');
-  grunt.loadNpmTasks('grunt-jasmine-node');
   grunt.registerTask('acceptance', [
     'execute:updateSecurityRules',
     'jasmine_node'
@@ -489,5 +528,21 @@ module.exports = function (grunt) {
     'newer:jshint',
     'test',
     'build'
+  ]);
+
+  grunt.registerTask('package-prod', [
+    'replace:prod',
+    'default',
+    'replace:dev'
+  ]);
+
+  grunt.registerTask('deploy-dev', [
+    'default',
+    'shell:deployDev'
+  ]);
+
+  grunt.registerTask('deploy-prod', [
+    'package-prod',
+    'shell:deployProd'
   ]);
 };

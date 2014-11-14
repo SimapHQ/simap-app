@@ -1,5 +1,5 @@
 {
-  "firebase": "simap",
+  "firebase": "simap-dev",
   "public": "dist",
   "ignore": [
     "firebase.json",

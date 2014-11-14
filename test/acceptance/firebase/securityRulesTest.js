@@ -5,9 +5,10 @@ var async = require('async'),
     firebase = require('firebase'),
     firebaseTokenGenerator = require('firebase-token-generator');
 
-var TARGET = 'simap-test',
+var TARGET = 'simap-dev',
     FIREBASE_URL = 'https://' + TARGET + '.firebaseio.com/userData',
-    PERMISSION_DENIED = /PERMISSION_DENIED/;
+    PERMISSION_DENIED = /PERMISSION_DENIED/,
+    BACKUP_FILE = __dirname + '/.' + TARGET + '-data-backup.json';
 
 var secret = JSON.parse(fs.readFileSync('/Users/drautb/.firebases/' + TARGET)).token,
     tokenGenerator = new firebaseTokenGenerator(secret);
@@ -78,6 +79,29 @@ describe('Firebase Security Rules', function() {
 
   afterEach(function() {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+  });
+
+  describe('test setup', function() {
+    function backupFailed(error) {
+      console.log(TARGET + ' data backup failed, aborting security rules tests.', error);
+      process.exit(1);
+    };
+
+    beforeEach(function(done) {
+      authAdmin(done);
+    });
+
+    it('should backup the existing data', function(done) {
+      testRef.once('value', function(data) {
+        fs.writeFile(BACKUP_FILE, JSON.stringify(data.val(), null, 2), function(error) {
+          if (error) {
+            backupFailed(error);
+          } else {
+            done();
+          }
+        });
+      }, backupFailed);
+    });
   });
 
   describe('user registration', function() {
@@ -1832,6 +1856,15 @@ describe('Firebase Security Rules', function() {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
+      });
+    });
+  });
+
+  describe('cleanup after tests', function() {
+    it('should restore the original data', function(done) {
+      setup(JSON.parse(fs.readFileSync(BACKUP_FILE)), testUserA, function() {
+        fs.unlinkSync(BACKUP_FILE);
+        done();
       });
     });
   });
