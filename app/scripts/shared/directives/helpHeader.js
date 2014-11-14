@@ -1,8 +1,14 @@
 'use strict';
 
 var app = angular.module('simapApp');
- 
+
 app.directive('simapHelpHeader', function() {
+  var linkFn = function(scope) {
+    scope.status = {
+      showHelpBlock: false
+    };
+  };
+
   var getTemplateUrl = function($templateElement, $templateAttributes) {
     var size = $templateAttributes.size;
     return 'views/templates/' + size + '-help-header.html';
@@ -15,6 +21,7 @@ app.directive('simapHelpHeader', function() {
       label: '=',
       size: '='
     },
-    templateUrl: getTemplateUrl
+    templateUrl: getTemplateUrl,
+    link: linkFn
   };
 });
