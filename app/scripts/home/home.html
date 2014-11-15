@@ -53,15 +53,15 @@
       <div class="clearfix col-md-5 form-group">
         <select class="form-control" ng-model="updateUnit" ng-options="unit.name for (id, unit) in itemUnits[itemId]" required></select>
       </div>
-      <div class="clearfix col-md-1 form-group text-right">
-        <div class="col-xs-12 text-right form-group vpad-8">
+      <div class="clearfix col-md-2 form-group text-right">
+        <div class="col-xs-1 text-right form-group vpad-8">
           <a href="" ng-click="cancelUpdate()" analytics-on="click" analytics-event="Cancel Inventory Update" analytics-category="Item">
             <span class="glyphicon glyphicon-remove-sign"></span>
           </a>
         </div>
-      </div>
-      <div class="clearfix col-md-1 form-group text-right">
-        <simap-save-button on-save="applyUpdate(item)"></simap-save-button>
+        <div class="col-xs-1">
+          <simap-save-button on-save="applyUpdate(item)"></simap-save-button>
+        </div>
       </div>
     </div>
   </div>

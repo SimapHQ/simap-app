@@ -23,4 +23,6 @@
   </div>
 </form>
 
-<simap-save-button on-save="save()" ng-show="categoryForm.$valid"></simap-save-button>
+<div class="col-xs-12" ng-show="categoryForm.$valid">
+  <simap-save-button on-save="save()"></simap-save-button>
+</div>

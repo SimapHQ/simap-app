@@ -27,5 +27,7 @@
     </form>
   </div>
 
-  <simap-save-button on-save="save()" ng-show="familyForm.$valid && goalForm.$valid"></simap-save-button>
+  <div class="col-xs-12" ng-show="familyForm.$valid && goalForm.$valid">
+    <simap-save-button on-save="save()"></simap-save-button>
+  </div>
 </div>
