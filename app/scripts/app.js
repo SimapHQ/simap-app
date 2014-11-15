@@ -19,9 +19,11 @@ var app = angular.module('simapApp', [
 ]);
 
 app.config([
+  '$locationProvider',
   '$logProvider',
   '$routeProvider',
   function (
+    $locationProvider,
     $logProvider,
     $routeProvider
   ) {
@@ -63,6 +65,9 @@ app.config([
     .otherwise({
       redirectTo: '/login'
     });
+
+  $locationProvider.html5Mode(true);
+  $locationProvider.hashPrefix = '!';
 
   $logProvider.debugEnabled(true);
 }]);

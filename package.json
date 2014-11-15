@@ -1,9 +1,11 @@
 {
   "name": "Simap",
   "version": "0.0.1",
+  "repository": "https://github.com/drautb/simap-app",
   "dependencies": {},
   "devDependencies": {
     "async": "^0.9.0",
+    "connect-modrewrite": "^0.7.9",
     "firebase": "^1.1.2",
     "firebase-token-generator": "^2.0.0",
     "grunt": "^0.4.1",

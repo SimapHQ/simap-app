@@ -2,6 +2,7 @@
 <html class="no-js">
   <head>
     <meta charset="utf-8">
+    <base href="/">
     <title></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
@@ -51,16 +52,16 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#/" analytics-on="click" analytics-event="Simap" analytics-category="Navigation">Simap</a>
+                <a class="navbar-brand" href="/" analytics-on="click" analytics-event="Simap" analytics-category="Navigation">Simap</a>
               </div>
 
               <!-- Collect the nav links, forms, and other content for toggling -->
               <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav" ng-show="isLoggedIn()">
-                  <li><a ng-href="#/home" analytics-on="click" analytics-event="Home" analytics-category="Navigation">Home</a></li>
-                  <li><a ng-href="#/items" analytics-on="click" analytics-event="Items" analytics-category="Navigation">Items</a></li>
-                  <li><a ng-href="#/categories" analytics-on="click" analytics-event="Categories" analytics-category="Navigation">Categories</a></li>
-                  <li><a ng-href="#/planning" analytics-on="click" analytics-event="Planning" analytics-category="Navigation">Planning</a></li>
+                  <li><a ng-href="/home" analytics-on="click" analytics-event="Home" analytics-category="Navigation">Home</a></li>
+                  <li><a ng-href="/items" analytics-on="click" analytics-event="Items" analytics-category="Navigation">Items</a></li>
+                  <li><a ng-href="/categories" analytics-on="click" analytics-event="Categories" analytics-category="Navigation">Categories</a></li>
+                  <li><a ng-href="/planning" analytics-on="click" analytics-event="Planning" analytics-category="Navigation">Planning</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" ng-show="isLoggedIn()">
                   <li class="divider"></li>

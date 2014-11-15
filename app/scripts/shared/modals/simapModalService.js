@@ -12,7 +12,7 @@ app.service('SimapModalService', [
 
   this.showError = function(errorObj) {
     ModalService.showModal({
-      templateUrl: '../../../../views/templates/modals/error.html',
+      templateUrl: 'views/templates/modals/error.html',
       controller: 'ErrorModalCtrl',
       inputs: {
         data: errorObj
@@ -26,7 +26,7 @@ app.service('SimapModalService', [
     var deferred = $q.defer();
 
     ModalService.showModal({
-      templateUrl: '../../../../views/templates/modals/confirm.html',
+      templateUrl: 'views/templates/modals/confirm.html',
       controller: 'ConfirmModalCtrl',
       inputs: {
         data: actionObj
