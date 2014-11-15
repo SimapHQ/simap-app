@@ -464,6 +464,16 @@ module.exports = function (grunt) {
           from: 'simap.firebaseio.com',
           to: 'simap-dev.firebaseio.com'
         }]
+      },
+      // This one is to replace the production google analytics ID with the dev ID
+      // if we're doign a dev deploy.
+      devGA: {
+        src: ['dist/index.html'],
+        overwrite: true,
+        replacements: [{
+          from: 'UA-56632558-5',
+          to: 'UA-56632558-1'
+        }]
       }
     }
 
@@ -538,6 +548,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('deploy-dev', [
     'default',
+    'replace:devGA',
     'shell:deployDev'
   ]);
 
