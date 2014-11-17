@@ -22,17 +22,21 @@ app.config([
   '$locationProvider',
   '$logProvider',
   '$routeProvider',
+  'PATH_TO_HOME',
+  'PATH_TO_LOGIN',
   function (
     $locationProvider,
     $logProvider,
-    $routeProvider
+    $routeProvider,
+    PATH_TO_HOME,
+    PATH_TO_LOGIN
   ) {
   $routeProvider
-    .when('/login', {
+    .when(PATH_TO_LOGIN, {
       templateUrl: 'scripts/login/login.html',
       controller: 'LoginCtrl'
     })
-    .when('/home', {
+    .when(PATH_TO_HOME, {
       templateUrl: 'scripts/home/home.html',
       controller: 'HomeCtrl',
       authRequired: true
@@ -63,7 +67,7 @@ app.config([
       authRequired: true
     })
     .otherwise({
-      redirectTo: '/login'
+      redirectTo: PATH_TO_LOGIN
     });
 
   $locationProvider.html5Mode(true);
@@ -77,10 +81,10 @@ app.run([
   '$log',
   '$q',
   '$rootScope',
-  'CategoriesService',
-  'HOME',
-  'ItemsService',
+  'DataService',
   'LoginService',
+  'PATH_TO_HOME',
+  'PATH_TO_LOGIN',
   'SessionService',
   'UserService',
   'WaitingService',
@@ -89,10 +93,10 @@ app.run([
     $log,
     $q,
     $rootScope,
-    CategoriesService,
-    HOME,
-    ItemsService,
+    DataService,
     LoginService,
+    PATH_TO_HOME,
+    PATH_TO_LOGIN,
     SessionService,
     UserService,
     WaitingService
@@ -100,27 +104,24 @@ app.run([
 
   $rootScope.$on('$routeChangeStart', function(event, next) {
     if (next.authRequired && SessionService.currentSession() === null) {
-      $location.path('/login');
-    } else if ($location.path() === '/login' && SessionService.currentSession() !== null) {
-      $location.path('/home');
+      $location.path(PATH_TO_LOGIN);
+    } else if ($location.path() === PATH_TO_LOGIN && SessionService.currentSession() !== null) {
+      $location.path(PATH_TO_HOME);
     }
   });
 
   $rootScope.$on('$routeChangeError', function(routeChangeEvent, current, previous, eventObj) {
     $log.error('route change error, sending back to /.', routeChangeEvent, current, previous, eventObj);
-    $location.path('/login');
+    $location.path(PATH_TO_LOGIN);
   });
 
   $rootScope.$on('$firebaseSimpleLogin:login', function(event, user) {
     WaitingService.beginWaiting();
     UserService.updateUser(user).then(function() {
       SessionService.startSession(user).then(function() {
-        $q.all([
-          CategoriesService.refreshCategories(),
-          ItemsService.refreshItems()
-        ]).then(function() {
+        DataService.refreshData().then(function() {
           WaitingService.doneWaiting();
-          $location.path(HOME);
+          $location.path(PATH_TO_HOME);
         });
       });
     }, function(error) {
@@ -131,7 +132,7 @@ app.run([
 
   $rootScope.$on('$firebaseSimpleLogin:logout', function() {
     SessionService.closeSession();
-    $location.path('/login');
+    $location.path(PATH_TO_LOGIN);
   });
 
   $rootScope.empty = function(value) {

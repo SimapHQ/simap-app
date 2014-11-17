@@ -4,21 +4,21 @@ var app = angular.module('simapApp');
 
 app.service('CategoryService', [
   '$log',
-  'CategoriesService',
+  'CATEGORY_TYPE',
+  'DataService',
   'DEFAULT_CATEGORY_NAME',
-  'ItemsService',
   'randomColor',
   'SessionService',
   function(
     $log,
-    CategoriesService,
+    CATEGORY_TYPE,
+    DataService,
     DEFAULT_CATEGORY_NAME,
-    ItemsService,
     randomColor,
     SessionService
   ) {
 
-  var items = ItemsService.getItems();
+  var items = DataService.getData().items;
 
   var _itemsInCategory = function(categoryId) {
     var itemsInCategory = [];
@@ -38,8 +38,8 @@ app.service('CategoryService', [
       color: randomColor()
     };
 
-    return CategoriesService.addNew(newCategoryObj).then(function(newCategoryId) {
-      return SessionService.bindToUser('categories', newCategoryId);
+    return DataService.addNew(CATEGORY_TYPE, newCategoryObj).then(function(newCategoryId) {
+      return SessionService.bindToUser(CATEGORY_TYPE, newCategoryId);
     });
   };
 
@@ -49,8 +49,8 @@ app.service('CategoryService', [
       return;
     }
 
-    return CategoriesService.removeOld(categoryId).then(function(removedId) {
-      return SessionService.unbindFromUser('categories', removedId);
+    return DataService.removeOld(CATEGORY_TYPE, categoryId).then(function(removedId) {
+      return SessionService.unbindFromUser(CATEGORY_TYPE, removedId);
     });
   };
 

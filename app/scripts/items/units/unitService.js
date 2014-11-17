@@ -3,13 +3,15 @@
 var app = angular.module('simapApp');
 
 app.service('UnitService', [
-  'ConversionsService',
+  'CONVERSION_TYPE',
+  'DataService',
   'DEFAULT_UNIT_NAME',
-  'UnitsService',
+  'UNIT_TYPE',
   function(
-    ConversionsService,
+    CONVERSION_TYPE,
+    DataService,
     DEFAULT_UNIT_NAME,
-    UnitsService
+    UNIT_TYPE
   ) {
 
   this.createNew = function() {
@@ -17,16 +19,16 @@ app.service('UnitService', [
   };
 
   this.createNewWithName = function(newUnitName) {
-    return UnitsService.addNew({
+    return DataService.addNew(UNIT_TYPE, {
       name: newUnitName
     }).then(function(newUnitId) {
-      return ConversionsService.addNew(newUnitId);
+      return DataService.addNew(CONVERSION_TYPE, {}, newUnitId);
     });
   };
 
   this.removeOld = function(unitId) {
-    return UnitsService.removeOld(unitId).then(function(removedId) {
-      return ConversionsService.removeOld(removedId);
+    return DataService.removeOld(UNIT_TYPE, unitId).then(function(removedId) {
+      return DataService.removeOld(CONVERSION_TYPE, removedId);
     });
   };
 

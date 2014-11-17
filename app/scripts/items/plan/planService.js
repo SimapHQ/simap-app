@@ -3,14 +3,16 @@
 var app = angular.module('simapApp');
 
 app.service('PlanService', [
+  'DataService',
   'DEFAULT_PLAN_AMOUNT',
   'DEFAULT_PLAN_TIME',
-  'PlansService',
+  'PLAN_TYPE',
   'RATIONED_PLAN_TYPE',
   function(
+    DataService,
     DEFAULT_PLAN_AMOUNT,
     DEFAULT_PLAN_TIME,
-    PlansService,
+    PLAN_TYPE,
     RATIONED_PLAN_TYPE
   ) {
 
@@ -31,11 +33,11 @@ app.service('PlanService', [
       unitId: unitId
     };
 
-    return PlansService.addNew(newPlanObj);
+    return DataService.addNew(PLAN_TYPE, newPlanObj);
   };
 
   this.removeOld = function(planId) {
-    return PlansService.removeOld(planId);
+    return DataService.removeOld(PLAN_TYPE, planId);
   };
 
 }]);

@@ -7,30 +7,22 @@ app.controller('ItemCtrl', [
   '$q',
   '$routeParams',
   '$scope',
-  'CategoriesService',
-  'ConversionsService',
+  'DataService',
   'DEFAULT_CONVERSION_VALUE',
   'HistoryService',
   'ITEM_PRIMARY_UNIT_CHANGED_EVENT',
-  'ItemsService',
-  'PlansService',
   'UnitService',
-  'UnitsService',
   'WaitingService',
   function (
     $location,
     $q,
     $routeParams,
     $scope,
-    CategoriesService,
-    ConversionsService,
+    DataService,
     DEFAULT_CONVERSION_VALUE,
     HistoryService,
     ITEM_PRIMARY_UNIT_CHANGED_EVENT,
-    ItemsService,
-    PlansService,
     UnitService,
-    UnitsService,
     WaitingService
   ) {
 
@@ -40,7 +32,7 @@ app.controller('ItemCtrl', [
   var filterUnits = function() {
     var itemUnitIds = Object.keys($scope.item.units),
         itemUnits = {},
-        allUnits = UnitsService.getUnits();
+        allUnits = DataService.getData().units;
 
     Object.keys(allUnits).forEach(function(unitId) {
       if ($.inArray(unitId, itemUnitIds) >= 0) {
@@ -61,12 +53,12 @@ app.controller('ItemCtrl', [
   };
 
 
-  $scope.item = ItemsService.getItems()[itemId];
-  $scope.categories = CategoriesService.getCategories();
+  $scope.item = DataService.getData().items[itemId];
+  $scope.categories = DataService.getData().categories;
   $scope.units = filterUnits();
   $scope.unitIds = Object.keys($scope.units);
-  $scope.conversions = ConversionsService.getConversions();
-  $scope.plan = PlansService.getPlans()[$scope.item.planId];
+  $scope.conversions = DataService.getData().conversions;
+  $scope.plan = DataService.getData().plans[$scope.item.planId];
 
   $scope.addNewUnit = function() {
     WaitingService.beginWaiting();

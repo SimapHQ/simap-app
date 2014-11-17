@@ -4,33 +4,31 @@ var app = angular.module('simapApp');
 
 app.controller('CategoryCtrl', [
   '$location',
-  '$routeParams',
   '$rootScope',
+  '$routeParams',
   '$scope',
-  'CATEGORIES',
-  'CategoriesService',
+  'DataService',
+  'PATH_TO_CATEGORIES',
   'SimapModalService',
   'URIParser',
   'WaitingService',
   function (
     $location,
-    $routeParams,
     $rootScope,
+    $routeParams,
     $scope,
-    CATEGORIES,
-    CategoriesService,
+    DataService,
+    PATH_TO_CATEGORIES,
     SimapModalService,
     URIParser,
     WaitingService
   ) {
 
   var categoryId = $routeParams.categoryId,
-      backup = {},
       stopListeningFn;
 
-  $scope.category = CategoriesService.getCategories()[categoryId];
+  $scope.category = DataService.getData().categories[categoryId];
 
-  var stopListeningFn;
   stopListeningFn = $rootScope.$on('$locationChangeStart', function(event, newState) {
     if ($scope.categoryForm.$pristine) {
       return;
@@ -42,9 +40,10 @@ app.controller('CategoryCtrl', [
       }
 
       stopListeningFn();
-      CategoriesService.revertToServer(categoryId).then(function() {
-        $location.path(URIParser.parse(newState).pathname);
-      });
+      // TODO
+      // CategoriesService.revertToServer(categoryId).then(function() {
+      //   $location.path(URIParser.parse(newState).pathname);
+      // });
     });
 
     event.preventDefault();
@@ -54,7 +53,7 @@ app.controller('CategoryCtrl', [
     WaitingService.beginWaiting();
     $scope.category.$save().then(function() {
       $scope.categoryForm.$setPristine();
-      $location.path(CATEGORIES);
+      $location.path(PATH_TO_CATEGORIES);
       WaitingService.doneWaiting();
     });
   };

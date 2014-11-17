@@ -6,21 +6,21 @@ app.controller('ItemsCtrl', [
   '$location',
   '$scope',
   'ItemService',
-  'ItemsService',
+  'DataService',
   'SimapModalService',
   'WaitingService',
   function (
     $location,
     $scope,
     ItemService,
-    ItemsService,
+    DataService,
     SimapModalService,
     WaitingService
     ) {
 
   $scope.helpBlock = '';
 
-  $scope.items = ItemsService.getItems();
+  $scope.items = DataService.getData().items;
 
   $scope.addNewItem = function() {
     WaitingService.beginWaiting();

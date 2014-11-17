@@ -5,21 +5,23 @@ var app = angular.module('simapApp');
 app.service('SessionService', [
   '$firebase',
   '$log',
+  'CATEGORY_TYPE',
   'FirebaseService',
-  'HOME',
+  'ITEM_TYPE',
   'USER_NODE',
   function(
     $firebase,
     $log,
+    CATEGORY_TYPE,
     FirebaseService,
-    HOME,
+    ITEM_TYPE,
     USER_NODE
   ) {
 
   var syncedUser = null;
 
   var isBindableType = function(type) {
-    return type === 'categories' || type === 'items';
+    return type === CATEGORY_TYPE || type === ITEM_TYPE;
   };
 
   var _closeSession = function() {

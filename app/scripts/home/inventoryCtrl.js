@@ -4,29 +4,27 @@ angular.module('simapApp').controller('InventoryCtrl', [
   '$firebase',
   '$rootScope',
   '$scope',
-  'ConversionsService',
+  'DataService',
   'FirebaseService',
   'HistoryService',
   'ITEM_AMOUNT_CHANGED_EVENT',
   'ITEM_NODE',
-  'UnitsService',
   'WaitingService',
   function (
     $firebase,
     $rootScope,
     $scope,
-    ConversionsService,
+    DataService,
     FirebaseService,
     HistoryService,
     ITEM_AMOUNT_CHANGED_EVENT,
     ITEM_NODE,
-    UnitsService,
     WaitingService
   ) {
 
   var firebaseRef = FirebaseService.getRef(),
-      units = UnitsService.getUnits(),
-      conversions = ConversionsService.getConversions();
+      units = DataService.getData().units,
+      conversions = DataService.getData().conversions;
 
   $scope.updatingInventory = false;
 

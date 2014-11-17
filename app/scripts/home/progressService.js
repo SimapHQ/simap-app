@@ -5,15 +5,12 @@ var app = angular.module('simapApp');
 app.service('ProgressService', [
   '$log',
   'BASELINE_PLAN_TYPE',
-  'CategoriesService',
-  'ConversionsService',
+  'DataService',
   'DAYS_IN_MONTH',
   'DAYS_IN_WEEK',
   'DAYS_IN_YEAR',
   'FamilyService',
   'GoalService',
-  'ItemsService',
-  'PlansService',
   'RATIONED_PLAN_TYPE',
   'TIME_DAY',
   'TIME_MONTH',
@@ -22,15 +19,12 @@ app.service('ProgressService', [
   function (
     $log,
     BASELINE_PLAN_TYPE,
-    CategoriesService,
-    ConversionsService,
+    DataService,
     DAYS_IN_MONTH,
     DAYS_IN_WEEK,
     DAYS_IN_YEAR,
     FamilyService,
     GoalService,
-    ItemsService,
-    PlansService,
     RATIONED_PLAN_TYPE,
     TIME_DAY,
     TIME_MONTH,
@@ -38,10 +32,10 @@ app.service('ProgressService', [
     TIME_YEAR
   ) {
 
-  var categories = CategoriesService.getCategories();
-  var items = ItemsService.getItems();
-  var conversions = ConversionsService.getConversions();
-  var plans = PlansService.getPlans();
+  var categories = DataService.getData().categories;
+  var items = DataService.getData().items;
+  var conversions = DataService.getData().conversions;
+  var plans = DataService.getData().plans;
   var goal = GoalService.getGoal();
   var family = FamilyService.getFamily();
 

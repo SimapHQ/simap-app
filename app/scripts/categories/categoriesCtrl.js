@@ -5,22 +5,22 @@ var app = angular.module('simapApp');
 app.controller('CategoriesCtrl', [
   '$location',
   '$scope',
-  'CategoriesService',
   'CategoryService',
+  'DataService',
   'SimapModalService',
   'WaitingService',
   function (
     $location,
     $scope,
-    CategoriesService,
     CategoryService,
+    DataService,
     SimapModalService,
     WaitingService
     ) {
 
   $scope.helpBlock = 'Categories let you group your items. Here you can select a category to edit, delete a category, and add a new category.';
 
-  $scope.categories = CategoriesService.getCategories();
+  $scope.categories = DataService.getData().categories;
 
   $scope.addNewCategory = function() {
     WaitingService.beginWaiting();

@@ -5,14 +5,14 @@ var app = angular.module('simapApp');
 app.service('ItemService', [
   '$firebase',
   '$q',
-  'CategoriesService',
+  'DataService',
   'DEFAULT_ITEM_NAME',
   'DEFAULT_UNIT_NAME',
   'FirebaseService',
   'GuidService',
   'HISTORY_NODE',
   'ITEM_NODE',
-  'ItemsService',
+  'ITEM_TYPE',
   'PlanService',
   'randomColor',
   'SessionService',
@@ -20,14 +20,14 @@ app.service('ItemService', [
   function(
     $firebase,
     $q,
-    CategoriesService,
+    DataService,
     DEFAULT_ITEM_NAME,
     DEFAULT_UNIT_NAME,
     FirebaseService,
     GuidService,
     HISTORY_NODE,
     ITEM_NODE,
-    ItemsService,
+    ITEM_TYPE,
     PlanService,
     randomColor,
     SessionService,
@@ -42,7 +42,7 @@ app.service('ItemService', [
         var newItem = {
           name: DEFAULT_ITEM_NAME,
           color: randomColor(),
-          categoryId: Object.keys(CategoriesService.getCategories())[0],
+          categoryId: Object.keys(DataService.getData().categories)[0],
           amount: 0,
           units: {},
           primaryUnitId: newUnitId,
@@ -50,15 +50,15 @@ app.service('ItemService', [
         };
         newItem.units[newUnitId] = true;
 
-        return ItemsService.addNew(newItem).then(function(newItemId) {
-          return SessionService.bindToUser('items', newItemId);
+        return DataService.addNew(ITEM_TYPE, newItem).then(function(newItemId) {
+          return SessionService.bindToUser(ITEM_TYPE, newItemId);
         });
       });
     });
   };
 
   this.removeOld = function(itemId) {
-    var itemObj = ItemsService.getItems()[itemId],
+    var itemObj = DataService.getData().items[itemId],
         removalPromises = [];
 
     Object.keys(itemObj.units).forEach(function(unitId) {
@@ -71,8 +71,8 @@ app.service('ItemService', [
     removalPromises.push(historyRemovalPromise);
 
     return $q.all(removalPromises).then(function() {
-      return ItemsService.removeOld(itemId).then(function(removedId) {
-        return SessionService.unbindFromUser('items', removedId);
+      return DataService.removeOld(ITEM_TYPE, itemId).then(function(removedId) {
+        return SessionService.unbindFromUser(ITEM_TYPE, removedId);
       });
     });
   };

@@ -2,30 +2,24 @@
 
 angular.module('simapApp').controller('HomeCtrl', [
   '$scope',
-  'CategoriesService',
-  'ItemsService',
-  'PlansService',
-  'UnitsService',
+  'DataService',
   function (
     $scope,
-    CategoriesService,
-    ItemsService,
-    PlansService,
-    UnitsService
+    DataService
   ) {
 
   var refreshHomeData = function() {
-    $scope.categories = CategoriesService.getCategories();
+    $scope.categories = DataService.getData().categories;
     $scope.items = {};
     $scope.itemUnits = {};
-    $scope.units = UnitsService.getUnits();
-    $scope.plans = PlansService.getPlans();
+    $scope.units = DataService.getData().units;
+    $scope.plans = DataService.getData().plans;
 
     Object.keys($scope.categories).forEach(function(categoryId) {
       $scope.items[categoryId] = {};
     });
 
-    var items = ItemsService.getItems();
+    var items = DataService.getData().items;
     Object.keys(items).forEach(function(itemId) {
       $scope.items[items[itemId].categoryId][itemId] = items[itemId];
 

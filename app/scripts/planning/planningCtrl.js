@@ -8,7 +8,7 @@ angular.module('simapApp').controller('PlanningCtrl', [
   '$scope',
   'DAYS_IN_MONTH',
   'FamilyService',
-  'HOME',
+  'PATH_TO_HOME',
   'GoalService',
   'SimapModalService',
   'WaitingService',
@@ -20,7 +20,7 @@ angular.module('simapApp').controller('PlanningCtrl', [
     $scope,
     DAYS_IN_MONTH,
     FamilyService,
-    HOME,
+    PATH_TO_HOME,
     GoalService,
     SimapModalService,
     WaitingService
@@ -51,7 +51,7 @@ angular.module('simapApp').controller('PlanningCtrl', [
       ]).then(function() {
         $scope.familyForm.$setPristine();
         $scope.goalForm.$setPristine();
-        $location.path(HOME);
+        $location.path(PATH_TO_HOME);
         WaitingService.doneWaiting();
       });
     };

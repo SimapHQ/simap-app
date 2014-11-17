@@ -2,12 +2,12 @@
 
 angular.module('simapApp').controller('ProgressCtrl', [
   '$scope',
-  'CategoriesService',
+  'DataService',
   'ITEM_AMOUNT_CHANGED_EVENT',
   'ProgressService',
   function (
     $scope,
-    CategoriesService,
+    DataService,
     ITEM_AMOUNT_CHANGED_EVENT,
     ProgressService
   ) {
@@ -16,7 +16,7 @@ angular.module('simapApp').controller('ProgressCtrl', [
     $scope.overallProgressBarItems = ProgressService.getOverallProgressBarItems();
     $scope.progressBarItems = {};
 
-    Object.keys(CategoriesService.getCategories()).forEach(function(categoryId) {
+    Object.keys(DataService.getData().categories).forEach(function(categoryId) {
       $scope.progressBarItems[categoryId] = ProgressService.getCategoryProgressBarItems(categoryId);
     });
   };

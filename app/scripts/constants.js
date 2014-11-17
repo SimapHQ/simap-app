@@ -2,9 +2,9 @@
 
 var app = angular.module('simapApp');
 
-app.constant('HOME', '/home');
-app.constant('LOGIN', '/login');
-app.constant('CATEGORIES', '/categories');
+app.constant('PATH_TO_HOME', '/home');
+app.constant('PATH_TO_LOGIN', '/login');
+app.constant('PATH_TO_CATEGORIES', '/categories');
 
 app.constant('FIREBASE_URL', 'https://simap-dev.firebaseio.com/userData');
 
@@ -17,6 +17,12 @@ app.constant('ITEM_NODE', 'item/');
 app.constant('PLAN_NODE', 'plan/');
 app.constant('UNIT_NODE', 'unit/');
 app.constant('USER_NODE', 'user/');
+
+app.constant('CATEGORY_TYPE', 'categories');
+app.constant('ITEM_TYPE', 'items');
+app.constant('UNIT_TYPE', 'units');
+app.constant('CONVERSION_TYPE', 'conversions');
+app.constant('PLAN_TYPE', 'plans');
 
 app.constant('DEFAULT_FAMILY_SIZE_ADULTS', 1);
 app.constant('DEFAULT_FAMILY_SIZE_CHILDREN', 0);
