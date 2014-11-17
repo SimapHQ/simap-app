@@ -4,21 +4,25 @@ angular.module('simapApp').controller('PlanningCtrl', [
   '$firebase',
   '$location',
   '$q',
+  '$rootScope',
   '$scope',
   'DAYS_IN_MONTH',
   'FamilyService',
   'HOME',
   'GoalService',
+  'SimapModalService',
   'WaitingService',
   function (
     $firebase,
     $location,
     $q,
+    $rootScope,
     $scope,
     DAYS_IN_MONTH,
     FamilyService,
     HOME,
     GoalService,
+    SimapModalService,
     WaitingService
     ) {
 
@@ -45,6 +49,8 @@ angular.module('simapApp').controller('PlanningCtrl', [
         $scope.family.$save(),
         $scope.goal.$save()
       ]).then(function() {
+        $scope.familyForm.$setPristine();
+        $scope.goalForm.$setPristine();
         $location.path(HOME);
         WaitingService.doneWaiting();
       });

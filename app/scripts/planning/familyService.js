@@ -41,7 +41,7 @@ app.service('FamilyService', [
 
   this.getFamily = function() {
     if (syncedFamily === undefined) {
-      syncedFamily = FirebaseService.getObject(FAMILY_NODE + SessionService.currentSession().familyId);
+      syncedFamily = FirebaseService.getObject(FAMILY_NODE + SessionService.currentSession('familyId'));
     }
 
     return syncedFamily;
