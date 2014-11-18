@@ -5,29 +5,76 @@ var app = angular.module('simapApp');
 app.controller('ItemCtrl', [
   '$location',
   '$q',
+  '$rootScope',
   '$routeParams',
   '$scope',
+  'CONVERSION_TYPE',
   'DataService',
   'DEFAULT_CONVERSION_VALUE',
   'HistoryService',
   'ITEM_PRIMARY_UNIT_CHANGED_EVENT',
+  'ITEM_TYPE',
+  'PLAN_TYPE',
+  'SimapModalService',
+  'UNIT_TYPE',
   'UnitService',
+  'URIParser',
   'WaitingService',
   function (
     $location,
     $q,
+    $rootScope,
     $routeParams,
     $scope,
+    CONVERSION_TYPE,
     DataService,
     DEFAULT_CONVERSION_VALUE,
     HistoryService,
     ITEM_PRIMARY_UNIT_CHANGED_EVENT,
+    ITEM_TYPE,
+    PLAN_TYPE,
+    SimapModalService,
+    UNIT_TYPE,
     UnitService,
+    URIParser,
     WaitingService
   ) {
 
   var itemId = $routeParams.itemId,
-      primaryUnitChangeEvent;
+      primaryUnitChangeEvent,
+      stopListeningFn;
+
+  stopListeningFn = $rootScope.$on('$locationChangeStart', function(event, newState) {
+    if (_allForms('$pristine')) {
+      return;
+    }
+
+    SimapModalService.confirmNavigation().then(function(confirmed) {
+      if (!confirmed) {
+        return;
+      }
+
+      WaitingService.beginWaiting();
+      stopListeningFn();
+
+      var revertPromises = [
+        DataService.revert(PLAN_TYPE, $scope.item.planId),
+        DataService.revert(ITEM_TYPE, itemId)
+      ];
+
+      $scope.unitIds.forEach(function(unitId) {
+        revertPromises.push(DataService.revert(UNIT_TYPE, unitId));
+        revertPromises.push(DataService.revert(CONVERSION_TYPE, unitId));
+      });
+
+      $q.all(revertPromises).then(function() {
+        $location.path(URIParser.parse(newState).pathname);
+        WaitingService.doneWaiting();
+      });
+    });
+
+    event.preventDefault();
+  });
 
   var filterUnits = function() {
     var itemUnitIds = Object.keys($scope.item.units),
@@ -52,6 +99,19 @@ app.controller('ItemCtrl', [
     $scope.updateInverse(unitId);
   };
 
+  var _allForms = function(option) {
+    return $scope.itemForm[option] &&
+           $scope.primaryUnitForm[option] &&
+           $scope.conversionsForm[option] &&
+           $scope.planningForm[option];
+  };
+
+  var _makePristine = function() {
+    $scope.itemForm.$setPristine();
+    $scope.primaryUnitForm.$setPristine();
+    $scope.conversionsForm.$setPristine();
+    $scope.planningForm.$setPristine();
+  };
 
   $scope.item = DataService.getData().items[itemId];
   $scope.categories = DataService.getData().categories;
@@ -98,12 +158,7 @@ app.controller('ItemCtrl', [
     $scope.conversions[unitId][$scope.item.primaryUnitId] = invertedValue;
   };
 
-  $scope.allFormsValid = function() {
-    return $scope.itemForm.$valid &&
-           $scope.primaryUnitForm.$valid &&
-           $scope.conversionsForm.$valid &&
-           $scope.planningForm.$valid;
-  };
+  $scope.allForms = _allForms;
 
   $scope.save = function() {
     WaitingService.beginWaiting();
@@ -124,13 +179,14 @@ app.controller('ItemCtrl', [
 
     $q.all(savePromises).then(function() {
       primaryUnitChangeEvent = undefined;
+      _makePristine();
       $location.path('/items');
       WaitingService.doneWaiting();
     });
   };
 
   $scope.$watch('item.primaryUnitId', function(newId, prevId) {
-    if (newId === prevId) {
+    if (newId === prevId || newId === undefined) {
       return;
     }
 

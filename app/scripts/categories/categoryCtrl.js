@@ -7,6 +7,7 @@ app.controller('CategoryCtrl', [
   '$rootScope',
   '$routeParams',
   '$scope',
+  'CATEGORY_TYPE',
   'DataService',
   'PATH_TO_CATEGORIES',
   'SimapModalService',
@@ -17,6 +18,7 @@ app.controller('CategoryCtrl', [
     $rootScope,
     $routeParams,
     $scope,
+    CATEGORY_TYPE,
     DataService,
     PATH_TO_CATEGORIES,
     SimapModalService,
@@ -39,11 +41,12 @@ app.controller('CategoryCtrl', [
         return;
       }
 
+      WaitingService.beginWaiting();
       stopListeningFn();
-      // TODO
-      // CategoriesService.revertToServer(categoryId).then(function() {
-      //   $location.path(URIParser.parse(newState).pathname);
-      // });
+      DataService.revert(CATEGORY_TYPE, categoryId).then(function() {
+        $location.path(URIParser.parse(newState).pathname);
+        WaitingService.doneWaiting();
+      });
     });
 
     event.preventDefault();

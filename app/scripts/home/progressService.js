@@ -28,16 +28,11 @@ app.service('ProgressService', [
     TIME_YEAR
   ) {
 
-  var categories = DataService.getData().categories;
-  var items = DataService.getData().items;
-  var conversions = DataService.getData().conversions;
-  var plans = DataService.getData().plans;
-  var goal = DataService.getData().goal;
-  var family = DataService.getData().family;
+  var data = DataService.getData();
 
   var isBaselineMet = function(itemId) {
-    var item = items[itemId],
-        plan = plans[items[itemId].planId];
+    var item = data.items[itemId],
+        plan = data.plans[data.items[itemId].planId];
 
     if (plan.type !== BASELINE_PLAN_TYPE) {
       $log.error('isBaselineMet called on item with non-baseline plan', item, plan);
@@ -46,7 +41,7 @@ app.service('ProgressService', [
 
     var itemAmount = item.amount;
     if (plan.unitId !== item.primaryUnitId) {
-      itemAmount = itemAmount * conversions[item.primaryUnitId][plan.unitId];
+      itemAmount = itemAmount * data.conversions[item.primaryUnitId][plan.unitId];
     }
 
     return itemAmount >= plan.amount;
@@ -59,9 +54,9 @@ app.service('ProgressService', [
   var countCategoriesWithRations = function() {
     var categoriesContainingRations = [];
 
-    Object.keys(items).forEach(function(itemId) {
-      if (plans[items[itemId].planId].type === RATIONED_PLAN_TYPE) {
-        categoriesContainingRations.push(items[itemId].categoryId);
+    Object.keys(data.items).forEach(function(itemId) {
+      if (data.plans[data.items[itemId].planId].type === RATIONED_PLAN_TYPE) {
+        categoriesContainingRations.push(data.items[itemId].categoryId);
       }
     });
 
@@ -71,9 +66,9 @@ app.service('ProgressService', [
   var countRationItemsInCategory = function(categoryId) {
     var itemCount = 0;
 
-    Object.keys(items).forEach(function(itemId) {
-      if (plans[items[itemId].planId].type === RATIONED_PLAN_TYPE &&
-          items[itemId].categoryId === categoryId) {
+    Object.keys(data.items).forEach(function(itemId) {
+      if (data.plans[data.items[itemId].planId].type === RATIONED_PLAN_TYPE &&
+          data.items[itemId].categoryId === categoryId) {
         itemCount += 1;
       }
     });
@@ -99,11 +94,11 @@ app.service('ProgressService', [
         childAmount = plan.child.amount;
 
     if (plan.adult.unitId !== item.primaryUnitId) {
-      adultAmount = adultAmount * conversions[plan.adult.unitId][item.primaryUnitId];
+      adultAmount = adultAmount * data.conversions[plan.adult.unitId][item.primaryUnitId];
     }
 
     if (plan.child.unitId !== item.primaryUnitId) {
-      childAmount = childAmount * conversions[plan.child.unitId][item.primaryUnitId];
+      childAmount = childAmount * data.conversions[plan.child.unitId][item.primaryUnitId];
     }
 
     // Convert amount to day-scope, if not already.
@@ -111,15 +106,15 @@ app.service('ProgressService', [
     childAmount = convertToPerDay(childAmount, plan.child.time);
 
     // Account for each family member
-    adultAmount = adultAmount * family.adults;
-    childAmount = childAmount * family.children;
+    adultAmount = adultAmount * data.family.adults;
+    childAmount = childAmount * data.family.children;
 
     return adultAmount + childAmount;
   };
 
   var calculateItemProgress = function(itemId) {
-    var item = items[itemId],
-        plan = plans[items[itemId].planId];
+    var item = data.items[itemId],
+        plan = data.plans[data.items[itemId].planId];
 
     if (plan.type !== RATIONED_PLAN_TYPE) {
       $log.error('calculateItemProgress called on item with non-ration plan', item, plan);
@@ -128,16 +123,16 @@ app.service('ProgressService', [
 
     var neededPerDay = calculateRationGoal(item, plan);
 
-    return Math.min(item.amount / (neededPerDay * goal.days), 1.0);
+    return Math.min(item.amount / (neededPerDay * data.goal.days), 1.0);
   };
 
   var _calculateRationProgress = function(categoryId) {
     var totalProgress = 0.0,
         itemProgress = [];
 
-    Object.keys(items).forEach(function(itemId) {
-      if ((categoryId !== undefined && items[itemId].categoryId !== categoryId) ||
-          plans[items[itemId].planId].type !== RATIONED_PLAN_TYPE) {
+    Object.keys(data.items).forEach(function(itemId) {
+      if ((categoryId !== undefined && data.items[itemId].categoryId !== categoryId) ||
+          data.plans[data.items[itemId].planId].type !== RATIONED_PLAN_TYPE) {
         return;
       }
 
@@ -158,13 +153,13 @@ app.service('ProgressService', [
   this.countMetBaselines = function(categoryId) {
     var met = 0;
 
-    Object.keys(items).forEach(function(itemId) {
-      var item = items[itemId];
+    Object.keys(data.items).forEach(function(itemId) {
+      var item = data.items[itemId];
       if (categoryId !== undefined && item.categoryId !== categoryId) {
         return;
       }
 
-      if (plans[item.planId].type === BASELINE_PLAN_TYPE && isBaselineMet(itemId)) {
+      if (data.plans[item.planId].type === BASELINE_PLAN_TYPE && isBaselineMet(itemId)) {
         met += 1;
       }
     });
@@ -175,13 +170,13 @@ app.service('ProgressService', [
   this.countTotalBaselines = function(categoryId) {
     var total = 0;
 
-    Object.keys(items).forEach(function(itemId) {
-      var item = items[itemId];
+    Object.keys(data.items).forEach(function(itemId) {
+      var item = data.items[itemId];
       if (categoryId !== undefined && item.categoryId !== categoryId) {
         return;
       }
 
-      if (plans[item.planId].type === BASELINE_PLAN_TYPE) {
+      if (data.plans[item.planId].type === BASELINE_PLAN_TYPE) {
         total += 1;
       }
     });
@@ -195,11 +190,11 @@ app.service('ProgressService', [
     var items = {},
         categoriesWithRationsCount = countCategoriesWithRations();
 
-    Object.keys(categories).forEach(function(categoryId) {
+    Object.keys(data.categories).forEach(function(categoryId) {
       items[categoryId] = {
-        name: categories[categoryId],
+        name: data.categories[categoryId],
         width: _calculateRationProgress(categoryId) / categoriesWithRationsCount,
-        color: categories[categoryId].color
+        color: data.categories[categoryId].color
       };
     });
 
@@ -210,16 +205,16 @@ app.service('ProgressService', [
     var progressItems = {},
         rationItemCount = countRationItemsInCategory(categoryId);
 
-    Object.keys(items).forEach(function(itemId) {
-      if (items[itemId].categoryId !== categoryId ||
-          plans[items[itemId].planId].type !== RATIONED_PLAN_TYPE) {
+    Object.keys(data.items).forEach(function(itemId) {
+      if (data.items[itemId].categoryId !== categoryId ||
+          data.plans[data.items[itemId].planId].type !== RATIONED_PLAN_TYPE) {
         return;
       }
 
       progressItems[itemId] = {
-        name: items[itemId].name,
+        name: data.items[itemId].name,
         width: calculateItemProgress(itemId) / rationItemCount,
-        color: items[itemId].color
+        color: data.items[itemId].color
       };
     });
 

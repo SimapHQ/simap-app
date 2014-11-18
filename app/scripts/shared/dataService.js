@@ -220,4 +220,30 @@ app.service('DataService', [
     });
   };
 
+  this.revert = function(type, id) {
+    if (data[type][id] === undefined || data[type][id] === null) {
+      $log.error('cannot revert nonexistent item', type, id, data);
+      return;
+    }
+
+    data[type][id].$destroy();
+    data[type][id] = FirebaseService.getObject(NODES[type] + id);
+    return data[type][id].$loaded().then(function() {
+      return id;
+    });
+  };
+
+  this.revertSingle = function(type, id) {
+    if (type !== FAMILY_TYPE && type !== GOAL_TYPE) {
+      $log.error('can only revertSingle on family and goal', type, id, data);
+      return;
+    }
+
+    data[type].$destroy();
+    data[type] = FirebaseService.getObject(NODES[type] + id);
+    return data[type].$loaded().then(function() {
+      return id;
+    });
+  };
+
 }]);
