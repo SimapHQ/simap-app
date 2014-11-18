@@ -23,6 +23,8 @@ app.constant('ITEM_TYPE', 'items');
 app.constant('UNIT_TYPE', 'units');
 app.constant('CONVERSION_TYPE', 'conversions');
 app.constant('PLAN_TYPE', 'plans');
+app.constant('FAMILY_TYPE', 'family');
+app.constant('GOAL_TYPE', 'goal');
 
 app.constant('DEFAULT_FAMILY_SIZE_ADULTS', 1);
 app.constant('DEFAULT_FAMILY_SIZE_CHILDREN', 0);

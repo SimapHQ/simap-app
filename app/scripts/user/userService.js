@@ -6,7 +6,6 @@ app.service('UserService', [
   '$firebase',
   '$log',
   '$q',
-  'FamilyService',
   'FirebaseService',
   'GoalService',
   'USER_NODE',
@@ -14,11 +13,11 @@ app.service('UserService', [
     $firebase,
     $log,
     $q,
-    FamilyService,
     FirebaseService,
     GoalService,
     USER_NODE
   ) {
+
   var firebaseRef = FirebaseService.getRef();
 
   this.updateUser = function(user) {
@@ -40,23 +39,12 @@ app.service('UserService', [
     syncedUser.providerUid = user.id;
     syncedUser.displayName = user.displayName;
 
-    return syncedUser.$save().then(function() {
-      return _postUpdate(user);
-    });
+    return syncedUser.$save();
   };
 
   var _updateExistingUser = function(user, syncedUser) {
     syncedUser.displayName = user.displayName;
-    return syncedUser.$save().then(function() {
-      return _postUpdate(user);
-    });
-  };
-
-  var _postUpdate = function(user) {
-    return $q.all([
-      FamilyService.updateUsersFamily(user.uid),
-      GoalService.updateUsersGoal(user.uid)
-    ]);
+    return syncedUser.$save();
   };
 
 }]);

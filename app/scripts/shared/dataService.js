@@ -4,12 +4,21 @@ var app = angular.module('simapApp');
 
 app.service('DataService', [
   '$firebase',
+  '$log',
   '$q',
   'CATEGORY_NODE',
   'CATEGORY_TYPE',
   'CONVERSION_NODE',
   'CONVERSION_TYPE',
+  'DEFAULT_FAMILY_SIZE_ADULTS',
+  'DEFAULT_FAMILY_SIZE_CHILDREN',
+  'DEFAULT_GOAL_DAYS',
+  'DEFAULT_GOAL_MONTHS',
+  'FAMILY_NODE',
+  'FAMILY_TYPE',
   'FirebaseService',
+  'GOAL_NODE',
+  'GOAL_TYPE',
   'GuidService',
   'ITEM_NODE',
   'ITEM_TYPE',
@@ -20,12 +29,21 @@ app.service('DataService', [
   'UNIT_TYPE',
   function(
     $firebase,
+    $log,
     $q,
     CATEGORY_NODE,
     CATEGORY_TYPE,
     CONVERSION_NODE,
     CONVERSION_TYPE,
+    DEFAULT_FAMILY_SIZE_ADULTS,
+    DEFAULT_FAMILY_SIZE_CHILDREN,
+    DEFAULT_GOAL_DAYS,
+    DEFAULT_GOAL_MONTHS,
+    FAMILY_NODE,
+    FAMILY_TYPE,
     FirebaseService,
+    GOAL_NODE,
+    GOAL_TYPE,
     GuidService,
     ITEM_NODE,
     ITEM_TYPE,
@@ -42,7 +60,9 @@ app.service('DataService', [
         items: {},
         plans: {},
         units: {},
-        conversions: {}
+        conversions: {},
+        family: undefined,
+        goal: undefined
       },
       NODES = {};
 
@@ -51,9 +71,18 @@ app.service('DataService', [
   NODES[UNIT_TYPE] = UNIT_NODE;
   NODES[CONVERSION_TYPE] = CONVERSION_NODE;
   NODES[PLAN_TYPE] = PLAN_NODE;
+  NODES[FAMILY_TYPE] = FAMILY_NODE;
+  NODES[GOAL_TYPE] = GOAL_NODE;
 
   var _destroyData = function() {
     Object.keys(data).forEach(function(type) {
+      if (type === FAMILY_TYPE || type === GOAL_TYPE) {
+        if (data[type] !== undefined) {
+          data[type].$destroy();
+        }
+        return;
+      }
+
       Object.keys(data[type]).forEach(function(id) {
         data[type][id].$destroy();
       });
@@ -101,12 +130,55 @@ app.service('DataService', [
     });
   };
 
+  var _loadSingle = function(type) {
+    var idStr;
+    if (type === FAMILY_TYPE) {
+      idStr = 'familyId';
+    } else if (type === GOAL_TYPE) {
+      idStr = 'goalId';
+    }
+
+    var id = SessionService.currentSession(idStr);
+
+    if (!$.isEmptyObject(id)) {
+      data[type] = FirebaseService.getObject(NODES[type] + id);
+      return data[type].$loaded();
+    }
+
+    id = GuidService.generateGuid();
+    data[type] = FirebaseService.getObject(NODES[type] + id);
+
+    return data[type].$loaded().then(function() {
+      data[type].owner = SessionService.uid();
+
+      if (type === FAMILY_TYPE) {
+        data[type].adults = DEFAULT_FAMILY_SIZE_ADULTS;
+        data[type].children = DEFAULT_FAMILY_SIZE_CHILDREN;
+      } else if (type === GOAL_TYPE) {
+        data.goal.days = DEFAULT_GOAL_DAYS;
+        data.goal.months = DEFAULT_GOAL_MONTHS;
+      }
+
+      data[type].$save().then(function() {
+        SessionService.currentSession()[idStr] = id;
+        return SessionService.currentSession().$save().then(function() {
+          return id;
+        });
+      });
+    });
+  };
+
   this.getData = function() {
     return data;
   };
 
   this.refreshData = function() {
     _destroyData();
+
+    var waitFor = [
+      _loadSingle(FAMILY_TYPE),
+      _loadSingle(GOAL_TYPE)
+    ];
 
     return $q.all([
       _load(CATEGORY_TYPE, Object.keys(SessionService.currentSession(CATEGORY_TYPE))),
@@ -117,7 +189,7 @@ app.service('DataService', [
       return $q.all([
         _load(CONVERSION_TYPE, Object.keys(data.units)),
         _load(PLAN_TYPE, _getPlanIds())
-      ]);
+      ].concat(waitFor));
     });
   };
 

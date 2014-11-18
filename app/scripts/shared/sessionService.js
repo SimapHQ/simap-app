@@ -32,7 +32,7 @@ app.service('SessionService', [
   };
 
   this.currentSession = function(key) {
-    if (key === undefined) {
+    if (key === undefined || key === null) {
       return syncedUser;
     }
 

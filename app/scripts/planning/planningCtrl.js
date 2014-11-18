@@ -6,10 +6,10 @@ angular.module('simapApp').controller('PlanningCtrl', [
   '$q',
   '$rootScope',
   '$scope',
+  'DataService',
   'DAYS_IN_MONTH',
-  'FamilyService',
-  'PATH_TO_HOME',
   'GoalService',
+  'PATH_TO_HOME',
   'SimapModalService',
   'WaitingService',
   function (
@@ -18,10 +18,10 @@ angular.module('simapApp').controller('PlanningCtrl', [
     $q,
     $rootScope,
     $scope,
+    DataService,
     DAYS_IN_MONTH,
-    FamilyService,
-    PATH_TO_HOME,
     GoalService,
+    PATH_TO_HOME,
     SimapModalService,
     WaitingService
     ) {
@@ -39,7 +39,7 @@ angular.module('simapApp').controller('PlanningCtrl', [
         return 'Calculating...';
       }
 
-      return GoalService.getPreparedUntilDate($scope.goal.months);
+      return GoalService.getPreparedUntilDate($scope.goal);
     };
 
     $scope.save = function() {
@@ -56,8 +56,8 @@ angular.module('simapApp').controller('PlanningCtrl', [
       });
     };
 
-    $scope.family = FamilyService.getFamily();
-    $scope.goal = GoalService.getGoal();
+    $scope.family = DataService.getData().family;
+    $scope.goal = DataService.getData().goal;
 
     $scope.helpBlock = 'Once you put in the number of adults and children in your family, Simap can make sure your inventory is sufficient.';
 }]);

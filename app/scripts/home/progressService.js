@@ -9,8 +9,6 @@ app.service('ProgressService', [
   'DAYS_IN_MONTH',
   'DAYS_IN_WEEK',
   'DAYS_IN_YEAR',
-  'FamilyService',
-  'GoalService',
   'RATIONED_PLAN_TYPE',
   'TIME_DAY',
   'TIME_MONTH',
@@ -23,8 +21,6 @@ app.service('ProgressService', [
     DAYS_IN_MONTH,
     DAYS_IN_WEEK,
     DAYS_IN_YEAR,
-    FamilyService,
-    GoalService,
     RATIONED_PLAN_TYPE,
     TIME_DAY,
     TIME_MONTH,
@@ -36,8 +32,8 @@ app.service('ProgressService', [
   var items = DataService.getData().items;
   var conversions = DataService.getData().conversions;
   var plans = DataService.getData().plans;
-  var goal = GoalService.getGoal();
-  var family = FamilyService.getFamily();
+  var goal = DataService.getData().goal;
+  var family = DataService.getData().family;
 
   var isBaselineMet = function(itemId) {
     var item = items[itemId],
