@@ -23,6 +23,15 @@ app.controller('ItemsCtrl', [
   $scope.items = DataService.getData().items;
 
   $scope.addNewItem = function() {
+    if ($.isEmptyObject(DataService.getData().categories)) {
+      SimapModalService.showError({
+        title: 'Can\'t Create Item',
+        msg: 'You must create a category before you can create a new item!'
+      });
+
+      return;
+    }
+
     WaitingService.beginWaiting();
     ItemService.createNew().then(function(newItemId) {
       $scope.editItem(newItemId);
