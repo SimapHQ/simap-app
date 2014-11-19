@@ -81,7 +81,7 @@
         <span>1 {{units[item.primaryUnitId].name}} =</span>
       </div>
       <div class="col-xs-4">
-        <input type="number" class="form-control" ng-model="conversions[item.primaryUnitId][unitId]" ng-change="updateInverse(unitId)" required>
+        <input type="number" min="0" class="form-control" ng-model="conversions[item.primaryUnitId][unitId]" ng-change="updateInverse(unitId)" required>
       </div>
       <div class="col-xs-4 vpad-6 nowrap">
         <span>{{units[unitId].name}}</span>

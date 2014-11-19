@@ -59,4 +59,11 @@ app.controller('ItemsCtrl', [
     });
   };
 
+  if ($.isEmptyObject($scope.items)) {
+    SimapModalService.showInfo({
+      title: 'Welcome!',
+      msg: 'It looks like you don\'t have any items yet! Click that green plus symbol to create one.'
+    });
+  }
+
 }]);

@@ -60,4 +60,11 @@ app.controller('CategoriesCtrl', [
     }
   };
 
+  if ($.isEmptyObject($scope.categories)) {
+    SimapModalService.showInfo({
+      title: 'Welcome!',
+      msg: 'It looks like you don\'t have any categories yet! Click that green plus symbol to create one.'
+    });
+  }
+
 }]);
