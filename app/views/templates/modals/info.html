@@ -1,0 +1,19 @@
+<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header info">
+        <h4 class="modal-title">{{info.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{info.msg}}</p>
+        <ul>
+          <li ng-repeat="e in info.list">{{e}}</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"
+                analytics-on="click" analytics-event="Info Acknowledged" anaylytics-category="Modal">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>

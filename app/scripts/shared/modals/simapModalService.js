@@ -53,4 +53,16 @@ app.service('SimapModalService', [
     });
   };
 
+  this.showInfo = function(infoObj) {
+    ModalService.showModal({
+      templateUrl: 'views/templates/modals/info.html',
+      controller: 'InfoModalCtrl',
+      inputs: {
+        data: infoObj
+      }
+    }).then(function(modal) {
+      modal.element.modal();
+    });
+  };
+
 }]);

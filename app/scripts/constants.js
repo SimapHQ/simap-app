@@ -37,9 +37,9 @@ app.constant('DAYS_IN_YEAR', 365.242);
 app.constant('DEFAULT_GOAL_MONTHS', 3);
 app.constant('DEFAULT_GOAL_DAYS', 91);
 
-app.constant('DEFAULT_CATEGORY_NAME', 'New Category Name');
-app.constant('DEFAULT_ITEM_NAME', 'New Item Name');
-app.constant('DEFAULT_UNIT_NAME', 'New Unit Name');
+app.constant('DEFAULT_CATEGORY_NAME', 'My New Category');
+app.constant('DEFAULT_ITEM_NAME', 'My New Item');
+app.constant('DEFAULT_UNIT_NAME', 'Items');
 
 app.constant('RATIONED_PLAN_TYPE', 'ration');
 app.constant('BASELINE_PLAN_TYPE', 'baseline');

@@ -1,7 +1,7 @@
-<simap-help-header size="h3" label="'Home'"></simap-help-header>
+<simap-help-header size="h3" label="'Home'" ng-show="hasItems()"></simap-help-header>
 
-<simap-help-header size="h4" label="'Overall Progress'" help-block="progressHelp"></simap-help-header>
-<div class="form-group col-xs-12" ng-controller="ProgressCtrl">
+<simap-help-header size="h4" label="'Overall Progress'" help-block="progressHelp" ng-show="hasItems()"></simap-help-header>
+<div class="form-group col-xs-12" ng-controller="ProgressCtrl" ng-show="hasItems()">
   <div style="float:left">
     <label>Rations:</label>
     <span>{{rationProgress() | number:0}}%</span>
@@ -13,7 +13,10 @@
   <simap-progress-bar items="overallProgressBarItems"></simap-progress-bar>
 </div>
 
-<simap-help-header size="h4" label="'Category Breakdown'" help-block="categoryHelp"></simap-help-header>
+<simap-help-header size="h4"
+                   label="'Category Breakdown'"
+                   help-block="categoryHelp"
+                   ng-show="hasItems()"></simap-help-header>
 <div class="col-xs-12 clearfix" ng-repeat="(categoryId, category) in categories" ng-hide="empty(items[categoryId])">
   <h4>{{category.name}}</h4>
   <div class="form-group col-xs-12" ng-controller="ProgressCtrl">
