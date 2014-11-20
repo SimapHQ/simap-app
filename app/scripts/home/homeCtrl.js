@@ -11,19 +11,21 @@ angular.module('simapApp').controller('HomeCtrl', [
   ) {
 
   var refreshHomeData = function() {
-    $scope.categories = DataService.getData().categories;
+    $scope.categories = [];
     $scope.items = {};
     $scope.allItems = DataService.getData().items;
     $scope.itemUnits = {};
     $scope.units = DataService.getData().units;
     $scope.plans = DataService.getData().plans;
 
-    Object.keys($scope.categories).forEach(function(categoryId) {
-      $scope.items[categoryId] = {};
+    var categories = DataService.getData().categories;
+    Object.keys(categories).forEach(function(categoryId) {
+      $scope.categories.push(categories[categoryId]);
+      $scope.items[categoryId] = [];
     });
 
     Object.keys($scope.allItems).forEach(function(itemId) {
-      $scope.items[$scope.allItems[itemId].categoryId][itemId] = $scope.allItems[itemId];
+      $scope.items[$scope.allItems[itemId].categoryId].push($scope.allItems[itemId]);
 
       $scope.itemUnits[itemId] = {};
       Object.keys($scope.allItems[itemId].units).forEach(function(unitId) {

@@ -17,7 +17,7 @@
                    label="'Category Breakdown'"
                    help-block="categoryHelp"
                    ng-show="hasItems()"></simap-help-header>
-<div class="col-xs-12 clearfix" ng-repeat="(categoryId, category) in categories" ng-hide="empty(items[categoryId])">
+<div class="col-xs-12 clearfix" ng-repeat="category in categories | orderBy:'name'" ng-hide="empty(items[category.$id])">
   <h4>{{category.name}}</h4>
   <div class="form-group col-xs-12" ng-controller="ProgressCtrl">
     <div style="float:left">
@@ -28,9 +28,9 @@
       <label>Baselines:</label>
       <span>{{baselinesMet()}}/{{totalBaselines()}}</span>
     </div>
-    <simap-progress-bar items="progressBarItems[categoryId]"></simap-progress-bar>
+    <simap-progress-bar items="progressBarItems[category.$id]"></simap-progress-bar>
   </div>
-  <div class="clearfix form-group" ng-repeat="(itemId, item) in items[categoryId]" ng-controller="InventoryCtrl">
+  <div class="clearfix form-group" ng-repeat="item in items[category.$id] | orderBy:'name'" ng-controller="InventoryCtrl">
     <div class="clearfix">
       <div class="col-xs-12">
         <div class="pull-left">
@@ -54,7 +54,7 @@
         <input type="number" class="form-control" ng-model="updateAmount" min="0" required/>
       </div>
       <div class="clearfix col-md-5 form-group">
-        <select class="form-control" ng-model="updateUnit" ng-options="unit.name for (id, unit) in itemUnits[itemId]" required></select>
+        <select class="form-control" ng-model="updateUnit" ng-options="unit.name for (id, unit) in itemUnits[item.$id]" required></select>
       </div>
       <div class="clearfix col-md-2 form-group text-right">
         <div class="col-xs-1 text-right form-group vpad-8">

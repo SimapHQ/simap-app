@@ -187,22 +187,22 @@ app.service('ProgressService', [
   this.calculateRationProgress = _calculateRationProgress;
 
   this.getOverallProgressBarItems = function() {
-    var items = {},
+    var items = [],
         categoriesWithRationsCount = countCategoriesWithRations();
 
     Object.keys(data.categories).forEach(function(categoryId) {
-      items[categoryId] = {
-        name: data.categories[categoryId],
+      items.push({
+        name: data.categories[categoryId].name,
         width: _calculateRationProgress(categoryId) / categoriesWithRationsCount,
         color: data.categories[categoryId].color
-      };
+      });
     });
 
     return items;
   };
 
   this.getCategoryProgressBarItems = function(categoryId) {
-    var progressItems = {},
+    var progressItems = [],
         rationItemCount = countRationItemsInCategory(categoryId);
 
     Object.keys(data.items).forEach(function(itemId) {
@@ -211,11 +211,11 @@ app.service('ProgressService', [
         return;
       }
 
-      progressItems[itemId] = {
+      progressItems.push({
         name: data.items[itemId].name,
         width: calculateItemProgress(itemId) / rationItemCount,
         color: data.items[itemId].color
-      };
+      });
     });
 
     return progressItems;
