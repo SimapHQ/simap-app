@@ -23,7 +23,7 @@
           ".write": "$uid === auth.uid && newData.exists()",
 
           // A user must have a uid, provider, providerUid, and displayName
-          ".validate": "newData.hasChildren(['uid', 'provider', 'providerUid', 'displayName'])",
+          ".validate": "newData.hasChildren(['uid', 'provider', 'providerUid', 'displayName', 'createdAt', 'lastLogin'])",
 
           // A user's provider, providerUid, and uid must be properly formed.
           "provider": {
@@ -39,6 +39,16 @@
           // A user's displayName must be a string.
           "displayName": {
             ".validate": "newData.isString() && newData.val().length > 0"
+          },
+
+          // A user's created at time may not change.
+          "createdAt": {
+            ".validate": "(!data.exists() || data.val() === newData.val()) && newData.val() <= now"
+          },
+
+          // A user's last login time can't be in the future.
+          "lastLogin": {
+            ".validate": "newData.isNumber() && newData.val() <= now"
           },
 
           // A user's family and goal must be owned by them.

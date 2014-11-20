@@ -38,12 +38,16 @@ app.service('UserService', [
     syncedUser.provider = user.provider;
     syncedUser.providerUid = user.id;
     syncedUser.displayName = user.displayName;
+    syncedUser.createdAt = Firebase.ServerValue.TIMESTAMP;
+    syncedUser.lastLogin = Firebase.ServerValue.TIMESTAMP;
 
     return syncedUser.$save();
   };
 
   var _updateExistingUser = function(user, syncedUser) {
     syncedUser.displayName = user.displayName;
+    syncedUser.createdAt = syncedUser.createdAt || Firebase.ServerValue.TIMESTAMP;
+    syncedUser.lastLogin = Firebase.ServerValue.TIMESTAMP;
     return syncedUser.$save();
   };
 

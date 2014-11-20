@@ -17,14 +17,18 @@ var testUserA = {
   uid: 'test:123',
   provider: 'test',
   providerUid: '123',
-  displayName: 'drautb-test-a'
+  displayName: 'drautb-test-a',
+  createdAt: 123456789,
+  lastLogin: 35632455
 };
 
 var testUserB = {
   uid: 'test:456',
   provider: 'test',
   providerUid: '456',
-  displayName: 'drautb-test-b'
+  displayName: 'drautb-test-b',
+  createdAt: 2343643,
+  lastLogin: 235453234
 };
 
 var baseUserState = {};
@@ -112,7 +116,9 @@ describe('Firebase Security Rules', function() {
         uid: 'agent:007',
         provider: 'agent',
         providerUid: '007',
-        displayName: 'Bond, James Bond'
+        displayName: 'Bond, James Bond',
+        createdAt: 24325324,
+        lastLogin: 23524534
       };
 
       setup({}, testUser, done);
@@ -272,6 +278,45 @@ describe('Firebase Security Rules', function() {
 
       it('should not allow the user to delete their displayName', function(done) {
         testRef.child('/user/' + testUserA.uid + '/displayName').remove(function(error) {
+          expect(error.code).toMatch(PERMISSION_DENIED);
+          done();
+        });
+      });
+    });
+
+    describe('createdAt', function() {
+      it('should allow the user to update their createdAt time if they don\'t alter it', function(done) {
+        testRef.child('/user/' + testUserA.uid + '/createdAt').set(123456789, function(error) {
+          expect(error).toBe(null);
+          done();
+        });
+      });
+
+      it('should not allow the user to alter their createdAt time', function(done) {
+        testRef.child('/user/' + testUserA.uid + '/createdAt').set(36745436, function(error) {
+          expect(error.code).toMatch(PERMISSION_DENIED);
+          done();
+        });
+      });
+    });
+
+    describe('lastLogin', function() {
+      it('should allow the user to update their lastLogin time', function(done) {
+        testRef.child('/user/' + testUserA.uid + '/lastLogin').set(firebase.ServerValue.TIMESTAMP, function(error) {
+          expect(error).toBe(null);
+          done();
+        });
+      });
+
+      it('should not allow the user to use a future timestamp', function(done) {
+        testRef.child('/user/' + testUserA.uid + '/lastLogin').set(firebase.ServerValue.TIMESTAMP + 10, function(error) {
+          expect(error.code).toMatch(PERMISSION_DENIED);
+          done();
+        });
+      });
+
+      it('should not allow the user to remove their lastLogin time', function(done) {
+        testRef.child('/user/' + testUserA.uid + '/lastLogin').remove(function(error) {
           expect(error.code).toMatch(PERMISSION_DENIED);
           done();
         });
