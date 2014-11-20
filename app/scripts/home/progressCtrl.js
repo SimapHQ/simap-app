@@ -21,16 +21,20 @@ angular.module('simapApp').controller('ProgressCtrl', [
     });
   };
 
+  var getCategoryId = function() {
+    return $scope.category === undefined ? undefined : $scope.category.$id;
+  };
+
   $scope.baselinesMet = function() {
-    return ProgressService.countMetBaselines($scope.categoryId);
+    return ProgressService.countMetBaselines(getCategoryId());
   };
 
   $scope.totalBaselines = function() {
-    return ProgressService.countTotalBaselines($scope.categoryId);
+    return ProgressService.countTotalBaselines(getCategoryId());
   };
 
   $scope.rationProgress = function() {
-    return ProgressService.calculateRationProgress($scope.categoryId) * 100;
+    return ProgressService.calculateRationProgress(getCategoryId()) * 100;
   };
 
   $scope.$on(ITEM_AMOUNT_CHANGED_EVENT, function() {
