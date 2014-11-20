@@ -1,15 +1,15 @@
-<div ng-repeat="(key, value) in data" class="clearfix form-group">
+<div ng-repeat="entity in dataArray | orderBy:'name'" class="clearfix form-group">
   <div class="col-xs-2">
-    <div class="square-sm" ng-style="{ 'background-color': value.color }"></div>
+    <div class="square-sm" ng-style="{ 'background-color': entity.color }"></div>
   </div>
   <div class="col-xs-8">
-    <a ng-click="edit({key: '{{key}}'})" analytics-on="click" analytics-event="Edit" analytics-category="List" analytics-label="{{value.name}}">
-      <span>{{value.name}}</span>
+    <a ng-click="edit({key: '{{entity.$id}}'})" analytics-on="click" analytics-event="Edit" analytics-category="List" analytics-label="{{entity.name}}">
+      <span>{{entity.name}}</span>
     </a>
   </div>
   <div class="col-xs-2">
-    <a analytics-on="click" analytics-event="Remove" analytics-category="List" analytics-label="{{value.name}}">
-      <span class="glyphicon glyphicon-trash" ng-click="remove({key: '{{key}}'})"></span>
+    <a analytics-on="click" analytics-event="Remove" analytics-category="List" analytics-label="{{entity.name}}">
+      <span class="glyphicon glyphicon-trash" ng-click="remove({key: '{{entity.$id}}'})"></span>
     </a>
   </div>
 </div>
