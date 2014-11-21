@@ -52,22 +52,24 @@
       </div>
     </div>
     <div ng-show="updatingInventory" class="update-inventory">
-      <div class="clearfix col-md-5 form-group">
-        <input type="number" class="form-control" ng-model="updateAmount" min="0" required/>
-      </div>
-      <div class="clearfix col-md-5 form-group">
-        <select class="form-control" ng-model="updateUnit" ng-options="unit.name for (id, unit) in itemUnits[item.$id]" required></select>
-      </div>
-      <div class="clearfix col-md-2 form-group text-right">
-        <div class="col-xs-1 text-right form-group vpad-8">
-          <a href="" ng-click="cancelUpdate()" analytics-on="click" analytics-event="Cancel Inventory Update" analytics-category="Item">
-            <span class="glyphicon glyphicon-remove-sign"></span>
-          </a>
+      <form name="updateInventoryForm" ng-submit="applyUpdate(item)">
+        <div class="clearfix col-md-5 form-group">
+          <input type="number" class="form-control" ng-model="updateAmount" min="0" required/>
         </div>
-        <div class="col-xs-1">
-          <simap-save-button on-save="applyUpdate(item)"></simap-save-button>
+        <div class="clearfix col-md-5 form-group">
+          <select class="form-control" ng-model="updateUnit" ng-options="unit.name for (id, unit) in itemUnits[item.$id]" required></select>
         </div>
-      </div>
+        <div class="clearfix col-md-2 form-group text-right">
+          <div class="col-xs-1 text-right form-group vpad-8">
+            <a href="" ng-click="cancelUpdate()" analytics-on="click" analytics-event="Cancel Inventory Update" analytics-category="Item">
+              <span class="glyphicon glyphicon-remove-sign"></span>
+            </a>
+          </div>
+          <div class="col-xs-1">
+            <simap-save-button on-save="applyUpdate(item)"></simap-save-button>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 </div>
