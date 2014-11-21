@@ -43,7 +43,7 @@
         <a ng-click="startEdit()" analytics-on="click" analytics-event="Edit" analytics-category="Unit" analytics-label="{{unit.name}}">{{unit.name}}</a>
       </p>
     </div>
-    <div class="col-xs-2" ng-hide="item.primaryUnitId === unitId">
+    <div class="col-xs-2">
       <a ng-click="removeUnit(unitId)" analytics-on="click" analytics-event="Remove" analytics-category="Unit" analytics-label="{{unit.name}}">
         <span class="glyphicon glyphicon-trash"></span>
       </a>
@@ -95,7 +95,7 @@
   <div class="col-xs-12">
     <div class="form-group">
       <label for="planning-type">Select Planning Type</label>
-      <select id="planning-type" class="form-control" ng-model="plan.type" ng-disabled="!planningForm.$valid" required>
+      <select id="planning-type" class="form-control" ng-model="plan.type" ng-change="onPlanTypeChange()" ng-disabled="!planningForm.$valid" required>
         <option value="ration">Rationed</option>
         <option value="baseline">Baseline</option>
       </select>

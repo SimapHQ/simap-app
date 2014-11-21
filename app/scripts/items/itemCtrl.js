@@ -8,13 +8,17 @@ app.controller('ItemCtrl', [
   '$rootScope',
   '$routeParams',
   '$scope',
+  'BASELINE_PLAN_TYPE',
   'CONVERSION_TYPE',
   'DataService',
   'DEFAULT_CONVERSION_VALUE',
+  'DEFAULT_PLAN_AMOUNT',
+  'DEFAULT_PLAN_TIME',
   'HistoryService',
   'ITEM_PRIMARY_UNIT_CHANGED_EVENT',
   'ITEM_TYPE',
   'PLAN_TYPE',
+  'RATIONED_PLAN_TYPE',
   'SimapModalService',
   'UNIT_TYPE',
   'UnitService',
@@ -26,13 +30,17 @@ app.controller('ItemCtrl', [
     $rootScope,
     $routeParams,
     $scope,
+    BASELINE_PLAN_TYPE,
     CONVERSION_TYPE,
     DataService,
     DEFAULT_CONVERSION_VALUE,
+    DEFAULT_PLAN_AMOUNT,
+    DEFAULT_PLAN_TIME,
     HistoryService,
     ITEM_PRIMARY_UNIT_CHANGED_EVENT,
     ITEM_TYPE,
     PLAN_TYPE,
+    RATIONED_PLAN_TYPE,
     SimapModalService,
     UNIT_TYPE,
     UnitService,
@@ -134,6 +142,25 @@ app.controller('ItemCtrl', [
   };
 
   $scope.removeUnit = function(unitId) {
+    if ($scope.item.primaryUnitId === unitId) {
+      SimapModalService.showError({
+        title: 'Can\'t Delete Unit',
+        msg: 'You\'re using this unit as your primary unit! You need to create or select a different primary unit before you can delete this one.'
+      });
+      return;
+    }
+
+    if ($scope.plan.unitId === unitId ||
+        $scope.plan.adult.unitId === unitId ||
+        $scope.plan.child.unitId === unitId) {
+
+      SimapModalService.showError({
+        title: 'Can\'t Delete Unit',
+        msg: 'You\'re using this unit in your planning! You need to use different units in your planning before you can delete this one.'
+      });
+      return;
+    }
+
     WaitingService.beginWaiting();
     UnitService.removeOld(unitId).then(function() {
       delete $scope.item.units[unitId];
@@ -156,6 +183,20 @@ app.controller('ItemCtrl', [
     }
 
     $scope.conversions[unitId][$scope.item.primaryUnitId] = invertedValue;
+  };
+
+  $scope.onPlanTypeChange = function() {
+    if ($scope.plan.type === RATIONED_PLAN_TYPE) {
+      $scope.plan.amount = DEFAULT_PLAN_AMOUNT;
+      $scope.plan.unitId = $scope.item.primaryUnitId;
+    } else if ($scope.plan.type === BASELINE_PLAN_TYPE) {
+      $scope.plan.adult.amount = DEFAULT_PLAN_AMOUNT;
+      $scope.plan.adult.unitId = $scope.item.primaryUnitId;
+      $scope.plan.adult.time = DEFAULT_PLAN_TIME;
+      $scope.plan.child.amount = DEFAULT_PLAN_AMOUNT;
+      $scope.plan.child.unitId = $scope.item.primaryUnitId;
+      $scope.plan.child.time = DEFAULT_PLAN_TIME;
+    }
   };
 
   $scope.allForms = _allForms;
