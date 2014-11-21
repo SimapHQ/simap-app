@@ -1,4 +1,4 @@
-<div ng-repeat="entity in dataArray | orderBy:'name'" class="clearfix form-group">
+<div ng-repeat="entity in dataArray | orderBy:'name'" ng-if="entity.name !== undefined" class="clearfix form-group">
   <div class="col-xs-2">
     <div class="square-sm" ng-style="{ 'background-color': entity.color }"></div>
   </div>
