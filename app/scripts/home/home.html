@@ -18,58 +18,64 @@
                    help-block="categoryHelp"
                    ng-show="hasItems()"></simap-help-header>
 <div class="col-xs-12 clearfix" ng-repeat="category in categories | orderBy:'name'" ng-hide="empty(items[category.$id])">
-  <h4>{{category.name}}</h4>
-  <div class="form-group col-xs-12" ng-controller="ProgressCtrl">
-    <div style="float:left">
-      <label>Rations:</label>
-      <span>{{rationProgress() | number:0}}%</span>
-    </div>
-    <div style="float:right;">
-      <label>Baselines:</label>
-      <span>{{baselinesMet()}}/{{totalBaselines()}}</span>
-    </div>
-    <simap-progress-bar items="progressBarItems[category.$id]"></simap-progress-bar>
-  </div>
-  <div class="clearfix form-group" ng-repeat="item in items[category.$id] | orderBy:'name'" ng-controller="InventoryCtrl">
-    <div class="clearfix">
-      <div class="col-xs-12">
-        <div class="pull-left">
-          <span>
-            <a href="/item/edit/{{item.$id}}">{{item.name}}</a>
-          </span>
-        </div>
-        <div class="pull-right">
-          <span>
-            {{item.amount}} {{units[item.primaryUnitId].name}}
-          </span>
-          <a ng-click="updateInventory(item, 1)" class="hpad-10" analytics-on="click" analytics-event="Add Inventory" analytics-category="Item">
-            <span class="glyphicon glyphicon-plus-sign"></span>
-          </a>
-          <a ng-click="updateInventory(item, -1)" class="hpad-10" analytics-on="click" analytics-event="Remove Inventory" analytics-category="Item">
-            <span class="glyphicon glyphicon-minus-sign"></span>
-          </a>
-        </div>
+  <h4 ng-click="hide=!hide">
+    <span class="glyphicon glyphicon-plus" ng-if="!hide"></span>
+    <span class="glyphicon glyphicon-minus" ng-if="hide"></span>
+    {{category.name}}
+  </h4>
+  <div ng-show="hide" class="animate-hide">
+    <div class="form-group col-xs-12" ng-controller="ProgressCtrl">
+      <div style="float:left">
+        <label>Rations:</label>
+        <span>{{rationProgress() | number:0}}%</span>
       </div>
+      <div style="float:right;">
+        <label>Baselines:</label>
+        <span>{{baselinesMet()}}/{{totalBaselines()}}</span>
+      </div>
+      <simap-progress-bar items="progressBarItems[category.$id]"></simap-progress-bar>
     </div>
-    <div ng-show="updatingInventory" class="update-inventory">
-      <form name="updateInventoryForm" ng-submit="applyUpdate(item)">
-        <div class="clearfix col-md-5 form-group">
-          <input type="number" class="form-control" ng-model="updateAmount" min="0" required/>
-        </div>
-        <div class="clearfix col-md-5 form-group">
-          <select class="form-control" ng-model="updateUnit" ng-options="unit.name for (id, unit) in itemUnits[item.$id]" required></select>
-        </div>
-        <div class="clearfix col-md-2 form-group text-right">
-          <div class="col-xs-1 text-right form-group vpad-8">
-            <a href="" ng-click="cancelUpdate()" analytics-on="click" analytics-event="Cancel Inventory Update" analytics-category="Item">
-              <span class="glyphicon glyphicon-remove-sign"></span>
+    <div class="clearfix form-group" ng-repeat="item in items[category.$id] | orderBy:'name'" ng-controller="InventoryCtrl">
+      <div class="clearfix">
+        <div class="col-xs-12">
+          <div class="pull-left">
+            <span>
+              <a href="/item/edit/{{item.$id}}">{{item.name}}</a>
+            </span>
+          </div>
+          <div class="pull-right">
+            <span>
+              {{item.amount}} {{units[item.primaryUnitId].name}}
+            </span>
+            <a ng-click="updateInventory(item, 1)" class="hpad-10" analytics-on="click" analytics-event="Add Inventory" analytics-category="Item">
+              <span class="glyphicon glyphicon-plus-sign"></span>
+            </a>
+            <a ng-click="updateInventory(item, -1)" class="hpad-10" analytics-on="click" analytics-event="Remove Inventory" analytics-category="Item">
+              <span class="glyphicon glyphicon-minus-sign"></span>
             </a>
           </div>
-          <div class="col-xs-1">
-            <simap-save-button on-save="applyUpdate(item)"></simap-save-button>
-          </div>
         </div>
-      </form>
+      </div>
+      <div ng-show="updatingInventory" class="update-inventory">
+        <form name="updateInventoryForm" ng-submit="applyUpdate(item)">
+          <div class="clearfix col-md-5 form-group">
+            <input type="number" class="form-control" ng-model="updateAmount" min="0" required/>
+          </div>
+          <div class="clearfix col-md-5 form-group">
+            <select class="form-control" ng-model="updateUnit" ng-options="unit.name for (id, unit) in itemUnits[item.$id]" required></select>
+          </div>
+          <div class="clearfix col-md-2 form-group text-right">
+            <div class="col-xs-1 text-right form-group vpad-8">
+              <a href="" ng-click="cancelUpdate()" analytics-on="click" analytics-event="Cancel Inventory Update" analytics-category="Item">
+                <span class="glyphicon glyphicon-remove-sign"></span>
+              </a>
+            </div>
+            <div class="col-xs-1">
+              <simap-save-button on-save="applyUpdate(item)"></simap-save-button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>

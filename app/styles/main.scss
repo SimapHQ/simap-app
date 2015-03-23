@@ -203,3 +203,19 @@ span.spacer {
     margin-bottom: 30px;
   }
 }
+
+.animate-hide {
+  -webkit-transition:all linear 0.25s;
+  transition:all linear 0.25s;
+}
+
+.animate-hide.ng-hide-add,
+.animate-hide.ng-hide-remove {
+  display:block!important;
+}
+
+.animate-hide.ng-hide {
+  line-height: 0;
+  font-size: 0;
+  padding: 0px;
+}
